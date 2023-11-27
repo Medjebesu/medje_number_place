@@ -17,7 +17,7 @@ $ pnpm install
 
 ### R3F(React―three-fiber)&Drei インストール
 ```
-$ pnpm install three @types/three @react-three/fiber @react-three/drei three-stdlib
+$ pnpm install three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls
 ```
 
 ## ローカル実行

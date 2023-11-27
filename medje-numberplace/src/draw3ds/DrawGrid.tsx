@@ -7,6 +7,7 @@ type Props = {
   pitch:number;
   color:THREE.ColorRepresentation  | undefined;
   lineWidth:number;
+  zIndex:number;
   //segments:any
   //dashed:boolean;
   //vertexColors:Array<number[]>;
@@ -15,14 +16,14 @@ type Props = {
 }
 
 export const DrawGrid: React.FC<Props>  = (props) =>{
-  const horLines: Array<THREE.Vector3[]> =[];
-  const verLines: Array<THREE.Vector3[]> =[];
+  const horLines:Array<THREE.Vector3[]> =[];
+  const verLines:Array<THREE.Vector3[]> =[];
 
   // 縦線
   for(var x = 0; x <= props.scale; x++) {
-    let points :THREE.Vector3[] =[];
+    let points:THREE.Vector3[] =[];
     for(var y = 0; y <= props.scale; y++) {
-      points.push(new THREE.Vector3(props.pitch * x, props.pitch * y, 0));
+      points.push(new THREE.Vector3(props.pitch * x, props.pitch * y, props.zIndex));
     }
     verLines.push(points);
   }
@@ -31,7 +32,7 @@ export const DrawGrid: React.FC<Props>  = (props) =>{
   for(var y = 0; y <= props.scale; y++) {
     let points :THREE.Vector3[] =[];
     for(var x = 0; x <= props.scale; x++) {
-      points.push(new THREE.Vector3(props.pitch * x, props.pitch * y, 0));
+      points.push(new THREE.Vector3(props.pitch * x, props.pitch * y, props.zIndex));
     }
     horLines.push(points);
   }
