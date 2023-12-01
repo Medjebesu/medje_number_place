@@ -1,6 +1,7 @@
-import React, { useRef } from 'react'
-import { useFrame } from "@react-three/fiber"
-import { Text, RoundedBox, RenderTexture, PerspectiveCamera } from "@react-three/drei";
+//import React, { useRef } from 'react'
+//import { useFrame } from "@react-three/fiber"
+import { DrawNumberBlock } from "../draw3ds";
+import { Vector3 } from "three";
 
 type Props = {
 }
@@ -25,23 +26,6 @@ export const Debug_DrawNumberBlocks: React.FC<Props>  = (props) =>{
 
   const numberBlock = [];
 
-  //const textRef = useRef<THREE.Mesh>(null!)
-  //useFrame((state) => (textRef.current.position.x = Math.sin(state.clock.elapsedTime) * 2))
-
-  const fontProps = { font: '/Inter-Bold.woff', fontSize: 2.5, letterSpacing: 0.5, lineHeight: 1, 'material-toneMapped': false }
-
-  const renderedNumber =(
-    <RenderTexture attach="map" anisotropy={16} >
-      <PerspectiveCamera makeDefault manual aspect={1 / 1} position={[0, 2, 6]} />
-      <color attach="background" args={['orange']} />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} />
-      <Text color="#555" characters='123456789' {...fontProps}>
-        123456789
-      </Text>
-    </RenderTexture>
-  )
-
   for (let y=0; y < 9; y++){
     let linetop = y*9
 
@@ -49,38 +33,24 @@ export const Debug_DrawNumberBlocks: React.FC<Props>  = (props) =>{
       let idx = x+linetop
       if (testNum[idx] != 0){
         numberBlock.push(
-          <group>
-            <mesh position={[horBoxpos[x], verBoxpos[y], -0.1]}>
-              <RoundedBox
-                args={[0.45, 0.45, 0.1]}
-                radius={0.025}
-                smoothness={4}
-                bevelSegments={4}
-                creaseAngle={0.4}
-              >
-                <meshBasicMaterial>
-                  {renderedNumber}
-                </meshBasicMaterial>
-              </RoundedBox>
-            </mesh>
-          </group>
+          <DrawNumberBlock 
+            blocknum={testNum[idx]}
+            position={new Vector3(horBoxpos[x], verBoxpos[y], -0.1)}
+            color="orange"
+            width={0.45}
+            volume={0.01}
+          />
         )
       }
       else{
         numberBlock.push(
-          <group>
-            <mesh position={[horBoxpos[x], verBoxpos[y], -0.1]}>
-              <RoundedBox
-                args={[0.45, 0.45, 0.1]}
-                radius={0.025}
-                smoothness={4}
-                bevelSegments={4}
-                creaseAngle={0.4}
-              >
-                <meshBasicMaterial color="orange"/>
-              </RoundedBox>
-            </mesh>
-          </group>
+          <DrawNumberBlock 
+            blocknum={testNum[idx]}
+            position={new Vector3(horBoxpos[x], verBoxpos[y], -0.1)}
+            color="orange"
+            width={0.45}
+            volume={0.01}
+          />
         )
       }
     }
