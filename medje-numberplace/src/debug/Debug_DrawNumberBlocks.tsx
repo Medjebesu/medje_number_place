@@ -21,8 +21,8 @@ export const Debug_DrawNumberBlocks: React.FC<Props>  = (props) =>{
     8,0,0, 5,0,0, 0,6,0
   ]
 
-  const horBoxpos = [0.25, 0.75, 1.25, 1.75, 2.25, 2.75, 3.25, 3.75, 4.25]
-  const verBoxpos = [4.25, 3.75, 3.25, 2.75, 2.25, 1.75, 1.25, 0.75, 0.25]
+  const horBoxpos = [0.225, 0.725, 1.225, 1.75, 2.25, 2.75, 3.275, 3.775, 4.275]
+  const verBoxpos = [4.275, 3.775, 3.275, 2.75, 2.25, 1.75, 1.225, 0.725, 0.225]
 
   const numberBlock = [];
 
@@ -37,7 +37,7 @@ export const Debug_DrawNumberBlocks: React.FC<Props>  = (props) =>{
             blocknum={testNum[idx]}
             position={new Vector3(horBoxpos[x], verBoxpos[y], -0.1)}
             color="orange"
-            width={0.45}
+            width={0.425}
             volume={0.01}
           />
         )
@@ -48,8 +48,9 @@ export const Debug_DrawNumberBlocks: React.FC<Props>  = (props) =>{
             blocknum={testNum[idx]}
             position={new Vector3(horBoxpos[x], verBoxpos[y], -0.1)}
             color="orange"
-            width={0.45}
+            width={0.425}
             volume={0.01}
+            blockAnim={true}
           />
         )
       }

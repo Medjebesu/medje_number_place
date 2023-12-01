@@ -12,7 +12,6 @@ CameraControls.install({ THREE })
 
 export const GameDisp:React.FC = () => {
 
-  
   return(
     <Canvas>
       <pointLight position={[45, 45, 100]} />
