@@ -1,13 +1,15 @@
 import React from 'react'
 import { DrawGrid, DrawBackGround } from './draw3ds'
 
-export const DrawStageBase:React.FC = () => {
+type Props = {
+  blockSize:number
+}
+
+export const DrawStageBase:React.FC<Props>  = (props) =>{
   return(
-    <>
-      <group position={[0,0, -0.05]}>
-        <DrawBackGround/>
-        <DrawGrid scale={3} pitch={1.5} color='green' lineWidth={5} zIndex={0.01} key='area'/>
-      </group>
-    </>
+    <group position={[props.blockSize*-4.575 ,props.blockSize*-4.875, 0.0]}>
+      <DrawBackGround/>
+      <DrawGrid scale={3} pitch={props.blockSize*3.15} color='green' lineWidth={props.blockSize*4.0} zIndex={0.01} key='area'/>
+    </group>
   );
 }
