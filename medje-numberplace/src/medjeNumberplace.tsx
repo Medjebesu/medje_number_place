@@ -15,7 +15,6 @@ export const GameDisp:React.FC = () => {
   return(
     <Canvas>
       <pointLight position={[45, 45, 100]} />
-
       <GameControl />
       <ContactShadows frames={1} position={[0, -5.5, 0]} blur={1} color="green" opacity={0.75} />
       <Controls />

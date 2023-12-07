@@ -24,7 +24,6 @@ export const BlockSelecter = selector({
     return get(BlockSelectState);
   },
   set: ({get,set}, newVal) => {
-    console.log('"BlockSelecter" setter called');
     if(newVal instanceof DefaultValue) {
       set(
         BlockSelectState, 
@@ -46,12 +45,11 @@ export const BlockSelecter = selector({
         BlockSelectState, 
         setVal
       );
-      console.log('"BlockSelecter" state changed.');
     }
   },
 });
 
-export const BlockStateControl: React.FC = () => {
+const BlockStateControl: React.FC = () => {
 
   const settedVal = useRecoilValue(BlockSelecter);
   console.log("BlockSelecter state Changed:" + " selected=" + settedVal.selected + " id=" + settedVal.id);
@@ -103,7 +101,7 @@ export const BlocksControl: React.FC<Props>  = (props) =>{
   return <>
     <group key="numberBlocks">
       {blockElements}
-    </group>;
+    </group>
     <BlockStateControl/>
   </>
 }

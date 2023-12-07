@@ -17,7 +17,7 @@ type Props = {
   blockAnim?:boolean;
 }
 
-// 線リスト描画
+// ブロック描画
 export const DrawNumberBlock:React.FC<Props> = (props) => {
   var blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString())
   const blockHeight = (props.height || props.width)
@@ -41,13 +41,11 @@ export const DrawNumberBlock:React.FC<Props> = (props) => {
   })
 
   const [hovered, setHovered] = React.useState(false);
-  //const [selected, setSelected] = React.useState(false);
   useCursor(hovered);
 
   const [ blockSelecter, setBlockSelecter] = useRecoilState(BlockSelecter);
-  const onBlockSelect = (e) => {
+  const onBlockSelect = () => {
     setBlockSelecter({selected:!blockSelecter.selected, id:props.blockId});
-    console.log("onClick in:" + e)
   }
 
   const tileColor = (blockSelecter.selected && blockSelecter.id==props.blockId)? props.selectedColor : props.color;
@@ -74,10 +72,9 @@ export const DrawNumberBlock:React.FC<Props> = (props) => {
           transparent
           thickness={props.width*0.05}
           angle={Math.PI}
-
           onPointerOver={() => setHovered(true)}
           onPointerOut={() => setHovered(false)}
-          onClick={onBlockSelect}                
+          onClick={onBlockSelect}
         />
       </RoundedBox>
     </mesh>
