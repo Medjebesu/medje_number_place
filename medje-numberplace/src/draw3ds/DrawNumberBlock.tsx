@@ -2,6 +2,8 @@ import React from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei";
+import { BlockSelecter } from '../BlocksControl';
+import { useRecoilState } from 'recoil';
 
 type Props = {
   blockId:number;
@@ -13,7 +15,6 @@ type Props = {
   height?:number;
   volume?:number;
   blockAnim?:boolean;
-  selectCb?: (_id:number) => void;
 }
 
 // 線リスト描画
@@ -40,19 +41,19 @@ export const DrawNumberBlock:React.FC<Props> = (props) => {
   })
 
   const [hovered, setHovered] = React.useState(false);
-  const [selected, setSelected] = React.useState(false);
+  //const [selected, setSelected] = React.useState(false);
   useCursor(hovered);
 
+  const [ blockSelecter, setBlockSelecter] = useRecoilState(BlockSelecter);
+  const onBlockSelect = (e) => {
+    setBlockSelecter({selected:!blockSelecter.selected, id:props.blockId});
+    console.log("onClick in:" + e)
+  }
+
+  const tileColor = (blockSelecter.selected && blockSelecter.id==props.blockId)? props.selectedColor : props.color;
+
   return(
-    <mesh position={props.position}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-      onClick={() => {
-          setSelected(!selected);
-          if (props.selectCb != null) props.selectCb(props.blockId);
-        }
-      }
-    >
+    <mesh position={props.position}>
       <RoundedBox
         ref={boxRef}
         args={[props.width, blockHeight, blockVolume]}
@@ -62,7 +63,7 @@ export const DrawNumberBlock:React.FC<Props> = (props) => {
         creaseAngle={0.4}
       >
         {NumText}
-        <meshBasicMaterial color={selected ? props.selectedColor : props.color}/>
+        <meshBasicMaterial color={tileColor}/>
         <Outlines
           color={"#550000"}
           screenspace={false}
@@ -73,6 +74,10 @@ export const DrawNumberBlock:React.FC<Props> = (props) => {
           transparent
           thickness={props.width*0.05}
           angle={Math.PI}
+
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+          onClick={onBlockSelect}                
         />
       </RoundedBox>
     </mesh>

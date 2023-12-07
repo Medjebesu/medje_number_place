@@ -16,6 +16,7 @@
     "camera-controls": "^2.7.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "recoil": "^0.7.7",
     "three": "^0.158.0",
     "three-stdlib": "^2.28.5"
   },
