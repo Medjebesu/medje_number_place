@@ -7,8 +7,14 @@ function App() {
 
   return (
     <RecoilRoot>
-      <NumberPlaceGameDisp/>
-      <HeadsUpDisp/>
+      <main id ="main_contents">
+        <section id="hud_area">
+          <HeadsUpDisp/>
+        </section>
+        <section id="game_area">
+          <NumberPlaceGameDisp />
+        </section>
+      </main>
     </RecoilRoot>
   )
 }
