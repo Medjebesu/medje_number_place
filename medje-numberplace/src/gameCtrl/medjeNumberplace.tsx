@@ -3,14 +3,14 @@ import * as THREE from 'three'
 import { Canvas, useThree, useFrame} from "@react-three/fiber"
 import {ContactShadows, OrbitControls} from "@react-three/drei"
 import CameraControls from 'camera-controls'
-import { GameControl } from './gameCtrl/GameControl'
+import { GameControl } from './GameControl'
 
 //for debug
 //import { Debug_DrawNumberBlocks } from './debug'
 
 CameraControls.install({ THREE })
 
-export const GameDisp:React.FC = () => {
+export const NumberPlaceGameDisp:React.FC = () => {
 
   return(
     <Canvas>
