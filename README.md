@@ -17,7 +17,17 @@ $ cd medje-numberplace
 $ pnpm install
 ```
 
-### R3F(React―three-fiber)&Drei インストール
+### (Ⅰ)React-Recoilのインストール
+```
+$ pnpm install recoil
+```
+
+### (Ⅱ)R3F(React―three-fiber)&Drei インストール
+```
+$ pnpm install three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls
+```
+
+※コピペ用：(Ⅰ)～(Ⅱ)までまとめてインストールするコマンド
 ```
 $ pnpm install recoil three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls
 ```
