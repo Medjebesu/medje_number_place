@@ -1,7 +1,8 @@
-import { DefaultValue, atom, selector, useRecoilState, useRecoilValue } from "recoil"
 import { DrawNumberBlock } from "./draw3ds";
 import { Vector3 } from "three";
 import { GenerateQuestion, Difficulty } from "./GenerateQuestion";
+
+import { BlockStateControlLog } from "./BlocksStateControl"; // for dehug
 
 type Props = {
   blockSize:number
@@ -10,52 +11,6 @@ type Props = {
 export type SelectState = {
   selected: boolean;
   id:  number;
-}
-
-// ブロック群制御用ステート・セレクタ
-export const BlockSelectState = atom({
-  key: 'blockSelectState',
-  default: {selected: false, id:0} as SelectState,
-});
-
-export const BlockSelecter = selector({
-  key: 'blockSelecter',
-  get: ({get}):SelectState => {
-    return get(BlockSelectState);
-  },
-  set: ({get,set}, newVal) => {
-    if(newVal instanceof DefaultValue) {
-      set(
-        BlockSelectState, 
-        newVal
-      );
-    }
-    else {
-      var oldVal = get(BlockSelectState);
-      var setVal:SelectState = newVal;
-      if(oldVal.id == newVal.id){
-        setVal.selected = !oldVal.selected;
-      }
-      else{
-        setVal.selected = true;
-        setVal.id = newVal.id;
-      }
-
-      set(
-        BlockSelectState, 
-        setVal
-      );
-    }
-  },
-});
-
-const BlockStateControl: React.FC = () => {
-
-  const settedVal = useRecoilValue(BlockSelecter);
-  console.log("BlockSelecter state Changed:" + " selected=" + settedVal.selected + " id=" + settedVal.id);
-
-  return<group>
-  </group>
 }
 
 // ブロック群制御コンポーネント
@@ -102,7 +57,7 @@ export const BlocksControl: React.FC<Props>  = (props) =>{
     <group key="numberBlocks">
       {blockElements}
     </group>
-    <BlockStateControl/>
+    <BlockStateControlLog/>
   </>
 }
 

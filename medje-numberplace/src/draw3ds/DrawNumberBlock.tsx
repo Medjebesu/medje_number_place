@@ -2,7 +2,7 @@ import React from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei";
-import { BlockSelecter } from '../BlocksControl';
+import { BlockSelecter } from '../BlocksStateControl';
 import { useRecoilState } from 'recoil';
 
 type Props = {
@@ -31,8 +31,8 @@ export const DrawNumberBlock:React.FC<Props> = (props) => {
     </Text>
   )
 
+  // ブロックモーション
   useFrame((state) => {
-    // ブロックモーション
     if (props.blockAnim || false){
       if(boxRef.current != null){
         boxRef.current.position.y = Math.sin(state.clock.elapsedTime) * (blockHeight * 0.03)
