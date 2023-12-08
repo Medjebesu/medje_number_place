@@ -27,10 +27,19 @@ $ pnpm install recoil
 $ pnpm install three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls
 ```
 
-※コピペ用：(Ⅰ)～(Ⅱ)までまとめてインストールするコマンド
+### (Ⅲ)MaterialUI・Robotoフォントのインストール
 ```
-$ pnpm install recoil three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls
+$ pnpm add @mui/material @emotion/react @emotion/styled
+$ pnpm add @fontsource/roboto
 ```
+
+※コピペ用：(Ⅰ)～(Ⅲ)までまとめてインストールするコマンド
+```
+$ pnpm add recoil three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls @mui/material @emotion/react @emotion/styled @fontsource/roboto
+```
+
+### フォントファイルの配置
+「./medje-numberplace/fonts/」下に(Roboto)[https://fonts.google.com/specimen/Roboto]フォントファイルを配置
 
 ## ローカル実行
 ```

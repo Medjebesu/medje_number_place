@@ -1,9 +1,9 @@
 import React from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
-import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei";
-import { BlockSelecter } from '../gameCtrl/BlocksStateControl';
-import { useRecoilState } from 'recoil';
+import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
+import { BlockSelecter } from '../gameCtrl/BlocksStateControl'
+import { useRecoilState } from 'recoil'
 
 type Props = {
   blockId:number;
@@ -22,7 +22,7 @@ export const DrawNumberBlock:React.FC<Props> = (props) => {
   var blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString())
   const blockHeight = (props.height || props.width)
   const blockVolume = (props.volume || props.width)
-  const fontProps = { font: '', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false }
+  const fontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
 
   const boxRef = React.useRef()
   const NumText = (
