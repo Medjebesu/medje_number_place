@@ -1,6 +1,8 @@
-# medje_Numberplace
+# medjeworks Numberplace application
 
 Reactベースのナンプレアプリです。
+
+![Screenshot of a medje-numberplace.](screenshots/MainVisual.png)
 
 ## 導入
 
