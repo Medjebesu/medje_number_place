@@ -1,5 +1,5 @@
 import React from 'react'
-import { DrawGrid, DrawBackGround } from './draw3ds'
+import { DrawGrid, DrawBackGround } from '../draw3ds'
 
 type Props = {
   blockSize:number

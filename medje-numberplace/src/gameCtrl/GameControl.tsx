@@ -1,7 +1,6 @@
 import React from 'react'
 import { DrawStageBase } from './DispDraw'
 import { BlocksControl } from "./BlocksControl"
-import { RecoilRoot } from 'recoil'
 
 export const GameControl:React.FC = () => {
     
@@ -9,10 +8,8 @@ export const GameControl:React.FC = () => {
 
   return (
     <group>
-      <RecoilRoot>
-        <DrawStageBase blockSize={blockSize}/>
-        <BlocksControl blockSize={blockSize}/>
-      </RecoilRoot>
+      <DrawStageBase blockSize={blockSize}/>
+      <BlocksControl blockSize={blockSize}/>
     </group>
   )
 }

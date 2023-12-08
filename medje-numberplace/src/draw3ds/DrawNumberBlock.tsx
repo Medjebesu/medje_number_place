@@ -2,7 +2,7 @@ import React from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei";
-import { BlockSelecter } from '../BlocksStateControl';
+import { BlockSelecter } from '../gameCtrl/BlocksStateControl';
 import { useRecoilState } from 'recoil';
 
 type Props = {

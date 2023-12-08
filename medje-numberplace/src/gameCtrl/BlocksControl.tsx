@@ -1,4 +1,4 @@
-import { DrawNumberBlock } from "./draw3ds";
+import { DrawNumberBlock } from "../draw3ds";
 import { Vector3 } from "three";
 import { GenerateQuestion, Difficulty } from "./GenerateQuestion";
 
