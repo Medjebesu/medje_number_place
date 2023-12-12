@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
-import { BoardBlockSelecter, HandPieceSetter } from '../gameCtrl/BlocksStateControl';
+import { BoardBlockSelector, HandPieceLastDest, HandPieceLastNum } from '../gameCtrl/BlocksStateControl';
 import { useRecoilValue } from 'recoil';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -23,12 +23,14 @@ const ActiveItem = styled(Paper)(({ theme }) => ({
 }));
 
 export const HeadsUpDisp:React.FC = () =>{
-  const BoardBlockSelectState = useRecoilValue(BoardBlockSelecter);
-  const dbgSelecterBlockId = "ID: " + BoardBlockSelectState.id;
-  const dbgSelectState = BoardBlockSelectState.selected ? <ActiveItem>{dbgSelecterBlockId}</ActiveItem> : <Item>{dbgSelecterBlockId}</Item>;
+  const BoardBlockSelectState = useRecoilValue(BoardBlockSelector);
+  const dbgSelectorBlockId = "ID: " + BoardBlockSelectState.id;
+  const dbgSelectState = BoardBlockSelectState.selected ? <ActiveItem>{dbgSelectorBlockId}</ActiveItem> : <Item>{dbgSelectorBlockId}</Item>;
 
-  const HandpieceSelectState = useRecoilValue(HandPieceSetter);
-  const dbgHandpieceDestId = "ID: " + HandpieceSelectState.destId + " => " + HandpieceSelectState.blockNum;
+  const dbgHandpieceDestId = "ID: " + 
+    useRecoilValue(HandPieceLastDest) + 
+    " => " + 
+    useRecoilValue(HandPieceLastNum);
 
   return (
     <Container fixed>

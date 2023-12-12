@@ -5,8 +5,8 @@ import { Difficulty, GenerateQuestion } from "./GenerateQuestion";
 type BoardInitializerProps = {
   //seed: number; // ナンプレ初期盤面の生成シード値 T.B.D
 }
-export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
 
+export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
   const npQuestion = GenerateQuestion(Difficulty.Middle); // T.B.D:難易度選択固定
   npQuestion.forEach((value, idx) => {
     var setBlockNum = useSetRecoilState(BoardBlocksNumber[idx])
@@ -39,8 +39,8 @@ export const BoardBlockSelectState = atom({
   default: {selected: false, id:0} as BoardSelectState,
 });
 
-export const BoardBlockSelecter = selector({
-  key: 'boardBlockSelecter',
+export const BoardBlockSelector = selector({
+  key: 'boardBlockSelector',
   get: ({get}):BoardSelectState => {
     return get(BoardBlockSelectState);
   },
@@ -91,6 +91,40 @@ for (let i = 0; i < 81; i++){
     }));
 }
 
+// ブロックナンバー設定処理用セレクター
+export const BlockNumberSetter = selector({
+  key: 'blockNumberSelector',
+  get: ({get}):number => {
+    return get(HandPieceLastNum);
+  },
+  set: ({set, get}, setVal) => {
+    if(!(setVal instanceof DefaultValue)){
+      const selectState = get(BoardBlockSelectState);
+      const isLocked = get(BoardBlocksLocked[selectState.id]);
+      if(BlockNumberSetterFilter(selectState, isLocked)){
+        set(HandPieceLastDest, selectState.id);
+        set(HandPieceLastNum, setVal);
+        set(BoardBlocksNumber[selectState.id], setVal);
+        set(BoardBlocksLocked[selectState.id], true);
+      }
+    }
+  }
+});
+
+const BlockNumberSetterFilter = (_selectState:BoardSelectState, _isLocked:boolean) =>{
+
+  // 番号設定先の盤面ブロックが選択されていない場合
+  if( !_selectState.selected){
+    return false;
+  }
+  // 選択した盤面に既に番号が入っている場合
+  if(_isLocked) {
+    return false;
+  }
+
+  return true;
+}
+
 // 手駒用動作モード定義
 export const enum ActMode {
   None = 0,
@@ -120,47 +154,20 @@ export const HandPieceLastNum = atom({
   default: 0
 });
 
-export const HandPieceSetter = atom({
-  key: 'handpieceSetter',
-  default: {
-    blockNum: 0,
-    actMode: ActMode.None,
-    destId: -1
-  } as SelectHandpiece
-});
-
-export const HandpieceSelecter = selector({
-  key: 'handpieceSelecter',
-  get: ({get}):SelectHandpiece => {
-    const getVal:SelectHandpiece = {
-      blockNum:get(HandPieceLastNum),
-      actMode:get(HandPieceActMode),
-      destId:get(HandPieceLastDest),
-    };
-
-    return getVal;
-  },
-  set: ({set}, setVal) => {
-    set(HandPieceSetter, setVal);
-    if(!(setVal instanceof DefaultValue)){
-
-    }
-  }
-});
-
 //
 // デバッグ用ステートログ出力
 //
 export const BlockStateControlLog: React.FC = () => {
 
-  const settedVal = useRecoilValue(BoardBlockSelecter);
-  console.debug("BlockSelecter state Changed:" + " selected=" + settedVal.selected + " id=" + settedVal.id);
+  const settedVal = useRecoilValue(BoardBlockSelector);
+  console.debug("BlockSelector state Changed:" + " selected=" + settedVal.selected + " id=" + settedVal.id);
 
   return<>
   </>
 }
 
 // デバッグ用手駒用ブロック操作ログ出力
+/*
 export const HandpieceActLog = () => {
 
   const settedVal = useRecoilValue(HandPieceSetter);
@@ -170,3 +177,4 @@ export const HandpieceActLog = () => {
                 " Mode=" + settedVal.destId
   );
 }
+*/

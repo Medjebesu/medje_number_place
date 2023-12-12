@@ -2,10 +2,8 @@ import React from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
-import { BoardBlocksNumber, BoardBlockSelectState, BoardBlockSelecter, 
-         HandPieceActMode, HandpieceSelecter 
-        } from '../gameCtrl/BlocksStateControl'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { BoardBlockSelector, BlockNumberSetter } from '../gameCtrl/BlocksStateControl'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 type Props = {
   blockId:number;
@@ -29,7 +27,7 @@ const DrawNumberBlock:React.FC<{props:Props, children: React.ReactNode}> = ({pro
   const blockVolume = (props.volume || props.width)
   const fontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
 
-  const fontColor = props.original ? "#555" : "#fffaaa";
+  const fontColor = props.original ? "#555" : "#ffffff";
 
   const boxRef = React.useRef()
   const NumText = (
@@ -69,12 +67,12 @@ export const DrawBoardNumberBlock:React.FC<Props> = (props) => {
   const [hovered, setHovered] = React.useState(false);
   useCursor(hovered);
 
-  const [ blockSelecter, setBlockSelecter] = useRecoilState(BoardBlockSelecter);
+  const [ blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
   const onBlockSelect = () => {
-    setBlockSelecter({selected:!blockSelecter.selected, id:props.blockId});
+    setBlockSelector({selected:!blockSelector.selected, id:props.blockId});
   }
 
-  const tileColor = (blockSelecter.selected && blockSelecter.id==props.blockId)? props.selectedColor : props.color;
+  const tileColor = (blockSelector.selected && blockSelector.id==props.blockId)? props.selectedColor : props.color;
   
   return(
     <DrawNumberBlock props={props}>
@@ -102,18 +100,9 @@ export const DrawHandpiece:React.FC<Props> = (props) => {
   const [hovered, setHovered] = React.useState(false);
   useCursor(hovered);
 
-  const boardBlockState = useRecoilValue(BoardBlockSelectState)
-  //const actModeState = useRecoilValue(HandPieceActMode)
-
-  //const [, setBlockSelecter] = useRecoilState(HandpieceSelecter);
-  const setBlockNumber = useSetRecoilState(BoardBlocksNumber[boardBlockState.id])
+  const setBlockNumber = useSetRecoilState(BlockNumberSetter);
   const onBlockSelect = () => {
-    if(boardBlockState.selected){
-      //setBlockSelecter({blockNum:props.blockNum, actMode:actModeState, destId:boardBlockState.id});
       setBlockNumber(props.blockNum);
-    }else{
-      // 番号設定先の盤面ブロックが選択されていない場合の処理を入れるならここ
-    }
   }
 
   const tileColor = props.color;

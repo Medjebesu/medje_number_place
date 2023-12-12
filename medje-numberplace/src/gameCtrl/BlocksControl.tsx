@@ -90,8 +90,8 @@ type HandpiecesProps = {
   verBoxpos:number;
   zIndex:number;
 }
-const Handpieces:React.FC<HandpiecesProps> = (props) =>{
 
+const Handpieces:React.FC<HandpiecesProps> = (props) =>{
   // 手駒ブロック生成
   const handpieces = new Array<React.ReactElement>;
   for (let hp=0; hp < 9; hp++){
