@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
-import { BlockSelecter } from '../gameCtrl/BlocksStateControl';
+import { BoardBlockSelecter, HandPieceSetter } from '../gameCtrl/BlocksStateControl';
 import { useRecoilValue } from 'recoil';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -23,28 +23,30 @@ const ActiveItem = styled(Paper)(({ theme }) => ({
 }));
 
 export const HeadsUpDisp:React.FC = () =>{
-  const BlockSelectState = useRecoilValue(BlockSelecter);
+  const BoardBlockSelectState = useRecoilValue(BoardBlockSelecter);
+  const dbgSelecterBlockId = "ID: " + BoardBlockSelectState.id;
+  const dbgSelectState = BoardBlockSelectState.selected ? <ActiveItem>{dbgSelecterBlockId}</ActiveItem> : <Item>{dbgSelecterBlockId}</Item>;
 
-  const dbgSelecterBlockId = "ID: " + BlockSelectState.id;
-  const dbgSelectState = BlockSelectState.selected ? <ActiveItem>{dbgSelecterBlockId}</ActiveItem> : <Item>{dbgSelecterBlockId}</Item>;
-  
+  const HandpieceSelectState = useRecoilValue(HandPieceSetter);
+  const dbgHandpieceDestId = "ID: " + HandpieceSelectState.destId + " => " + HandpieceSelectState.blockNum;
+
   return (
     <Container fixed>
       <Grid container spacing={2}>
         <Grid xs={2}>
           <Item>Menu</Item>
         </Grid>
-        <Grid xs={3} md={3} mdOffset={4}>
-          <Item>Time: hh:mm:ss</Item>
+        <Grid xs={4} md={4} xsOffset={2} mdOffset={2}>
+          <Item>hh:mm:ss</Item>
         </Grid>
-        <Grid xs={3}>
+        <Grid xs={2} md={2} xsOffset={2} mdOffset={2}>
           <Item>Miss:XX</Item>
         </Grid>
         <Grid xs={2} >
           {dbgSelectState}
         </Grid>
-        <Grid xs={2} >
-          <Item>Debug2</Item>
+        <Grid xs={3} >
+          <Item>{dbgHandpieceDestId}</Item>
         </Grid>
         <Grid xs={2} >
           <Item>Debug3</Item>

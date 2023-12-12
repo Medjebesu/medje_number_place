@@ -16,7 +16,6 @@ export const NumberPlaceGameDisp:React.FC = () => {
     <Canvas>
       <pointLight position={[45, 45, 100]} />
       <GameControl />
-      <ContactShadows frames={1} position={[0, -5.5, 0]} blur={1} color="green" opacity={0.75} />
       <Controls />
     </Canvas>
   );
@@ -28,7 +27,7 @@ function Controls(){
   const controls = useMemo(() => new CameraControls(camera, gl.domElement), [])
 
   return useFrame((state, delta) => {
-    controls.setLookAt(0, 0, 7.5, 0, 0, 0, true)
+    controls.setLookAt(0, -0.75, 7.5, 0, -0.75, 0, true)
     return controls.update(delta)
   })
 }

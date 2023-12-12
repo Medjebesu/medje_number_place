@@ -1,31 +1,31 @@
-import { DefaultValue, atom, selector, useRecoilValue } from "recoil"
+import { DefaultValue, RecoilState, atom, selector, useRecoilState, useRecoilValue } from "recoil"
 
-export type SelectState = {
+// 盤面ブロック選択状態制御用ステート・セレクタ
+export type BoardSelectState = {
   selected: boolean;
   id:  number;
 }
 
-// ブロック選択状態群制御用ステート・セレクタ
-export const BlockSelectState = atom({
-  key: 'blockSelectState',
-  default: {selected: false, id:0} as SelectState,
+export const BoardBlockSelectState = atom({
+  key: 'boardBlockSelectState',
+  default: {selected: false, id:0} as BoardSelectState,
 });
 
-export const BlockSelecter = selector({
-  key: 'blockSelecter',
-  get: ({get}):SelectState => {
-    return get(BlockSelectState);
+export const BoardBlockSelecter = selector({
+  key: 'boardBlockSelecter',
+  get: ({get}):BoardSelectState => {
+    return get(BoardBlockSelectState);
   },
   set: ({get,set}, newVal) => {
     if(newVal instanceof DefaultValue) {
       set(
-        BlockSelectState, 
+        BoardBlockSelectState, 
         newVal
       );
     }
     else {
-      var oldVal = get(BlockSelectState);
-      var setVal:SelectState = newVal;
+      var oldVal = get(BoardBlockSelectState);
+      var setVal:BoardSelectState = newVal;
       if(oldVal.id == newVal.id){
         setVal.selected = !oldVal.selected;
       }
@@ -35,19 +35,119 @@ export const BlockSelecter = selector({
       }
 
       set(
-        BlockSelectState, 
+        BoardBlockSelectState, 
         setVal
       );
     }
   },
 });
 
+// 手駒用動作モード定義
+export const enum ActMode {
+  None = 0,
+  NumSet,
+  Memo
+}
+
+// 手駒用ブロック選択状態制御用ステート・セレクタ
+export type SelectHandpiece = {
+  blockNum:  number;
+  actMode: ActMode;
+  destId: number;
+}
+
+export const HandPieceActMode = atom({
+  key: 'handpieceActMode',
+  default: ActMode.NumSet
+});
+
+export const HandPieceLastDest = atom({
+  key: 'handpieceLastDest',
+  default: -1
+});
+
+export const HandPieceLastNum = atom({
+  key: 'handpieceLastNum',
+  default: 0
+});
+
+export const HandPieceSetter = atom({
+  key: 'handpieceSetter',
+  default: {
+    blockNum: 0,
+    actMode: ActMode.None,
+    destId: -1
+  } as SelectHandpiece
+});
+
+export const HandpieceSelecter = selector({
+  key: 'handpieceSelecter',
+  get: ({get}):SelectHandpiece => {
+    const getVal:SelectHandpiece = {
+      blockNum:get(HandPieceLastNum),
+      actMode:get(HandPieceActMode),
+      destId:get(HandPieceLastDest),
+    };
+
+    return getVal;
+  },
+  set: ({set}, setVal) => {
+    set(HandPieceSetter, setVal);
+    if(!(setVal instanceof DefaultValue)){
+
+    }
+  }
+});
+
+// 盤面ブロック用ナンバー設定ステート群
+export const BoardBlockNumbers:Array<RecoilState<number>> = [];
+  for (let i = 0; i < 81; i++){
+  BoardBlockNumbers.push(atom({
+      key: 'handpieceActMode_' + i,
+      default: 0,
+      effects: [
+        ({ onSet }) => {
+          onSet: (newValue:number, oldValue:number) => {
+            console.log(oldValue + "から" + newValue + "に更新しました。");
+          };
+        },
+      ],
+    })
+  );
+}
+
+// 盤面にナンバーがセットされた際の更新処理
+type BoardBlockSetterProp = {
+  callBack: (hpInfo:SelectHandpiece) => void;
+}
+export const BoardBlockSetter:React.FC<BoardBlockSetterProp> = (props) =>{
+  const [setState] = useRecoilState(HandPieceSetter);
+
+  if(setState.actMode != ActMode.None){
+    props.callBack(setState)
+  }
+
+  return <>
+  </>;
+}
+
 // デバッグ用ステートログ出力
 export const BlockStateControlLog: React.FC = () => {
 
-  const settedVal = useRecoilValue(BlockSelecter);
+  const settedVal = useRecoilValue(BoardBlockSelecter);
   console.debug("BlockSelecter state Changed:" + " selected=" + settedVal.selected + " id=" + settedVal.id);
 
   return<>
   </>
+}
+
+// デバッグ用手駒用ブロック操作ログ出力
+export const HandpieceActLog = () => {
+
+  const settedVal = useRecoilValue(HandPieceSetter);
+  console.debug("Handpiece act:" + 
+                " BlockNum=" + settedVal.blockNum + 
+                " Mode=" + settedVal.actMode + 
+                " Mode=" + settedVal.destId
+  );
 }

@@ -10,12 +10,12 @@
 }
 #game_area{
   width:  max(720px,100%);
-  height: 80%;
-  min-height: 480px;
+  height: clamp(480px,80%,80vw);
   justify-content: center;
 }
 #hud_area{
   width: max(720px,100%);
   height: 10%;
   min-height:120px;
+  justify-content: center;
 }
