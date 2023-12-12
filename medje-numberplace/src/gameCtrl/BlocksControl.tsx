@@ -1,13 +1,9 @@
 import { DrawBoardNumberBlock, DrawHandpiece } from "../draw3ds";
 import { Vector3 } from "three";
-import { GenerateQuestion, Difficulty } from "./GenerateQuestion";
 
-import { ActMode, BlockStateControlLog, BoardBlockNumbers, BoardBlockSetter, SelectHandpiece } from "./BlocksStateControl"; // for dehug
-import { SetterOrUpdater, useRecoilState, useRecoilValue } from "recoil";
-
-type Props = {
-  blockSize:number
-}
+import { ActMode, BlockStateControlLog, BoardBlocksLocked, BoardBlocksNumber, BoardBlocksOriginal } from "./BlocksStateControl";
+import { useRecoilValue } from "recoil";
+import { ReactElement } from "react";
 
 export type SelectState = {
   selected: boolean;
@@ -15,7 +11,10 @@ export type SelectState = {
 }
 
 // ブロック群制御コンポーネント
-export const BlocksControl: React.FC<Props>  = (props) =>{
+type Prop ={
+  blockSize:number;
+}
+export const BlocksControl: React.FC<Prop>  = (props) =>{
 
   // ブロックサイズとマージンの定義
   const blockSize = props.blockSize * 0.85;
@@ -67,26 +66,21 @@ type BoardBlocksProps = {
 const BoardBlocks:React.FC<BoardBlocksProps> = (props) =>{
 
   // 盤面ブロック生成
-  const boardBlocks = new Array<BoardBlock>;
-  const npQuestion = GenerateQuestion(Difficulty.Middle); // T.B.D:難易度選択固定
-  npQuestion.forEach((value, index) => 
+  const boardBlocks = new Array<ReactElement>;
+  for (let bbIdx=0; bbIdx < 81; bbIdx++){
     boardBlocks.push(
-      new BoardBlock(index, value, props.blockSize, new Vector3(props.horBoxpos[index % 9], props.verBoxpos[Math.floor(index / 9)], 0))
-    )
-  );
-
-  // 盤面ブロックコンポーネントをリスト化
-  const boardBlockElements:Array<React.ReactElement> = [];
-  for (let y=0; y < 9; y++){
-    var linetop = y * 9;
-    for (var x=0; x < 9; x++){
-      boardBlockElements.push(boardBlocks[linetop + x].getElement());
-    }
+      <BoardBlock 
+        id={bbIdx}
+        size={props.blockSize}
+        pos={new Vector3(props.horBoxpos[bbIdx % 9], props.verBoxpos[Math.floor(bbIdx / 9)], 0)}
+        key={"boardBlock_" + bbIdx}
+      />
+    );
   }
 
-  return <group>
-    {boardBlockElements}
-  </group>
+  return <>
+    {boardBlocks}
+  </>
 }
 
 // 手駒ブロック群コンポーネント
@@ -99,101 +93,70 @@ type HandpiecesProps = {
 const Handpieces:React.FC<HandpiecesProps> = (props) =>{
 
   // 手駒ブロック生成
-  const handpieces = new Array<Handpiece>;
-    for (let hp=0; hp < 9; hp++){
-    handpieces.push(new Handpiece(hp, hp+1, props.blockSize, new Vector3(props.horBoxpos[hp], props.verBoxpos, props.zIndex)));
-  }
-  
-  // 手駒ブロックコンポーネントをリスト化
-  const handpieceElements:Array<React.ReactElement> = [];
+  const handpieces = new Array<React.ReactElement>;
   for (let hp=0; hp < 9; hp++){
-    handpieceElements.push(handpieces[hp].getElement());
+    handpieces.push(
+      <Handpiece 
+        id={hp}
+        num={hp+1}
+        size={props.blockSize}
+        pos={new Vector3(props.horBoxpos[hp], props.verBoxpos, props.zIndex)}
+        key={"handpiece_" + hp}
+      />
+    )
   }
-
-  return <group>
-    {handpieceElements}
-  </group>
+  
+  return <>
+    {handpieces}
+  </>
 }
 
-// 盤面用ブロックオブジェクト
-class BoardBlock{
+// 盤面用ブロックコンポーネント
+type BoardBlockProps = {
   id:  number;
-  getNumber: number;
-  setNumber: SetterOrUpdater<number>;
   size: number;
   pos: Vector3;
-  selected: boolean;
-  locked: boolean;
-  original: boolean;
-  
-  constructor(_id:number, _num:number, _size:number, _position:Vector3) {
-    this.id = _id;
-    [this.getNumber, this.setNumber] = useRecoilState(BoardBlockNumbers[this.id]);
-    this.setNumber(_num);
-    this.size = _size;
-    this.pos = _position;
-    this.selected = false;
-    this.locked = _num!=0;
-    this.original = _num!=0;
-  }
+}
+const BoardBlock:React.FC<BoardBlockProps> = (props) =>{
+  const blockNum = useRecoilValue(BoardBlocksNumber[props.id])
+  const isLocked = useRecoilValue(BoardBlocksLocked[props.id])
+  const isOriginal = useRecoilValue(BoardBlocksOriginal[props.id])
 
-  getElement():React.ReactElement {
-    return (
-      <DrawBoardNumberBlock
-        blockId={this.id}
-        blockNum={this.getNumber}
-        position={this.pos}
-        color="orange"
-        selectedColor="#088551"
-        locked={this.locked}
-        original={this.original}
-        width={this.size}
-        volume={0.01}
-        blockAnim={this.getNumber == 0}
-        key={"numBlock_" + this.id}
-      />
-    );
-  }
-
-  setNewNumber(actMode: ActMode, blockNum:number) {
-    console.log("SetNum: DestId= " + this.id + " Num= " + blockNum + " Mode= " + actMode);
-    switch(actMode){
-      case ActMode.NumSet:
-        this.locked = true;
-        this.setNumber(blockNum);
-    }
-  }
+  return (
+    <DrawBoardNumberBlock
+      blockId={props.id}
+      blockNum={blockNum}
+      position={props.pos}
+      color="orange" // color=
+      selectedColor="#088551"
+      locked={isLocked}
+      original={isOriginal}
+      width={props.size}
+      volume={0.01}
+      blockAnim={blockNum == 0}
+    />
+  );
 }
 
-// 手駒用ブロックオブジェクト
-class Handpiece{
-  id:  number;
-  num: number;
-  size: number;
-  pos: Vector3;
-  selected: boolean;
-  
-  constructor(_id:number, _num:number, _size:number, _position:Vector3) {
-    this.id = _id;
-    this.num = _num;
-    this.size = _size;
-    this.pos = _position;
-    this.selected = false;
-  }
+// 手駒用ブロックコンポーネント
+type HandpiecekProps = {
+  id:number;
+  num:number;
+  size:number;
+  pos:Vector3;
+}
+const Handpiece:React.FC<HandpiecekProps> = (props) => {
 
-  getElement():React.ReactElement {
-    return (
-      <DrawHandpiece
-        blockId={this.id}
-        blockNum={this.num}
-        position={this.pos}
-        color="blue"
-        fontcolor="white"
-        width={this.size}
-        volume={0.01}
-        blockAnim={this.num == 0}
-        key={"handpiaceBlock_" + this.id}
-      />
-    );
-  }
+  return (
+    <DrawHandpiece
+      blockId={props.id}
+      blockNum={props.num}
+      position={props.pos}
+      color="blue"
+      fontcolor="white"
+      width={props.size}
+      volume={0.01}
+      blockAnim={props.num == 0}
+    />
+  );
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
-import { BoardBlockNumbers, BoardBlockSelectState, BoardBlockSelecter, 
+import { BoardBlocksNumber, BoardBlockSelectState, BoardBlockSelecter, 
          HandPieceActMode, HandpieceSelecter 
         } from '../gameCtrl/BlocksStateControl'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
@@ -106,7 +106,7 @@ export const DrawHandpiece:React.FC<Props> = (props) => {
   //const actModeState = useRecoilValue(HandPieceActMode)
 
   //const [, setBlockSelecter] = useRecoilState(HandpieceSelecter);
-  const setBlockNumber = useSetRecoilState(BoardBlockNumbers[boardBlockState.id])
+  const setBlockNumber = useSetRecoilState(BoardBlocksNumber[boardBlockState.id])
   const onBlockSelect = () => {
     if(boardBlockState.selected){
       //setBlockSelecter({blockNum:props.blockNum, actMode:actModeState, destId:boardBlockState.id});
@@ -117,8 +117,6 @@ export const DrawHandpiece:React.FC<Props> = (props) => {
   }
 
   const tileColor = props.color;
-
-  console.log("Test");
 
   return(
     <DrawNumberBlock props={props}>

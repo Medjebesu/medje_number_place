@@ -1,6 +1,34 @@
-import { DefaultValue, RecoilState, atom, selector, useRecoilState, useRecoilValue } from "recoil"
+import { DefaultValue, RecoilState, atom, selector, useRecoilValue, useSetRecoilState } from "recoil"
+import { Difficulty, GenerateQuestion } from "./GenerateQuestion";
 
-// 盤面ブロック選択状態制御用ステート・セレクタ
+//盤面データ初期化コンポーネント
+type BoardInitializerProps = {
+  //seed: number; // ナンプレ初期盤面の生成シード値 T.B.D
+}
+export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
+
+  const npQuestion = GenerateQuestion(Difficulty.Middle); // T.B.D:難易度選択固定
+  npQuestion.forEach((value, idx) => {
+    var setBlockNum = useSetRecoilState(BoardBlocksNumber[idx])
+    var setBlockLocked = useSetRecoilState(BoardBlocksLocked[idx])
+    var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal[idx])
+
+    setBlockNum(value);
+    if (value != 0){
+      setBlockLocked(true);
+      setBlockOriginal(true);
+    }
+  });
+
+  return <>
+  </>
+}
+
+//
+// 盤面ブロック統括制御
+//
+
+// 選択状態制御用ステート・セレクタ
 export type BoardSelectState = {
   selected: boolean;
   id:  number;
@@ -41,6 +69,27 @@ export const BoardBlockSelecter = selector({
     }
   },
 });
+
+//
+// 盤面ブロック(各要素)制御用ステート
+//
+export const BoardBlocksLocked:Array<RecoilState<boolean>> = [];
+export const BoardBlocksOriginal:Array<RecoilState<boolean>> = [];
+export const BoardBlocksNumber:Array<RecoilState<number>> = [];
+for (let i = 0; i < 81; i++){
+  BoardBlocksNumber.push(atom({
+    key: 'boardBlocksNumber_' + i,
+    default: 0
+  }));
+  BoardBlocksLocked.push(atom({
+    key: 'boardBlocksLocked_' + i,
+    default: false
+  }));
+  BoardBlocksOriginal.push(atom({
+    key: 'boardBlocksOriginal_' + i,
+    default: false
+    }));
+}
 
 // 手駒用動作モード定義
 export const enum ActMode {
@@ -99,39 +148,9 @@ export const HandpieceSelecter = selector({
   }
 });
 
-// 盤面ブロック用ナンバー設定ステート群
-export const BoardBlockNumbers:Array<RecoilState<number>> = [];
-  for (let i = 0; i < 81; i++){
-  BoardBlockNumbers.push(atom({
-      key: 'handpieceActMode_' + i,
-      default: 0,
-      effects: [
-        ({ onSet }) => {
-          onSet: (newValue:number, oldValue:number) => {
-            console.log(oldValue + "から" + newValue + "に更新しました。");
-          };
-        },
-      ],
-    })
-  );
-}
-
-// 盤面にナンバーがセットされた際の更新処理
-type BoardBlockSetterProp = {
-  callBack: (hpInfo:SelectHandpiece) => void;
-}
-export const BoardBlockSetter:React.FC<BoardBlockSetterProp> = (props) =>{
-  const [setState] = useRecoilState(HandPieceSetter);
-
-  if(setState.actMode != ActMode.None){
-    props.callBack(setState)
-  }
-
-  return <>
-  </>;
-}
-
+//
 // デバッグ用ステートログ出力
+//
 export const BlockStateControlLog: React.FC = () => {
 
   const settedVal = useRecoilValue(BoardBlockSelecter);
