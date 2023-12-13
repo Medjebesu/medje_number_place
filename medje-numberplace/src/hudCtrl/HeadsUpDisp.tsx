@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
-import { BoardBlockSelector, HandPieceLastDest, HandPieceLastNum } from '../gameCtrl/BlocksStateControl';
+import { BoardBlockSelector, HandPieceLastDest, HandPieceLastNum, MissTakeCountState } from '../gameCtrl/BlocksStateControl';
 import { useRecoilValue } from 'recoil';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -12,6 +12,7 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
+  fontSize:'1.0rem'
 }));
 
 const ActiveItem = styled(Paper)(({ theme }) => ({
@@ -20,12 +21,38 @@ const ActiveItem = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: "white",
+  fontSize:'1.0rem'
 }));
 
+const MissTakeItem = styled(Paper)(({ theme }) => ({
+  backgroundColor: missProgressBackGroudColor(theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: missProgressFontColor(theme.palette.text.secondary),
+  fontSize:'1.5rem'
+}));
+
+function missProgressBackGroudColor(defaultColor:string):string {
+  const missTakeCountState = useRecoilValue(MissTakeCountState);
+  if(missTakeCountState >= 5) return "red";
+  else if(missTakeCountState >= 4) return "orange";
+  else if(missTakeCountState >= 2) return "yellow";
+  return defaultColor;
+}
+function missProgressFontColor(defaultColor:string):string {
+  const missTakeCountState = useRecoilValue(MissTakeCountState);
+  if(missTakeCountState >= 5) return "white";
+  return defaultColor;
+}
+
+
 export const HeadsUpDisp:React.FC = () =>{
-  const BoardBlockSelectState = useRecoilValue(BoardBlockSelector);
-  const dbgSelectorBlockId = "ID: " + BoardBlockSelectState.id;
-  const dbgSelectState = BoardBlockSelectState.selected ? <ActiveItem>{dbgSelectorBlockId}</ActiveItem> : <Item>{dbgSelectorBlockId}</Item>;
+  const boardBlockSelectState = useRecoilValue(BoardBlockSelector);
+  const missTakeCountState = useRecoilValue(MissTakeCountState);
+  
+  const dbgSelectorBlockId = "ID: " + boardBlockSelectState.id;
+  const dbgSelectState = boardBlockSelectState.selected ? <ActiveItem>{dbgSelectorBlockId}</ActiveItem> : <Item>{dbgSelectorBlockId}</Item>;
 
   const dbgHandpieceDestId = "ID: " + 
     useRecoilValue(HandPieceLastDest) + 
@@ -42,7 +69,7 @@ export const HeadsUpDisp:React.FC = () =>{
           <Item>hh:mm:ss</Item>
         </Grid>
         <Grid xs={2} md={2} xsOffset={2} mdOffset={2}>
-          <Item>Miss:XX</Item>
+          <MissTakeItem>Miss:{missTakeCountState}</MissTakeItem>
         </Grid>
         <Grid xs={2} >
           {dbgSelectState}

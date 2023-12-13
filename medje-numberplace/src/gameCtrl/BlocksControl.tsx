@@ -145,6 +145,7 @@ type HandpiecekProps = {
   size:number;
   pos:Vector3;
 }
+
 const Handpiece:React.FC<HandpiecekProps> = (props) => {
 
   return (

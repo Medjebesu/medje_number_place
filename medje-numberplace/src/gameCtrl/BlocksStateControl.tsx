@@ -6,8 +6,11 @@ type BoardInitializerProps = {
   //seed: number; // ナンプレ初期盤面の生成シード値 T.B.D
 }
 
+let npQuestion:number[];
+let npAnswer:number[];
+
 export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
-  const npQuestion = GenerateQuestion(Difficulty.Middle); // T.B.D:難易度選択固定
+  [npQuestion, npAnswer] = GenerateQuestion(Difficulty.Middle); // T.B.D:難易度選択固定
   npQuestion.forEach((value, idx) => {
     var setBlockNum = useSetRecoilState(BoardBlocksNumber[idx])
     var setBlockLocked = useSetRecoilState(BoardBlocksLocked[idx])
@@ -23,6 +26,14 @@ export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
   return <>
   </>
 }
+
+//
+// UI表示用ステート
+//
+export const MissTakeCountState = atom({
+  key:"missTakeCountState",
+  default: 0
+});
 
 //
 // 盤面ブロック統括制御
@@ -102,17 +113,22 @@ export const BlockNumberSetter = selector({
       const selectState = get(BoardBlockSelectState);
       const isLocked = get(BoardBlocksLocked[selectState.id]);
       if(BlockNumberSetterFilter(selectState, isLocked)){
-        set(HandPieceLastDest, selectState.id);
-        set(HandPieceLastNum, setVal);
-        set(BoardBlocksNumber[selectState.id], setVal);
-        set(BoardBlocksLocked[selectState.id], true);
+
+        if(CheckAnswer(selectState.id, setVal)){
+          set(HandPieceLastDest, selectState.id);
+          set(HandPieceLastNum, setVal);
+          set(BoardBlocksNumber[selectState.id], setVal);
+          set(BoardBlocksLocked[selectState.id], true);
+        }
+        else{
+          set(MissTakeCountState, get(MissTakeCountState)+1)
+        }
       }
     }
   }
 });
 
 const BlockNumberSetterFilter = (_selectState:BoardSelectState, _isLocked:boolean) =>{
-
   // 番号設定先の盤面ブロックが選択されていない場合
   if( !_selectState.selected){
     return false;
@@ -122,6 +138,11 @@ const BlockNumberSetterFilter = (_selectState:BoardSelectState, _isLocked:boolea
     return false;
   }
 
+  return true;
+}
+
+const CheckAnswer = (destId:number, setNum:number) =>{
+  if(npAnswer[destId] != setNum) return false;
   return true;
 }
 
