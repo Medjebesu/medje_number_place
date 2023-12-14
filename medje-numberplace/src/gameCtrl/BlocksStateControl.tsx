@@ -1,5 +1,6 @@
 import { DefaultValue, RecoilState, atom, selector, useRecoilValue, useSetRecoilState } from "recoil"
 import { Difficulty, GenerateQuestion } from "./GenerateQuestion";
+import { GemePlayScoreSetter } from "../hudCtrl";
 
 //盤面データ初期化コンポーネント
 type BoardInitializerProps = {
@@ -119,6 +120,8 @@ export const BlockNumberSetter = selector({
           set(HandPieceLastNum, setVal);
           set(BoardBlocksNumber[selectState.id], setVal);
           set(BoardBlocksLocked[selectState.id], true);
+
+          set(GemePlayScoreSetter, EvaluateSetNumber(selectState.id, setVal));
         }
         else{
           set(MissTakeCountState, get(MissTakeCountState)+1)
@@ -144,6 +147,17 @@ const BlockNumberSetterFilter = (_selectState:BoardSelectState, _isLocked:boolea
 const CheckAnswer = (destId:number, setNum:number) =>{
   if(npAnswer[destId] != setNum) return false;
   return true;
+}
+
+// ナンバー入力に対する得点の評価
+const EvaluateSetNumber = (destId:number, num:number) => {
+
+  // 入力時に行に1~9の数値が揃った
+  // 入力時に列に1~9の数値が揃った
+  // 入力時にbox内に1~9の数値が揃った
+  // T.B.D
+
+  return 5;
 }
 
 // 手駒用動作モード定義

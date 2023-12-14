@@ -40,7 +40,7 @@ export const HeadsUpDisp:React.FC = () =>{
         <Item>Debug3</Item>
       </Grid>
       <Grid xs md={4} mdOffset="auto">
-        <Item>Score:XXXXXX</Item>
+        <ScoreItem/>
       </Grid>
     </Grid>
   </Container>
@@ -102,6 +102,15 @@ const MissTakeCountItem:React.FC = () => {
   return <MissTakeItem>
     Miss:{missTakeCountState}
   </MissTakeItem>
+}
+
+const ScoreItem:React.FC = () => {
+  const score = useRecoilValue(GamePlayScore);
+  const scoreStr = "Score:" + score;
+
+  return <Item>
+    {scoreStr}
+  </Item>
 }
 
 // Dbg: ブロック選択状況表示コンポーネント
@@ -175,7 +184,7 @@ const TimeRenderSwitch = atom({
 type GameStartStatus = {
   isStart: boolean;
   startTime: number;
-} 
+}
 const GameTimerStarter = selector({
   key: "gameTimerStarter",
   get:({get}):GameStartStatus | null => {
@@ -199,6 +208,25 @@ const ElapsedGameTimer = selector({
   set:({get, set}, nowTime) => {
     if(!(nowTime instanceof DefaultValue)) {
       set(ElapsedGameTime, nowTime - get(GameStartTime));
+    }
+  }
+});
+
+const GamePlayScore = atom({
+  key: "gamePlayScore",
+  default: 0
+});
+
+export const GemePlayScoreSetter = selector({
+  key: "gemePlayScoreSetter",
+  get:({get}):number => {
+    return get(GamePlayScore);
+  },
+  set:({get, set}, basePoint) => {
+    if(!(basePoint instanceof DefaultValue)) {
+      let timeBonus = Math.floor(((45 * 60) - get(ElapsedGameTime)) / 50);
+      if (timeBonus < 1) timeBonus = 1; 
+      set(GamePlayScore, get(GamePlayScore) + basePoint * timeBonus);
     }
   }
 });
