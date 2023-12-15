@@ -22,7 +22,7 @@ type Props = {
 
 // ブロック描画
 const DrawNumberBlock:React.FC<{props:Props, children: React.ReactNode}> = ({props, children}) => {
-  var blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString())
+  const blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString())
   const blockHeight = (props.height || props.width)
   const blockVolume = (props.volume || props.width)
   const fontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }

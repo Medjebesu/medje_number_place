@@ -24,11 +24,11 @@ export const HeadsUpDisp:React.FC = () =>{
       <Grid xs={2}>
         <Item>Menu</Item>
       </Grid>
-      <Grid xs={4} md={4} xsOffset={2} mdOffset={2}>
+      <Grid xs={3} md={3} xsOffset={2.5} mdOffset={2.5}>
         <ElapsedTimer/>
       </Grid>
-      <Grid xs={3} md={3} xsOffset={1} mdOffset={1}>
-        <MissTakeCountItem/>
+      <Grid xs={4} md={4} xsOffset="auto" mdOffset="auto">
+        <ScoreItem/>
       </Grid>
       <Grid xs={2} >
         <DbgSelectState/>
@@ -36,11 +36,8 @@ export const HeadsUpDisp:React.FC = () =>{
       <Grid xs={3} >
         <DbgHandpieceDest/>
       </Grid>
-      <Grid xs={2} >
-        <Item>Debug3</Item>
-      </Grid>
-      <Grid xs md={4} mdOffset="auto">
-        <ScoreItem/>
+      <Grid xs={4} md={4} xsOffset={3} mdOffset={3}>
+        <MissTakeCountItem/>
       </Grid>
     </Grid>
   </Container>
