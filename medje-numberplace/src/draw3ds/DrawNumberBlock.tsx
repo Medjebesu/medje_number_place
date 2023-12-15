@@ -2,7 +2,7 @@ import React from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
-import { BoardBlockSelector, BlockNumberSetter } from '../gameCtrl/BlocksStateControl'
+import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum } from '../gameCtrl/BlocksStateControl'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
 type Props = {
@@ -67,15 +67,17 @@ export const DrawBoardNumberBlock:React.FC<Props> = (props) => {
   const [hovered, setHovered] = React.useState(false);
   useCursor(hovered);
 
-  const [ blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
+  const [blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
+  const [selectedBlockNum, setSelectBlockNum] = useRecoilState(SelectedBlockNum);
   const onBlockSelect = () => {
-    setBlockSelector({selected:!blockSelector.selected, id:props.blockId, blockNum:props.blockNum});
+    setBlockSelector({selected:!blockSelector.selected, id:props.blockId});
+    setSelectBlockNum(props.blockNum);
   }
 
   let setProps:Props;
   if(blockSelector.selected && (blockSelector.id != props.blockId)){
     let fontColor = props.fontColor;
-    if(blockSelector.blockNum == props.blockNum) {
+    if(selectedBlockNum == props.blockNum) {
       fontColor = "#0AA662";
     }
     setProps = {

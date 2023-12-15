@@ -45,13 +45,17 @@ export const MissTakeCountState = atom({
 export type BoardSelectState = {
   selected: boolean;
   id: number;
-  blockNum: number;
 }
 
 export const BoardBlockSelectState = atom({
   key: 'boardBlockSelectState',
   default: {selected: false, id:0, blockNum:0} as BoardSelectState,
 });
+
+export const SelectedBlockNum = atom({
+  key:"selectedBlockNum",
+  default: 0
+})
 
 export const BoardBlockSelector = selector({
   key: 'boardBlockSelector',
@@ -76,10 +80,7 @@ export const BoardBlockSelector = selector({
         setVal.id = newVal.id;
       }
 
-      set(
-        BoardBlockSelectState, 
-        setVal
-      );
+      set(BoardBlockSelectState, setVal);
     }
   },
 });
@@ -124,6 +125,7 @@ export const BlockNumberSetter = selector({
           set(BoardBlocksLocked[selectState.id], true);
 
           set(GemePlayScoreSetter, EvaluateSetNumber(selectState.id, setVal));
+          set(SelectedBlockNum, setVal);
         }
         else{
           set(MissTakeCountState, get(MissTakeCountState)+1)
