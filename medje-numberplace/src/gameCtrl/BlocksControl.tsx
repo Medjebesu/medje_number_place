@@ -129,6 +129,7 @@ const BoardBlock:React.FC<BoardBlockProps> = (props) =>{
       position={props.pos}
       color="orange" // color=
       selectedColor="#088551"
+      fontColor={isOriginal ? "#555" : "#ffffff"}
       locked={isLocked}
       original={isOriginal}
       width={props.size}

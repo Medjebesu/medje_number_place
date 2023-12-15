@@ -11,7 +11,7 @@ type Props = {
   position:THREE.Vector3;
   color:THREE.ColorRepresentation;
   selectedColor?:THREE.ColorRepresentation  | undefined;
-  fontcolor?:THREE.ColorRepresentation  | undefined;
+  fontColor?:THREE.ColorRepresentation  | undefined;
   locked?: boolean;
   original?: boolean;
   width:number;
@@ -31,7 +31,7 @@ const DrawNumberBlock:React.FC<{props:Props, children: React.ReactNode}> = ({pro
 
   const boxRef = React.useRef()
   const NumText = (
-    <Text color={props.fontcolor ? props.fontcolor : fontColor} position={[0, -(blockHeight/10),blockVolume]} {...fontProps}>
+    <Text color={props.fontColor ? props.fontColor : fontColor} position={[0, -(blockHeight/10),blockVolume]} {...fontProps}>
       {blockNum}
     </Text>
   )
@@ -69,13 +69,38 @@ export const DrawBoardNumberBlock:React.FC<Props> = (props) => {
 
   const [ blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
   const onBlockSelect = () => {
-    setBlockSelector({selected:!blockSelector.selected, id:props.blockId});
+    setBlockSelector({selected:!blockSelector.selected, id:props.blockId, blockNum:props.blockNum});
+  }
+
+  let setProps:Props;
+  if(blockSelector.selected && (blockSelector.id != props.blockId)){
+    let fontColor = props.fontColor;
+    if(blockSelector.blockNum == props.blockNum) {
+      fontColor = "#0AA662";
+    }
+    setProps = {
+      blockId:props.blockId,
+      blockNum:props.blockNum,
+      position:props.position,
+      color:props.color,
+      selectedColor:props.selectedColor,
+      fontColor: fontColor,
+      locked:props.locked,
+      original:props.original,
+      width:props.width,
+      height:props.height,
+      volume:props.volume,
+      blockAnim:props.blockAnim,
+    }
+  }
+  else{
+    setProps = props;
   }
 
   const tileColor = (blockSelector.selected && blockSelector.id==props.blockId)? props.selectedColor : props.color;
   
   return(
-    <DrawNumberBlock props={props}>
+    <DrawNumberBlock props={setProps}>
       <meshBasicMaterial color={tileColor}/>
       <Outlines
         color={"#000fff"}
@@ -85,7 +110,7 @@ export const DrawBoardNumberBlock:React.FC<Props> = (props) => {
         polygonOffset
         polygonOffsetFactor={10}
         transparent
-        thickness={props.width*0.05}
+        thickness={setProps.width*0.05}
         angle={Math.PI}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}

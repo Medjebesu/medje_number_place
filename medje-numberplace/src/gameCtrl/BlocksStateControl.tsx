@@ -9,6 +9,7 @@ type BoardInitializerProps = {
 
 let npQuestion:number[];
 let npAnswer:number[];
+let npBoard:number[];
 
 export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
   [npQuestion, npAnswer] = GenerateQuestion(Difficulty.Middle); // T.B.D:難易度選択固定
@@ -43,12 +44,13 @@ export const MissTakeCountState = atom({
 // 選択状態制御用ステート・セレクタ
 export type BoardSelectState = {
   selected: boolean;
-  id:  number;
+  id: number;
+  blockNum: number;
 }
 
 export const BoardBlockSelectState = atom({
   key: 'boardBlockSelectState',
-  default: {selected: false, id:0} as BoardSelectState,
+  default: {selected: false, id:0, blockNum:0} as BoardSelectState,
 });
 
 export const BoardBlockSelector = selector({
