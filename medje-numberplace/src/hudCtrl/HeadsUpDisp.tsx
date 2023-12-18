@@ -33,10 +33,10 @@ export const HeadsUpDisp:React.FC = () =>{
       <Grid xs={2} >
         <DbgSelectState/>
       </Grid>
-      <Grid xs={3} >
+      <Grid xs={4} md={3}>
         <DbgHandpieceDest/>
       </Grid>
-      <Grid xs={4} md={4} xsOffset={3} mdOffset={3}>
+      <Grid xs={4} md={4} xsOffset={2} mdOffset={3}>
         <MissTakeCountItem/>
       </Grid>
     </Grid>
