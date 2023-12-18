@@ -39,7 +39,7 @@ $ pnpm add recoil three @types/three @react-three/fiber @react-three/drei three-
 ```
 
 ### フォントファイルの配置
-「./medje-numberplace/fonts/」下に(Roboto)[https://fonts.google.com/specimen/Roboto]フォントファイルを配置
+「./medje-numberplace/fonts/」下に[Roboto](https://fonts.google.com/specimen/Roboto)フォントファイルを配置
 
 ## ローカル実行
 ```
