@@ -12,7 +12,7 @@ export const GameStatusInitializer: React.FC = () =>{
   const timerStarter = useSetRecoilState(GameTimerStarter);
   timerStarter(null);
 
-  return <> 
+  return <>
   </>
 }
 
@@ -30,13 +30,13 @@ export const HeadsUpDisp:React.FC = () =>{
       <Grid xs={4} md={4} xsOffset="auto" mdOffset="auto">
         <ScoreItem/>
       </Grid>
-      <Grid xs={2} >
+      <Grid xs={3} md={2}>
         <DbgSelectState/>
       </Grid>
       <Grid xs={4} md={3}>
         <DbgHandpieceDest/>
       </Grid>
-      <Grid xs={4} md={4} xsOffset={2} mdOffset={3}>
+      <Grid xs={4} md={4} xsOffset={1} mdOffset={3}>
         <MissTakeCountItem/>
       </Grid>
     </Grid>
@@ -153,7 +153,7 @@ const Item = styled(Paper)(({ theme }) => ({
 //
 // 表示ステータス管理用ステート
 //
-const GameStartState = atom({
+export const GameStartState = atom({
   key:"gameStartState",
   default: false
 });
@@ -168,7 +168,7 @@ export const GameEndTime = atom({
   default: 0
 });
 
-const ElapsedGameTime = atom({
+export const ElapsedGameTime = atom({
   key:"elapsedGameTime",
   default: 0
 });
@@ -193,6 +193,7 @@ const GameTimerStarter = selector({
       const now = Math.floor(Date.now() /1000);
       set(GameStartTime, (now));
       set(ElapsedGameTime, (now));
+      set(GameEndTime, 0);
     }
   }
 });

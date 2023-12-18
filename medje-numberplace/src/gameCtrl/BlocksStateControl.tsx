@@ -1,19 +1,20 @@
 import { DefaultValue, RecoilState, atom, selector, useRecoilValue, useSetRecoilState } from "recoil"
-import { Difficulty, GenerateQuestion } from "./GenerateQuestion";
-import { GemePlayScoreSetter } from "../hudCtrl";
+import { Difficulty } from "./GenerateQuestion";
+import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
+import { NumberPlace } from "./BoardControl"
 
 //盤面データ初期化コンポーネント
 type BoardInitializerProps = {
   //seed: number; // ナンプレ初期盤面の生成シード値 T.B.D
 }
 
-let npQuestion:number[];
-let npAnswer:number[];
-let npBoard:number[];
+let np:NumberPlace;
 
 export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
-  [npQuestion, npAnswer] = GenerateQuestion(Difficulty.Middle); // T.B.D:難易度選択固定
-  npQuestion.forEach((value, idx) => {
+  
+  np = new NumberPlace(Difficulty.Middle);
+
+  np.getQuestion().forEach((value, idx) => {
     var setBlockNum = useSetRecoilState(BoardBlocksNumber[idx])
     var setBlockLocked = useSetRecoilState(BoardBlocksLocked[idx])
     var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal[idx])
@@ -118,14 +119,18 @@ export const BlockNumberSetter = selector({
       const isLocked = get(BoardBlocksLocked[selectState.id]);
       if(BlockNumberSetterFilter(selectState, isLocked)){
 
-        if(CheckAnswer(selectState.id, setVal)){
+        if(np.checkAnswer(selectState.id, setVal)){
           set(HandPieceLastDest, selectState.id);
           set(HandPieceLastNum, setVal);
           set(BoardBlocksNumber[selectState.id], setVal);
           set(BoardBlocksLocked[selectState.id], true);
 
-          set(GemePlayScoreSetter, EvaluateSetNumber(selectState.id, setVal));
+          set(GemePlayScoreSetter, np.setBoardNum(selectState.id, setVal));
           set(SelectedBlockNum, setVal);
+          if(np.checkGameComplete()){
+            set(GameStartState, false);
+            set(GameEndTime, get(ElapsedGameTime) - get(GameStartTime));
+          }
         }
         else{
           set(MissTakeCountState, get(MissTakeCountState)+1)
@@ -146,22 +151,6 @@ const BlockNumberSetterFilter = (_selectState:BoardSelectState, _isLocked:boolea
   }
 
   return true;
-}
-
-const CheckAnswer = (destId:number, setNum:number) =>{
-  if(npAnswer[destId] != setNum) return false;
-  return true;
-}
-
-// ナンバー入力に対する得点の評価
-const EvaluateSetNumber = (destId:number, num:number) => {
-
-  // 入力時に行に1~9の数値が揃った
-  // 入力時に列に1~9の数値が揃った
-  // 入力時にbox内に1~9の数値が揃った
-  // T.B.D
-
-  return 5;
 }
 
 // 手駒用動作モード定義
@@ -204,16 +193,3 @@ export const BlockStateControlLog: React.FC = () => {
   return<>
   </>
 }
-
-// デバッグ用手駒用ブロック操作ログ出力
-/*
-export const HandpieceActLog = () => {
-
-  const settedVal = useRecoilValue(HandPieceSetter);
-  console.debug("Handpiece act:" + 
-                " BlockNum=" + settedVal.blockNum + 
-                " Mode=" + settedVal.actMode + 
-                " Mode=" + settedVal.destId
-  );
-}
-*/
