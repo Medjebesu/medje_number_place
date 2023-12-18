@@ -17,10 +17,29 @@ $ cd medje-numberplace
 $ pnpm install
 ```
 
-### R3F(React―three-fiber)&Drei インストール
+### (Ⅰ)React-Recoilのインストール
 ```
-$ pnpm install recoil three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls
+$ pnpm install recoil
 ```
+
+### (Ⅱ)R3F(React―three-fiber)&Drei インストール
+```
+$ pnpm install three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls
+```
+
+### (Ⅲ)MaterialUI・Robotoフォントのインストール
+```
+$ pnpm add @mui/material @emotion/react @emotion/styled
+$ pnpm add @fontsource/roboto
+```
+
+※コピペ用：(Ⅰ)～(Ⅲ)までまとめてインストールするコマンド
+```
+$ pnpm add recoil three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls @mui/material @emotion/react @emotion/styled @fontsource/roboto
+```
+
+### フォントファイルの配置
+「./medje-numberplace/fonts/」下に(Roboto)[https://fonts.google.com/specimen/Roboto]フォントファイルを配置
 
 ## ローカル実行
 ```

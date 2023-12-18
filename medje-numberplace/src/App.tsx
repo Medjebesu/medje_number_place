@@ -1,12 +1,21 @@
 import './App.css'
-import {GameDisp} from './medjeNumberplace';
+import { NumberPlaceGameDisp } from './gameCtrl'
+import { HeadsUpDisp } from './hudCtrl'
+import { RecoilRoot } from 'recoil'
 
 function App() {
 
   return (
-    <>
-      <GameDisp/>
-    </>
+    <RecoilRoot>
+      <main id ="main_contents">
+        <section id="hud_area">
+          <HeadsUpDisp/>
+        </section>
+        <section id="game_area">
+          <NumberPlaceGameDisp />
+        </section>
+      </main>
+    </RecoilRoot>
   )
 }
 

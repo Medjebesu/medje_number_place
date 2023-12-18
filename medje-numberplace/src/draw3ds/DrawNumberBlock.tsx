@@ -1,16 +1,19 @@
 import React from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
-import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei";
-import { BlockSelecter } from '../gameCtrl/BlocksStateControl';
-import { useRecoilState } from 'recoil';
+import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
+import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum } from '../gameCtrl/BlocksStateControl'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 type Props = {
   blockId:number;
   blockNum:number;
-  position:THREE.Vector3 | undefined;
-  color:THREE.ColorRepresentation  | undefined;
+  position:THREE.Vector3;
+  color:THREE.ColorRepresentation;
   selectedColor?:THREE.ColorRepresentation  | undefined;
+  fontColor?:THREE.ColorRepresentation  | undefined;
+  locked?: boolean;
+  original?: boolean;
   width:number;
   height?:number;
   volume?:number;
@@ -18,15 +21,17 @@ type Props = {
 }
 
 // ブロック描画
-export const DrawNumberBlock:React.FC<Props> = (props) => {
-  var blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString())
+const DrawNumberBlock:React.FC<{props:Props, children: React.ReactNode}> = ({props, children}) => {
+  const blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString())
   const blockHeight = (props.height || props.width)
   const blockVolume = (props.volume || props.width)
-  const fontProps = { font: '', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false }
+  const fontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
+
+  const fontColor = props.original ? "#555" : "#ffffff";
 
   const boxRef = React.useRef()
   const NumText = (
-    <Text color="#555" position={[0, -(blockHeight/10),blockVolume]} {...fontProps}>
+    <Text color={props.fontColor ? props.fontColor : fontColor} position={[0, -(blockHeight/10),blockVolume]} {...fontProps}>
       {blockNum}
     </Text>
   )
@@ -40,16 +45,6 @@ export const DrawNumberBlock:React.FC<Props> = (props) => {
     }
   })
 
-  const [hovered, setHovered] = React.useState(false);
-  useCursor(hovered);
-
-  const [ blockSelecter, setBlockSelecter] = useRecoilState(BlockSelecter);
-  const onBlockSelect = () => {
-    setBlockSelecter({selected:!blockSelecter.selected, id:props.blockId});
-  }
-
-  const tileColor = (blockSelecter.selected && blockSelecter.id==props.blockId)? props.selectedColor : props.color;
-
   return(
     <mesh position={props.position}>
       <RoundedBox
@@ -61,22 +56,101 @@ export const DrawNumberBlock:React.FC<Props> = (props) => {
         creaseAngle={0.4}
       >
         {NumText}
-        <meshBasicMaterial color={tileColor}/>
-        <Outlines
-          color={"#550000"}
-          screenspace={false}
-          opacity={Number(hovered)}
-          toneMapped={false}
-          polygonOffset
-          polygonOffsetFactor={10}
-          transparent
-          thickness={props.width*0.05}
-          angle={Math.PI}
-          onPointerOver={() => setHovered(true)}
-          onPointerOut={() => setHovered(false)}
-          onClick={onBlockSelect}
-        />
+        {children}
       </RoundedBox>
     </mesh>
+  );
+}
+
+// 盤面用数字ブロック
+export const DrawBoardNumberBlock:React.FC<Props> = (props) => {
+  const [hovered, setHovered] = React.useState(false);
+  useCursor(hovered);
+
+  const [blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
+  const [selectedBlockNum, setSelectBlockNum] = useRecoilState(SelectedBlockNum);
+  const onBlockSelect = () => {
+    setBlockSelector({selected:!blockSelector.selected, id:props.blockId});
+    setSelectBlockNum(props.blockNum);
+  }
+
+  let setProps:Props;
+  if(blockSelector.selected && (blockSelector.id != props.blockId)){
+    let fontColor = props.fontColor;
+    if(selectedBlockNum == props.blockNum) {
+      fontColor = "#0AA662";
+    }
+    setProps = {
+      blockId:props.blockId,
+      blockNum:props.blockNum,
+      position:props.position,
+      color:props.color,
+      selectedColor:props.selectedColor,
+      fontColor: fontColor,
+      locked:props.locked,
+      original:props.original,
+      width:props.width,
+      height:props.height,
+      volume:props.volume,
+      blockAnim:props.blockAnim,
+    }
+  }
+  else{
+    setProps = props;
+  }
+
+  const tileColor = (blockSelector.selected && blockSelector.id==props.blockId)? props.selectedColor : props.color;
+  
+  return(
+    <DrawNumberBlock props={setProps}>
+      <meshBasicMaterial color={tileColor}/>
+      <Outlines
+        color={"#000fff"}
+        screenspace={false}
+        opacity={Number(hovered)}
+        toneMapped={false}
+        polygonOffset
+        polygonOffsetFactor={10}
+        transparent
+        thickness={setProps.width*0.05}
+        angle={Math.PI}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        onClick={onBlockSelect}
+      />
+    </DrawNumberBlock>
+  );
+}
+
+// 手駒用数字ブロック
+export const DrawHandpiece:React.FC<Props> = (props) => {
+  const [hovered, setHovered] = React.useState(false);
+  useCursor(hovered);
+
+  const setBlockNumber = useSetRecoilState(BlockNumberSetter);
+  const onBlockSelect = () => {
+      setBlockNumber(props.blockNum);
+  }
+
+  const tileColor = props.color;
+
+  return(
+    <DrawNumberBlock props={props}>
+      <meshBasicMaterial color={tileColor}/>
+      <Outlines
+        color={"#ff0f00"}
+        screenspace={false}
+        opacity={Number(hovered)}
+        toneMapped={false}
+        polygonOffset
+        polygonOffsetFactor={10}
+        transparent
+        thickness={props.width*0.05}
+        angle={Math.PI}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        onClick={onBlockSelect}
+      />
+    </DrawNumberBlock>
   );
 }
