@@ -2,6 +2,7 @@ import { DefaultValue, RecoilState, atom, selector, useRecoilValue, useSetRecoil
 import { Difficulty } from "./GenerateQuestion";
 import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
 import { NumberPlace } from "./BoardControl"
+import { Vector3 } from "three";
 
 //盤面データ初期化コンポーネント
 type BoardInitializerProps = {
@@ -30,6 +31,7 @@ export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
   </>
 }
 
+
 //
 // UI表示用ステート
 //
@@ -56,7 +58,7 @@ export const BoardBlockSelectState = atom({
 export const SelectedBlockNum = atom({
   key:"selectedBlockNum",
   default: 0
-})
+});
 
 export const BoardBlockSelector = selector({
   key: 'boardBlockSelector',
@@ -181,6 +183,52 @@ export const HandPieceLastNum = atom({
   key: 'handpieceLastNum',
   default: 0
 });
+
+//
+// ブロックアニメーション制御用ステート
+//
+export const enum AnimStatus {
+  Idle =0,
+  InProgress,
+  //Cancel
+}
+
+export type BlockAnimState = {
+  status:AnimStatus;
+  pattern:string;
+  frame:number;
+}
+
+export const BoardBlocksAnimState:Array<RecoilState<BlockAnimState>> = [];
+export const BoardBlocksAnimStateStatus:Array<RecoilState<AnimStatus>> = [];
+export const BoardBlocksAnimStatePattern:Array<RecoilState<BlockAnimState>> = [];
+export const BoardBlocksAnimStateFrame:Array<RecoilState<BlockAnimState>> = [];
+for (let idx = 0; idx < 81; idx++){
+  BoardBlocksAnimState.push(
+    atom({
+      key: "boardBlockAnimState_" + idx,
+      default: {
+        status:AnimStatus.Idle,
+        pattern:"default",
+        frame:0,
+      } as BlockAnimState
+    })
+  );
+}
+
+export const HandpiecesAnimState:Array<RecoilState<BlockAnimState>> = [];
+for (let idx = 0; idx < 9; idx++){
+  HandpiecesAnimState.push(
+    atom({
+      key: "handpieceAnimState_" + idx,
+      default: {
+        status:AnimStatus.Idle,
+        pattern:"default",
+        frame:0,
+      } as BlockAnimState
+    })
+  );
+}
 
 //
 // デバッグ用ステートログ出力

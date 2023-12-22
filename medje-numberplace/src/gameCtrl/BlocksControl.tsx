@@ -118,9 +118,9 @@ type BoardBlockProps = {
   pos: Vector3;
 }
 const BoardBlock:React.FC<BoardBlockProps> = (props) =>{
-  const blockNum = useRecoilValue(BoardBlocksNumber[props.id])
-  const isLocked = useRecoilValue(BoardBlocksLocked[props.id])
-  const isOriginal = useRecoilValue(BoardBlocksOriginal[props.id])
+  const blockNum = useRecoilValue(BoardBlocksNumber[props.id]);
+  const isLocked = useRecoilValue(BoardBlocksLocked[props.id]);
+  const isOriginal = useRecoilValue(BoardBlocksOriginal[props.id]);
 
   return (
     <DrawBoardNumberBlock
@@ -155,7 +155,7 @@ const Handpiece:React.FC<HandpiecekProps> = (props) => {
       blockNum={props.num}
       position={props.pos}
       color="blue"
-      fontcolor="white"
+      fontColor="white"
       width={props.size}
       volume={0.01}
       blockAnim={props.num == 0}
