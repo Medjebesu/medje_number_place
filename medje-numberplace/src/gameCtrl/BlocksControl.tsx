@@ -1,8 +1,8 @@
 import { DrawBoardNumberBlock, DrawHandpiece } from "../draw3ds";
 import { Vector3 } from "three";
 
-import { ActMode, BlockStateControlLog, BoardBlocksLocked, BoardBlocksNumber, BoardBlocksOriginal } from "./BlocksStateControl";
-import { useRecoilValue } from "recoil";
+import { BlockStateControlLog, BoardBlocksBasePos, BoardBlocksLocked, BoardBlocksNumber, BoardBlocksOriginal, HandpiecesBasePos } from "./BlocksStateControl";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ReactElement } from "react";
 
 export type SelectState = {
@@ -68,11 +68,12 @@ const BoardBlocks:React.FC<BoardBlocksProps> = (props) =>{
   // 盤面ブロック生成
   const boardBlocks = new Array<ReactElement>;
   for (let bbIdx=0; bbIdx < 81; bbIdx++){
+    var blockPosSetter = useSetRecoilState(BoardBlocksBasePos[bbIdx]);
+    blockPosSetter(new Vector3(props.horBoxpos[bbIdx % 9], props.verBoxpos[Math.floor(bbIdx / 9)], 0));
     boardBlocks.push(
       <BoardBlock 
         id={bbIdx}
         size={props.blockSize}
-        pos={new Vector3(props.horBoxpos[bbIdx % 9], props.verBoxpos[Math.floor(bbIdx / 9)], 0)}
         key={"boardBlock_" + bbIdx}
       />
     );
@@ -95,12 +96,13 @@ const Handpieces:React.FC<HandpiecesProps> = (props) =>{
   // 手駒ブロック生成
   const handpieces = new Array<React.ReactElement>;
   for (let hp=0; hp < 9; hp++){
+    var blockPosSetter = useSetRecoilState(HandpiecesBasePos[hp]);
+    blockPosSetter(new Vector3(props.horBoxpos[hp], props.verBoxpos, props.zIndex));
     handpieces.push(
       <Handpiece 
         id={hp}
         num={hp+1}
         size={props.blockSize}
-        pos={new Vector3(props.horBoxpos[hp], props.verBoxpos, props.zIndex)}
         key={"handpiece_" + hp}
       />
     )
@@ -115,7 +117,6 @@ const Handpieces:React.FC<HandpiecesProps> = (props) =>{
 type BoardBlockProps = {
   id:  number;
   size: number;
-  pos: Vector3;
 }
 const BoardBlock:React.FC<BoardBlockProps> = (props) =>{
   const blockNum = useRecoilValue(BoardBlocksNumber[props.id]);
@@ -126,7 +127,6 @@ const BoardBlock:React.FC<BoardBlockProps> = (props) =>{
     <DrawBoardNumberBlock
       blockId={props.id}
       blockNum={blockNum}
-      position={props.pos}
       color="orange" // color=
       selectedColor="#088551"
       fontColor={isOriginal ? "#555" : "#ffffff"}
@@ -144,7 +144,6 @@ type HandpiecekProps = {
   id:number;
   num:number;
   size:number;
-  pos:Vector3;
 }
 
 const Handpiece:React.FC<HandpiecekProps> = (props) => {
@@ -153,7 +152,6 @@ const Handpiece:React.FC<HandpiecekProps> = (props) => {
     <DrawHandpiece
       blockId={props.id}
       blockNum={props.num}
-      position={props.pos}
       color="blue"
       fontColor="white"
       width={props.size}

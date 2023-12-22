@@ -2,17 +2,16 @@ import React, { forwardRef, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
-import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum, BoardBlocksAnimState, AnimStatus, HandpiecesAnimState } from '../gameCtrl/BlocksStateControl'
+import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum, BoardBlocksAnimState, HandpiecesAnimState, BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksStateControl'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { NumBlockAnimation } from './NumBlockAnimation'
+import { BoradBlockAnimation } from './NumBlockAnimation'
 import { GameLaunchState } from '../gameCtrl/GameControl'
 
 export type BlockProps = {
   blockId:number;
   blockNum:number;
-  position:THREE.Vector3;
   color:THREE.ColorRepresentation;
-  selectedColor?:THREE.ColorRepresentation  | undefined;
+  selectedColor?:THREE.ColorRepresentation | undefined;
   fontColor?:THREE.ColorRepresentation  | undefined;
   locked?: boolean;
   original?: boolean;
@@ -38,9 +37,8 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
   );
 
   return(
-    <mesh position={props.position}>
+    <mesh ref={ref}>
       <RoundedBox
-        ref={ref}
         args={[props.width, blockHeight, blockVolume]}
         radius={0.025}
         smoothness={10}
@@ -56,6 +54,7 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
 
 // 盤面用数字ブロック
 export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
+  const blockBasePos = useRecoilValue(BoardBlocksBasePos[props.blockId]);
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
 
@@ -83,7 +82,6 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
   let setProps= {
     blockId:props.blockId,
     blockNum:props.blockNum,
-    position:props.position,
     color:props.color,
     selectedColor:props.selectedColor,
     locked:props.locked,
@@ -108,7 +106,10 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
 
   useFrame(() => {
     if(AnimEnable && boxRef.current != null){
-      NumBlockAnimation(boxRef.current, blockAnimState, blockAnimStateSetter, props.position, props.width, blockHeight, blockHeight);
+      BoradBlockAnimation(boxRef.current, blockAnimState, blockAnimStateSetter, blockBasePos, props.width, blockHeight, blockHeight);
+    }
+    else if(!props.blockAnim){
+      boxRef.current?.position.set(blockBasePos.x, blockBasePos.y, blockBasePos.z);
     }
   });
 
@@ -138,6 +139,7 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
 
 // 手駒用数字ブロック
 export const DrawHandpiece:React.FC<BlockProps> = (props) => {
+  const blockBasePos = useRecoilValue(HandpiecesBasePos[props.blockId]);
   const blockHeight = (props.height || props.width);
   
   const [hovered, setHovered] = React.useState(false);
@@ -153,7 +155,7 @@ export const DrawHandpiece:React.FC<BlockProps> = (props) => {
   const tileColor = props.color;
 
   // ブロックアニメーション
-  const [blockAnimState, blockAnimStateSetter] = useRecoilState(HandpiecesAnimState[props.blockId]);
+  //const [blockAnimState, blockAnimStateSetter] = useRecoilState(HandpiecesAnimState[props.blockId]);
   const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);
 
   let AnimEnable = true;
@@ -163,10 +165,11 @@ export const DrawHandpiece:React.FC<BlockProps> = (props) => {
 
   useFrame(() => {
     if(AnimEnable && boxRef.current != null){
-      NumBlockAnimation(boxRef.current, blockAnimState, blockAnimStateSetter, props.position, props.width, blockHeight, blockHeight);
+      //HandpieceAnimation(boxRef.current, blockAnimState, blockAnimStateSetter, props.width, blockHeight, blockHeight);
     }
+    boxRef.current?.position.set(blockBasePos.x, blockBasePos.y, blockBasePos.z);
   });
-
+  
   return(
     <DrawNumberBlock
       props={props}

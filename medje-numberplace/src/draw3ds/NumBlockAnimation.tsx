@@ -1,12 +1,12 @@
-import THREE from "three"
+import THREE, { Vector3 } from "three"
 import { AnimStatus, BlockAnimState } from "../gameCtrl/BlocksStateControl";
 import { SetterOrUpdater } from "recoil";
 
-export function NumBlockAnimation(
+export function BoradBlockAnimation(
   refCurrent: THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>,
   state: BlockAnimState,
   stateSetter:SetterOrUpdater<BlockAnimState>,
-  basePos:THREE.Vector3,
+  blockBasePos:Vector3,
   blockWidth:number,
   blockHeight:number,
   blockVolume:number,
@@ -14,10 +14,10 @@ export function NumBlockAnimation(
   
   const animation = animationMap.get(state.pattern);
   if(animation != null){
-    animation(refCurrent, state, basePos, blockWidth, blockHeight, blockVolume);
+    animation(refCurrent, state, blockBasePos, blockWidth, blockHeight, blockVolume);
   }
   else {
-    SetDefault(refCurrent, basePos);
+    SetDefault(refCurrent, blockBasePos);
     stateSetter({
       status: AnimStatus.Idle,
       pattern: "default",
@@ -27,6 +27,7 @@ export function NumBlockAnimation(
     console.warn("Pattern='" + state.pattern + "' is not registerd.");
     return;
   }
+
   // アニメーション終了フレーム判定
     // 連動パターンへの切替
     // 稼働状態ステートの更新
@@ -45,12 +46,12 @@ export function NumBlockAnimation(
 }
 
 const ANIM_MAX_FRAME = 20 * 60; // Max:20秒以内のアニメーション
-const animationMap = new Map<string, (refCurrent: THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, state:BlockAnimState, basePos:THREE.Vector3, blockWidth:number, blockHeight:number, blockVolume:number)=>void>();
+const animationMap = new Map<string, (refCurrent: THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, state:BlockAnimState, basePos:Vector3, blockWidth:number, blockHeight:number, blockVolume:number)=>void>();
 
 //
 // ブロックアニメーション定義
 //
-const animations: {name:string, anim:(refCurrent: THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, state:BlockAnimState, basePos:THREE.Vector3, blockWidth:number, blockHeight:number, blockVolume:number)=>void}[] = [
+const animations: {name:string, anim:(refCurrent: THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, state:BlockAnimState, basePos:Vector3, blockWidth:number, blockHeight:number, blockVolume:number)=>void}[] = [
   {
     name: "default", anim: (refCurrent, _, basePos)=> {
       SetDefault(refCurrent, basePos);
@@ -68,7 +69,7 @@ animations.map((anim) =>{
   animationMap.set(anim.name, anim.anim);
 });
 
-function SetDefault(refCurrent: THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, basePos:THREE.Vector3){
-  //refCurrent.position.set(basePos.x, basePos.y, basePos.z);
+function SetDefault(refCurrent: THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, basePos:Vector3){
+  refCurrent.position.set(basePos.x, basePos.y, basePos.z);
   refCurrent.rotation.set(0,0,0);
 }

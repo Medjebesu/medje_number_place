@@ -91,10 +91,15 @@ export const BoardBlockSelector = selector({
 //
 // 盤面ブロック(各要素)制御用ステート
 //
+export const BoardBlocksBasePos:Array<RecoilState<Vector3>> = [];
 export const BoardBlocksLocked:Array<RecoilState<boolean>> = [];
 export const BoardBlocksOriginal:Array<RecoilState<boolean>> = [];
 export const BoardBlocksNumber:Array<RecoilState<number>> = [];
 for (let i = 0; i < 81; i++){
+  BoardBlocksBasePos.push(atom({
+    key: "boardBlockBasePos_" + i,
+    default: new Vector3(0,0,0)
+  }));
   BoardBlocksNumber.push(atom({
     key: 'boardBlocksNumber_' + i,
     default: 0
@@ -106,7 +111,7 @@ for (let i = 0; i < 81; i++){
   BoardBlocksOriginal.push(atom({
     key: 'boardBlocksOriginal_' + i,
     default: false
-    }));
+  }));
 }
 
 // ブロックナンバー設定処理用セレクター
@@ -153,6 +158,17 @@ const BlockNumberSetterFilter = (_selectState:BoardSelectState, _isLocked:boolea
   }
 
   return true;
+}
+
+//
+// 手駒用ブロック制御ステート
+//
+export const HandpiecesBasePos:Array<RecoilState<Vector3>> = [];
+for (let i = 0; i < 9; i++){
+  HandpiecesBasePos.push(atom({
+    key: "handpiecesBasePos_" + i,
+    default: new Vector3(0,0,0)
+  }));
 }
 
 // 手駒用動作モード定義
