@@ -1,4 +1,4 @@
-import { DefaultValue, RecoilState, atom, selector, useRecoilValue, useSetRecoilState } from "recoil"
+import { DefaultValue, atom, atomFamily, selector, useRecoilValue, useSetRecoilState } from "recoil"
 import { Difficulty } from "./GenerateQuestion";
 import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
 import { NumberPlace } from "./BoardControl"
@@ -16,9 +16,9 @@ export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
   np = new NumberPlace(Difficulty.Middle);
 
   np.getQuestion().forEach((value, idx) => {
-    var setBlockNum = useSetRecoilState(BoardBlocksNumber[idx])
-    var setBlockLocked = useSetRecoilState(BoardBlocksLocked[idx])
-    var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal[idx])
+    var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx))
+    var setBlockLocked = useSetRecoilState(BoardBlocksLocked(idx))
+    var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal(idx))
 
     setBlockNum(value);
     if (value != 0){
@@ -91,28 +91,22 @@ export const BoardBlockSelector = selector({
 //
 // 盤面ブロック(各要素)制御用ステート
 //
-export const BoardBlocksBasePos:Array<RecoilState<Vector3>> = [];
-export const BoardBlocksLocked:Array<RecoilState<boolean>> = [];
-export const BoardBlocksOriginal:Array<RecoilState<boolean>> = [];
-export const BoardBlocksNumber:Array<RecoilState<number>> = [];
-for (let i = 0; i < 81; i++){
-  BoardBlocksBasePos.push(atom({
-    key: "boardBlockBasePos_" + i,
-    default: new Vector3(0,0,0)
-  }));
-  BoardBlocksNumber.push(atom({
-    key: 'boardBlocksNumber_' + i,
-    default: 0
-  }));
-  BoardBlocksLocked.push(atom({
-    key: 'boardBlocksLocked_' + i,
-    default: false
-  }));
-  BoardBlocksOriginal.push(atom({
-    key: 'boardBlocksOriginal_' + i,
-    default: false
-  }));
-}
+export const BoardBlocksBasePos = atomFamily<Vector3, number>({
+  key: "boardBlockBasePos",
+  default: new Vector3(0,0,0)
+});
+export const BoardBlocksLocked = atomFamily<boolean, number>({
+  key: 'boardBlocksLocked',
+  default: false
+});
+export const BoardBlocksOriginal = atomFamily<boolean, number>({
+  key: 'boardBlocksOriginal',
+  default: false
+});
+export const BoardBlocksNumber = atomFamily<number, number>({
+  key: 'boardBlocksNumber',
+  default: 0
+});
 
 // ブロックナンバー設定処理用セレクター
 export const BlockNumberSetter = selector({
@@ -123,14 +117,14 @@ export const BlockNumberSetter = selector({
   set: ({set, get}, setVal) => {
     if(!(setVal instanceof DefaultValue)){
       const selectState = get(BoardBlockSelectState);
-      const isLocked = get(BoardBlocksLocked[selectState.id]);
+      const isLocked = get(BoardBlocksLocked(selectState.id));
       if(BlockNumberSetterFilter(selectState, isLocked)){
 
         if(np.checkAnswer(selectState.id, setVal)){
           set(HandPieceLastDest, selectState.id);
           set(HandPieceLastNum, setVal);
-          set(BoardBlocksNumber[selectState.id], setVal);
-          set(BoardBlocksLocked[selectState.id], true);
+          set(BoardBlocksNumber(selectState.id), setVal);
+          set(BoardBlocksLocked(selectState.id), true);
 
           set(GemePlayScoreSetter, np.setBoardNum(selectState.id, setVal));
           set(SelectedBlockNum, setVal);
@@ -163,13 +157,10 @@ const BlockNumberSetterFilter = (_selectState:BoardSelectState, _isLocked:boolea
 //
 // 手駒用ブロック制御ステート
 //
-export const HandpiecesBasePos:Array<RecoilState<Vector3>> = [];
-for (let i = 0; i < 9; i++){
-  HandpiecesBasePos.push(atom({
-    key: "handpiecesBasePos_" + i,
-    default: new Vector3(0,0,0)
-  }));
-}
+export const HandpiecesBasePos = atomFamily<Vector3, number>({
+  key: "handpiecesBasePos",
+  default: new Vector3(0,0,0)
+});
 
 // 手駒用動作モード定義
 export const enum ActMode {
@@ -215,36 +206,23 @@ export type BlockAnimState = {
   frame:number;
 }
 
-export const BoardBlocksAnimState:Array<RecoilState<BlockAnimState>> = [];
-export const BoardBlocksAnimStateStatus:Array<RecoilState<AnimStatus>> = [];
-export const BoardBlocksAnimStatePattern:Array<RecoilState<BlockAnimState>> = [];
-export const BoardBlocksAnimStateFrame:Array<RecoilState<BlockAnimState>> = [];
-for (let idx = 0; idx < 81; idx++){
-  BoardBlocksAnimState.push(
-    atom({
-      key: "boardBlockAnimState_" + idx,
-      default: {
-        status:AnimStatus.Idle,
-        pattern:"default",
-        frame:0,
-      } as BlockAnimState
-    })
-  );
-}
+export const BoardBlocksAnimState = atomFamily<BlockAnimState, number>({
+  key: "boardBlockAnimState",
+  default: {
+    status:AnimStatus.Idle,
+    pattern:"default",
+    frame:0,
+  }
+});
 
-export const HandpiecesAnimState:Array<RecoilState<BlockAnimState>> = [];
-for (let idx = 0; idx < 9; idx++){
-  HandpiecesAnimState.push(
-    atom({
-      key: "handpieceAnimState_" + idx,
-      default: {
-        status:AnimStatus.Idle,
-        pattern:"default",
-        frame:0,
-      } as BlockAnimState
-    })
-  );
-}
+export const HandpiecesAnimState = atomFamily<BlockAnimState, number>({
+  key: "handpieceAnimState",
+  default: {
+    status:AnimStatus.Idle,
+    pattern:"default",
+    frame:0,
+  }
+});
 
 //
 // デバッグ用ステートログ出力

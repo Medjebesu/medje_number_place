@@ -54,7 +54,7 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
 
 // 盤面用数字ブロック
 export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
-  const blockBasePos = useRecoilValue(BoardBlocksBasePos[props.blockId]);
+  const blockBasePos = useRecoilValue(BoardBlocksBasePos(props.blockId));
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
 
@@ -96,7 +96,7 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
 
   // ブロックアニメーション
   // 自ブロック専用のアニメーションステート(稼働状態・パターン・現フレーム)を取得
-  const [blockAnimState, blockAnimStateSetter] = useRecoilState(BoardBlocksAnimState[props.blockId]);
+  const [blockAnimState, blockAnimStateSetter] = useRecoilState(BoardBlocksAnimState(props.blockId));
   const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);
   
   let AnimEnable = true;
@@ -139,7 +139,7 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
 
 // 手駒用数字ブロック
 export const DrawHandpiece:React.FC<BlockProps> = (props) => {
-  const blockBasePos = useRecoilValue(HandpiecesBasePos[props.blockId]);
+  const blockBasePos = useRecoilValue(HandpiecesBasePos(props.blockId));
   const blockHeight = (props.height || props.width);
   
   const [hovered, setHovered] = React.useState(false);
@@ -155,7 +155,7 @@ export const DrawHandpiece:React.FC<BlockProps> = (props) => {
   const tileColor = props.color;
 
   // ブロックアニメーション
-  //const [blockAnimState, blockAnimStateSetter] = useRecoilState(HandpiecesAnimState[props.blockId]);
+  //const [blockAnimState, blockAnimStateSetter] = useRecoilState(HandpiecesAnimState(props.blockId));
   const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);
 
   let AnimEnable = true;

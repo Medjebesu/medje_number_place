@@ -68,7 +68,7 @@ const BoardBlocks:React.FC<BoardBlocksProps> = (props) =>{
   // 盤面ブロック生成
   const boardBlocks = new Array<ReactElement>;
   for (let bbIdx=0; bbIdx < 81; bbIdx++){
-    var blockPosSetter = useSetRecoilState(BoardBlocksBasePos[bbIdx]);
+    var blockPosSetter = useSetRecoilState(BoardBlocksBasePos(bbIdx));
     blockPosSetter(new Vector3(props.horBoxpos[bbIdx % 9], props.verBoxpos[Math.floor(bbIdx / 9)], 0));
     boardBlocks.push(
       <BoardBlock 
@@ -96,7 +96,7 @@ const Handpieces:React.FC<HandpiecesProps> = (props) =>{
   // 手駒ブロック生成
   const handpieces = new Array<React.ReactElement>;
   for (let hp=0; hp < 9; hp++){
-    var blockPosSetter = useSetRecoilState(HandpiecesBasePos[hp]);
+    var blockPosSetter = useSetRecoilState(HandpiecesBasePos(hp));
     blockPosSetter(new Vector3(props.horBoxpos[hp], props.verBoxpos, props.zIndex));
     handpieces.push(
       <Handpiece 
@@ -119,9 +119,9 @@ type BoardBlockProps = {
   size: number;
 }
 const BoardBlock:React.FC<BoardBlockProps> = (props) =>{
-  const blockNum = useRecoilValue(BoardBlocksNumber[props.id]);
-  const isLocked = useRecoilValue(BoardBlocksLocked[props.id]);
-  const isOriginal = useRecoilValue(BoardBlocksOriginal[props.id]);
+  const blockNum = useRecoilValue(BoardBlocksNumber(props.id));
+  const isLocked = useRecoilValue(BoardBlocksLocked(props.id));
+  const isOriginal = useRecoilValue(BoardBlocksOriginal(props.id));
 
   return (
     <DrawBoardNumberBlock
