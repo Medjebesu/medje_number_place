@@ -4,11 +4,17 @@ import { Vector3 } from "three";
 import { BlockStateControlLog, BoardBlocksBasePos, BoardBlocksLocked, BoardBlocksNumber, BoardBlocksOriginal, HandpiecesBasePos } from "./BlocksStateControl";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ReactElement } from "react";
+import { SetBoardBlockPattern } from "../draw3ds/NumBlockAnimation";
 
 export type SelectState = {
   selected: boolean;
   id:  number;
 }
+
+//
+// デフォルト状態設定
+//
+const boardNumberBlockDefaultAnimPatterm = "floating";
 
 // ブロック群制御コンポーネント
 type Prop ={
@@ -22,8 +28,8 @@ export const BlocksControl: React.FC<Prop>  = (props) =>{
   const blockWidth = blockSize+blockMargin;
 
   // ブロック水平・垂直座標群
-  const horBoxpos:number[] = []
-  const verBoxpos:number[] = []
+  const horBoxpos:number[] = [];
+  const verBoxpos:number[] = [];
 
   // 盤面ブロック配置座標計算
   let adjustSpace = 0;
@@ -77,6 +83,7 @@ const BoardBlocks:React.FC<BoardBlocksProps> = (props) =>{
         key={"boardBlock_" + bbIdx}
       />
     );
+    SetBoardBlockPattern(bbIdx, boardNumberBlockDefaultAnimPatterm);
   }
 
   return <>

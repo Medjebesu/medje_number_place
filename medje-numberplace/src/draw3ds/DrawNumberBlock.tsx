@@ -2,9 +2,10 @@ import React, { forwardRef, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
-import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum, BoardBlocksAnimState, HandpiecesAnimState, BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksStateControl'
+import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum, 
+         BoardBlocksAnimState, HandpiecesAnimState, BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksStateControl'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { BoradBlockAnimation } from './NumBlockAnimation'
+import { BoardBlockAnimation } from './NumBlockAnimation'
 import { GameLaunchState } from '../gameCtrl/GameControl'
 
 export type BlockProps = {
@@ -105,12 +106,14 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
   }
 
   useFrame(() => {
-    if(AnimEnable && boxRef.current != null){
-      BoradBlockAnimation(boxRef.current, blockAnimState, blockAnimStateSetter, blockBasePos, props.width, blockHeight, blockHeight);
+    if(boxRef.current != null){
+      BoardBlockAnimation(boxRef.current, props.blockId, blockBasePos, props.width, blockHeight, blockHeight);
     }
+    /*
     else if(!props.blockAnim){
       boxRef.current?.position.set(blockBasePos.x, blockBasePos.y, blockBasePos.z);
     }
+    */
   });
 
   return(

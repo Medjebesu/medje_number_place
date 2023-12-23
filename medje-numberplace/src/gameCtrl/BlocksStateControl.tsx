@@ -210,7 +210,7 @@ export const BoardBlocksAnimState = atomFamily<BlockAnimState, number>({
   key: "boardBlockAnimState",
   default: {
     status:AnimStatus.Idle,
-    pattern:"default",
+    pattern:"floating",
     frame:0,
   }
 });
