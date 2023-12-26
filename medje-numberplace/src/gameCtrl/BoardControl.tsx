@@ -36,7 +36,7 @@ export class NumberPlace {
     return true;
   }
   */
- 
+
   checkGameComplete():boolean {
     let result = true;
     this._board.forEach((value, idx) => {
@@ -95,11 +95,11 @@ export class NumberPlace {
 
     if(establishedColCluster || establishedRowCluster || establishedBoxCluster){
       if(establishedColCluster && colBelong)
-        SetBoardClusterPattern(colCluster[colBelong], "turning");
+        SetBoardClusterPattern(colCluster[colBelong], "swinging_long");
       if(establishedRowCluster && rowBelong)
-        SetBoardClusterPattern(rowCluster[rowBelong], "turning");
+        SetBoardClusterPattern(rowCluster[rowBelong], "swinging_long");
       if(establishedBoxCluster && boxBelong)
-        SetBoardClusterPattern(boxCluster[boxBelong], "turning");
+        SetBoardClusterPattern(boxCluster[boxBelong], "swinging_long");
     }
     else {
       SetBoardBlockPattern(destIdx, "swinging");
