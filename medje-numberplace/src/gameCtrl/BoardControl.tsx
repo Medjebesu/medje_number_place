@@ -1,3 +1,4 @@
+import { SetBoardBlockPattern, SetBoardClusterPattern } from "../draw3ds/NumBlockAnimation";
 import { Difficulty, GenerateQuestion } from "./GenerateQuestion";
 
 //
@@ -15,6 +16,7 @@ export class NumberPlace {
     this._board = this._question;
   }
   
+  /*
   _isValidSetNum(npBoard: number[], destIdx: number, setNum: number) {
     // 指定した要素と同じ行の重複チェック
     for (const val of this._colCluster[this._colClusterMap.get(destIdx)] ){
@@ -33,7 +35,8 @@ export class NumberPlace {
   
     return true;
   }
-
+  */
+ 
   checkGameComplete():boolean {
     let result = true;
     this._board.forEach((value, idx) => {
@@ -65,19 +68,41 @@ export class NumberPlace {
       return 0;
     }
 
+    let establishedColCluster = false;
+    let establishedRowCluster = false;
+    let establishedBoxCluster = false;
+
     // 行が成立した時
-    if (this._checkCluster(colCluster[colClusterMap.get(destIdx)], destIdx)) {
+    const colBelong = colClusterMap.get(destIdx);
+    if (colBelong && this._checkCluster(colCluster[colBelong], destIdx)) {
       tempPoint += (10 * this._difficulty);
+      establishedColCluster = true;
     }
 
     // 列が成立した時
-    if (this._checkCluster(rowCluster[rowClusterMap.get(destIdx)], destIdx)) {
+    const rowBelong = rowClusterMap.get(destIdx);
+    if (rowBelong && this._checkCluster(rowCluster[rowBelong], destIdx)) {
       tempPoint += (10 * this._difficulty);
+      establishedRowCluster = true;
     }
 
     // boxが成立した時
-    if (this._checkCluster(boxCluster[boxClusterMap.get(destIdx)], destIdx)) {
+    const boxBelong = boxClusterMap.get(destIdx);
+    if (boxBelong && this._checkCluster(boxCluster[boxBelong], destIdx)) {
       tempPoint += (10 * this._difficulty);
+      establishedBoxCluster = true;
+    }
+
+    if(establishedColCluster || establishedRowCluster || establishedBoxCluster){
+      if(establishedColCluster && colBelong)
+        SetBoardClusterPattern(colCluster[colBelong], "turning");
+      if(establishedRowCluster && rowBelong)
+        SetBoardClusterPattern(rowCluster[rowBelong], "turning");
+      if(establishedBoxCluster && boxBelong)
+        SetBoardClusterPattern(boxCluster[boxBelong], "turning");
+    }
+    else {
+      SetBoardBlockPattern(destIdx, "swinging");
     }
 
     this._board[destIdx] = setNum;

@@ -3,7 +3,6 @@ import { Difficulty } from "./GenerateQuestion";
 import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
 import { NumberPlace } from "./BoardControl"
 import { Vector3 } from "three";
-import { SetBoardBlockPattern } from "../draw3ds/NumBlockAnimation";
 
 //盤面データ初期化コンポーネント
 type BoardInitializerProps = {
@@ -12,7 +11,7 @@ type BoardInitializerProps = {
 
 let np:NumberPlace;
 
-export const BoardInitializer:React.FC<BoardInitializerProps> = (props) =>{
+export const BoardInitializer:React.FC<BoardInitializerProps> = (/* props */) =>{
   
   np = new NumberPlace(Difficulty.Middle);
 
@@ -122,7 +121,6 @@ export const BlockNumberSetter = selector({
       if(BlockNumberSetterFilter(selectState, isLocked)){
 
         if(np.checkAnswer(selectState.id, setVal)){
-          SetBoardBlockPattern(selectState.id, "swinging");
           set(HandPieceLastDest, selectState.id);
           set(HandPieceLastNum, setVal);
           set(BoardBlocksNumber(selectState.id), setVal);
