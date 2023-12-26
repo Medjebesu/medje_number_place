@@ -3,6 +3,7 @@ import { Difficulty } from "./GenerateQuestion";
 import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
 import { NumberPlace } from "./BoardControl"
 import { Vector3 } from "three";
+import { SetBoardBlockPattern } from "../draw3ds/NumBlockAnimation";
 
 //盤面データ初期化コンポーネント
 type BoardInitializerProps = {
@@ -121,6 +122,7 @@ export const BlockNumberSetter = selector({
       if(BlockNumberSetterFilter(selectState, isLocked)){
 
         if(np.checkAnswer(selectState.id, setVal)){
+          SetBoardBlockPattern(selectState.id, "swinging");
           set(HandPieceLastDest, selectState.id);
           set(HandPieceLastNum, setVal);
           set(BoardBlocksNumber(selectState.id), setVal);
@@ -189,39 +191,6 @@ export const HandPieceLastDest = atom({
 export const HandPieceLastNum = atom({
   key: 'handpieceLastNum',
   default: 0
-});
-
-//
-// ブロックアニメーション制御用ステート
-//
-export const enum AnimStatus {
-  Idle =0,
-  InProgress,
-  //Cancel
-}
-
-export type BlockAnimState = {
-  status:AnimStatus;
-  pattern:string;
-  frame:number;
-}
-
-export const BoardBlocksAnimState = atomFamily<BlockAnimState, number>({
-  key: "boardBlockAnimState",
-  default: {
-    status:AnimStatus.Idle,
-    pattern:"floating",
-    frame:0,
-  }
-});
-
-export const HandpiecesAnimState = atomFamily<BlockAnimState, number>({
-  key: "handpieceAnimState",
-  default: {
-    status:AnimStatus.Idle,
-    pattern:"default",
-    frame:0,
-  }
 });
 
 //

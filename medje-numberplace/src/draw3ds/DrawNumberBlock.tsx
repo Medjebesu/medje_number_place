@@ -3,9 +3,9 @@ import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
 import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum, 
-         BoardBlocksAnimState, HandpiecesAnimState, BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksStateControl'
+         BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksStateControl'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { BoardBlockAnimation } from './NumBlockAnimation'
+import { BoardBlockAnimation, SetBoardBlockPattern } from './NumBlockAnimation'
 import { GameLaunchState } from '../gameCtrl/GameControl'
 
 export type BlockProps = {
@@ -96,13 +96,14 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
   } as BlockProps;
 
   // ブロックアニメーション
-  // 自ブロック専用のアニメーションステート(稼働状態・パターン・現フレーム)を取得
-  const [blockAnimState, blockAnimStateSetter] = useRecoilState(BoardBlocksAnimState(props.blockId));
   const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);
   
   let AnimEnable = true;
   if ((!props.blockAnim || false) && gameLaunchState){
     AnimEnable = false;
+  }
+  else if(props.blockNum == 0){
+    SetBoardBlockPattern(props.blockId, "floating");
   }
 
   useFrame(() => {
@@ -126,7 +127,7 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
         color={"#000fff"}
         screenspace={false}
         opacity={Number(hovered)}
-        toneMapped={false}
+        toneMapped={true}
         polygonOffset
         polygonOffsetFactor={10}
         transparent

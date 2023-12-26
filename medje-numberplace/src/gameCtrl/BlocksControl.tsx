@@ -14,7 +14,7 @@ export type SelectState = {
 //
 // デフォルト状態設定
 //
-const boardNumberBlockDefaultAnimPatterm = "floating";
+const boardNumberBlockDefaultAnimPatterm = "default";
 
 // ブロック群制御コンポーネント
 type Prop ={
@@ -161,7 +161,7 @@ const Handpiece:React.FC<HandpiecekProps> = (props) => {
       blockNum={props.num}
       color="blue"
       fontColor="white"
-      width={props.size}
+      width={props.size*1.1}
       volume={0.01}
       blockAnim={props.num == 0}
     />
