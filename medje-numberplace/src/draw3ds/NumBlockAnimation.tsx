@@ -176,7 +176,7 @@ const animations: { name: string, anim: (refCurrent: THREE.Mesh<THREE.BufferGeom
       else if (state.frame < 42) {
         refCurrent.position.x = basePos.x;
         refCurrent.position.y = basePos.y;
-        refCurrent.rotation.z = (state.frame -18) * (360 / 24 / 60);
+        refCurrent.rotation.z = Math.sin(state.frame - 18) / 12;
         return null;
       }
       else if (state.frame < 60) {
