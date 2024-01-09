@@ -165,7 +165,7 @@ const animations: { name: string, anim: (refCurrent: THREE.Mesh<THREE.BufferGeom
     }
   },
   {
-    name: "turning", anim: (refCurrent, state, basePos) => {
+    name: "swinging_long", anim: (refCurrent, state, basePos) => {
       if (state.frame < 18) {
         refCurrent.position.x = basePos.x;
         refCurrent.position.y = basePos.y;
