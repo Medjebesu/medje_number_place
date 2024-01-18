@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
 import { BoardBlockSelector, HandPieceLastDest, HandPieceLastNum, MissTakeCountState } from '../gameCtrl/BlocksStateControl';
 import { DefaultValue, atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { GameScene, GameSceneState } from '../AppInitializer';
 
 // ゲームステータス初期化用コンポーネント
 export const GameStatusInitializer: React.FC = () =>{
@@ -18,7 +19,31 @@ export const GameStatusInitializer: React.FC = () =>{
 
 // ゲームステータス表示HUDコンポーネント
 export const HeadsUpDisp:React.FC = () =>{
+  const gameSceneState = useRecoilValue(GameSceneState);
   
+  switch(gameSceneState){
+    case GameScene.Title:
+      return <HeadsUpDispTitle/>
+
+    case GameScene.InGame:
+      return <HeadsUpDispInGame/>
+    
+    default:
+      return <HeadsUpDispTitle/>
+  }
+}
+
+const HeadsUpDispTitle:React.FC = () =>{
+  return <Container fixed>
+    <Grid container spacing={2}>
+      <Grid xs={2}>
+        <Item>Menu</Item>
+      </Grid>
+    </Grid>
+  </Container>
+}
+
+const HeadsUpDispInGame:React.FC = () =>{
   return <Container fixed>
     <Grid container spacing={2}>
       <Grid xs={2}>
@@ -91,7 +116,7 @@ const MissTakeCountItem:React.FC = () => {
     padding: theme.spacing(1),
     textAlign: 'center',
     color: missProgressFontColor(theme.palette.text.secondary),
-    fontSize:'1.5rem'
+    fontSize:'1.2rem'
   }));
   
   const missTakeCountState = useRecoilValue(MissTakeCountState);  
@@ -113,7 +138,7 @@ const ScoreItem:React.FC = () => {
 // Dbg: ブロック選択状況表示コンポーネント
 const DbgSelectState:React.FC = () =>{
   const ActiveItem = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#088551',
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#51d941',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
@@ -147,7 +172,7 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: 'center',
   color: theme.palette.text.secondary,
-  fontSize:'1.5rem'
+  fontSize:'1.2rem'
 }));
 
 //

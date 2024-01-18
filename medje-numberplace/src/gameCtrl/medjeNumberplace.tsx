@@ -14,9 +14,10 @@ export const NumberPlaceGameDisp:React.FC = () => {
 
   return(
     <Canvas>
-      <pointLight position={[45, 45, 100]} />
       <GameControl />
       <Controls />
+      <ambientLight intensity={0.5} />
+      <directionalLight color={"#ffffff"} intensity={1} position={[0, -2, 4]} />
     </Canvas>
   );
 }
@@ -26,7 +27,7 @@ function Controls(){
   const gl = useThree((state) => state.gl)
   const controls = useMemo(() => new CameraControls(camera, gl.domElement), [])
 
-  return useFrame((state, delta) => {
+  return useFrame((_, delta) => {
     controls.setLookAt(0, -0.75, 7.5, 0, -0.75, 0, true)
     return controls.update(delta)
   })

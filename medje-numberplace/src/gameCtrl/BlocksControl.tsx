@@ -134,9 +134,9 @@ const BoardBlock:React.FC<BoardBlockProps> = (props) =>{
     <DrawBoardNumberBlock
       blockId={props.id}
       blockNum={blockNum}
-      color="orange" // color=
-      selectedColor="#088551"
-      fontColor={isOriginal ? "#555" : "#ffffff"}
+      color="#ff7f50" // color=
+      selectedColor="#51d941"
+      fontColor={isOriginal ? "#555" : "#0080af"}
       locked={isLocked}
       original={isOriginal}
       width={props.size}

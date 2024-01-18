@@ -1,12 +1,12 @@
 import React, { forwardRef, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
-import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
+import { Text, RoundedBox, Outlines, useCursor, Box } from "@react-three/drei"
 import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum, 
          BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksStateControl'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { BoardBlockAnimation, SetBoardBlockPattern } from './NumBlockAnimation'
-import { GameLaunchState } from '../gameCtrl/GameControl'
+import { GameLaunchState } from '../AppInitializer'
 
 export type BlockProps = {
   blockId:number;
@@ -39,16 +39,12 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
 
   return(
     <mesh ref={ref}>
-      <RoundedBox
-        args={[props.width, blockHeight, blockVolume]}
-        radius={0.025}
-        smoothness={10}
-        bevelSegments={4}
-        creaseAngle={0.4}
-      >
-        {NumText}
-        {children}
-      </RoundedBox>
+    <Box
+      args={[props.width, blockHeight, blockVolume]}
+    >
+      {NumText}
+      {children}
+    </Box>
     </mesh>
   );
 });
@@ -74,7 +70,7 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
   let fontColor = props.fontColor;
   if(blockSelector.selected && (blockSelector.id != props.blockId)){
     if(selectedBlockNum == props.blockNum) {
-      fontColor = "#0AA662";
+      fontColor = "#51ff41";
     }
   }
 
@@ -122,9 +118,9 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
       props={setProps}
       ref={boxRef}
     >
-      <meshBasicMaterial color={tileColor}/>
+      <meshBasicMaterial attach="material" color={tileColor}/>
       <Outlines
-        color={"#000fff"}
+        color={"#088551"}
         screenspace={false}
         opacity={Number(hovered)}
         toneMapped={true}
