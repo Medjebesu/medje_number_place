@@ -11,3 +11,8 @@ export const TitleSceneState = atom({
   key: "titleSceneState",
   default: TitleScene.Top
 });
+
+export const TitleSceneStateInitializer:React.FC = () => {
+  return <>
+  </>
+}

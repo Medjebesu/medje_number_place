@@ -1,5 +1,6 @@
 import React from "react";
 import { atom } from "recoil";
+import { TitleSceneStateInitializer } from "./gameCtrl/TitlePageState";
 
 //※ HUD・Canvas間で使用するステートや、Canvas描画前にしておきたい処理を定義・宣言
 
@@ -22,5 +23,7 @@ export const GameLaunchState = atom({
 });
 
 export const AppInitializer:React.FC = () =>{
-  return <></>
+  return <>
+    <TitleSceneStateInitializer />
+  </>
 }
