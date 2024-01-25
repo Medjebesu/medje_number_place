@@ -35,17 +35,6 @@ export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, posi
       {...fontProps}
     >
       <meshPhongMaterial color={textColor} />
-      <Outlines
-        color={"#088551"}
-        screenspace={true}
-        opacity={Number(hovered)}
-        toneMapped={true}
-        polygonOffset
-        polygonOffsetFactor={5}
-        transparent
-        thickness={4}
-        angle={Math.PI}
-      />
       <Box
         args={[collisionWidth, collisionHeight, collisionVolume]}
         onPointerOver={() => setHovered(true)}
@@ -63,3 +52,16 @@ export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, posi
     </Text3D>
   </>
 }
+
+// UIText内でアウトラインを使うと落ちるのでその内直す
+// <Outlines
+//   color={"#088551"}
+//   screenspace={true}
+//   opacity={Number(hovered)}
+//   toneMapped={true}
+//   polygonOffset
+//   polygonOffsetFactor={5}
+//   transparent
+//   thickness={4}
+//   angle={Math.PI}
+// />

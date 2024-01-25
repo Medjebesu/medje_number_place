@@ -1,8 +1,9 @@
 import { DefaultValue, atom, atomFamily, selector, useRecoilValue, useSetRecoilState } from "recoil"
-import { Difficulty } from "./GenerateQuestion";
 import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
 import { NumberPlace } from "./BoardControl"
 import { Vector3 } from "three";
+import { GameControlDifficulty, GameDifficulty } from "./GameControlState";
+import React from "react";
 
 //盤面データ初期化コンポーネント
 type BoardInitializerProps = {
@@ -12,8 +13,8 @@ type BoardInitializerProps = {
 let np:NumberPlace;
 
 export const BoardInitializer:React.FC<BoardInitializerProps> = (/* props */) =>{
-  
-  np = new NumberPlace(Difficulty.Middle);
+  const gameDifficulty = useRecoilValue(GameControlDifficulty);
+  np = new NumberPlace(gameDifficulty);
 
   np.getQuestion().forEach((value, idx) => {
     var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx))

@@ -4,6 +4,8 @@ import { UITextButton } from '../draw3ds/DrawUITextButton';
 import { UIText } from '../draw3ds/DrawUIText';
 import { Vector3 } from 'three';
 import { TitleScene, TitleSceneState } from './TitlePageState';
+import { GameScene, GameSceneSenderInGame, GameSceneState } from '../AppInitializer';
+import { GameDifficulty } from './GameControlState';
 
 export const TitlePage:React.FC = () =>{
   const scene = useRecoilValue(TitleSceneState);
@@ -29,7 +31,6 @@ const TitlePageTop:React.FC = () =>{
 
   return <>
     <UIText
-      key={"titleUIText"}
       textScale={1.5}
       textColor={"#51ff41"}
       position={titlePosition}
@@ -37,7 +38,6 @@ const TitlePageTop:React.FC = () =>{
       Number Place
     </UIText>
     <UITextButton
-      key={"titleUIStartButton"}
       text={"Start"}
       textScale={1.25}
       textColor={"#ffffff"}
@@ -48,29 +48,25 @@ const TitlePageTop:React.FC = () =>{
 }
 
 const TitlePageDiffCultySelect:React.FC = () =>{
-  //const sceneSetter = useSetRecoilState(TitleSceneState);
-  //const onClickMethod = () => {
-  //  sceneSetter(TitleScene.DiffCultySelect);
-  //};
+  const sceneSetter = useSetRecoilState(GameSceneSenderInGame);
   
-  const titlePosition = new Vector3(0,3,0);
-  const startPosition = new Vector3(-2,-1,0);
+  const titlePosition = new Vector3(-4,2,0);
+  const startPosition = new Vector3(-3,-4,0);
 
   return <>
     <UIText
-      key={"titleUIDifficultText"}
-      textScale={2}
+      textScale={1.5}
       textColor={"#51ff41"}
       position={titlePosition}
     >
       Difficult
     </UIText>
     <UITextButton
-      key={"titleUIMiddleButton"}
       text='middle'
-      textScale={2}
+      textScale={1.25}
       textColor={"#ffffff"}
       position={startPosition}
+      onClickMethod = {()=>sceneSetter(GameDifficulty.Middle)}
     />
   </>
 }

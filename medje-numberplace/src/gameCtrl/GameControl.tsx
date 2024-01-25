@@ -38,8 +38,8 @@ const GameControlInGame:React.FC<Props> = (props) => {
     <DrawBackGround />
     <DrawStageBase blockSize={props.blockSize} />
     <BlocksControl blockSize={props.blockSize} />
-    <BoardInitializer />
     <GameStatusInitializer />
+    <BoardInitializer />
   </>
 }
 

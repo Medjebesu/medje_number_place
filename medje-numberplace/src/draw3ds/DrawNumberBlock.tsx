@@ -119,6 +119,7 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
       ref={boxRef}
     >
       <meshBasicMaterial attach="material" color={tileColor}/>
+      
       <Outlines
         color={"#088551"}
         screenspace={false}

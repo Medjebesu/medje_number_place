@@ -1,24 +1,18 @@
-export const enum Difficulty {
-  Light = 1,
-  Easy,
-  Middle,
-  Hard,
-  Expart,
-  Extra
-}
+import { GameDifficulty } from "./GameControlState";
 
 export function GenerateQuestion(difficulty: Difficulty): [number[], number[]] {
   // T.B.D
   switch (difficulty) {
-    case Difficulty.Light:
-    case Difficulty.Easy:
-    case Difficulty.Middle:
+    case GameDifficulty.Middle:
       return MiddleDifficultyQuestion();
-    case Difficulty.Hard:
-    case Difficulty.Expart:
-    case Difficulty.Extra:
+
+    case GameDifficulty.Light:
+    case GameDifficulty.Easy:
+    case GameDifficulty.Hard:
+    case GameDifficulty.Expart:
+    case GameDifficulty.Extra:
     default:
-      console.debug("Invalid parameter. (not registered Difficulty)");
+      console.warn("Invalid parameter. (not registered Difficulty)");
       return MiddleDifficultyQuestion();
   }
 }
