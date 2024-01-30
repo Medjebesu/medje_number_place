@@ -1,4 +1,4 @@
-import { GameDifficulty } from "../gameCtrl/GameControlState";
+import { GameDifficulty } from "../gameCtrl/GameState";
 
 const baseURL = "http://localhost:8080"
 

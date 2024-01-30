@@ -5,7 +5,7 @@ import { UIText } from '../draw3ds/DrawUIText';
 import { Vector3 } from 'three';
 import { TitleScene, TitleSceneState } from './TitlePageState';
 import { GameSceneSenderInGame } from '../AppInitializer';
-import { GameDifficulty } from './GameControlState';
+import { GameDifficulty } from './GameState';
 
 export const TitlePage:React.FC = () =>{
   const scene = useRecoilValue(TitleSceneState);

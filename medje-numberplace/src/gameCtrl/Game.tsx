@@ -1,7 +1,7 @@
 import React from 'react'
 import { DrawStageBase } from './DispDraw'
-import { BlocksControl } from "./BlocksControl"
-import { BoardInitializer } from './BlocksStateControl'
+import { BlocksControl } from "./Blocks"
+import { BoardInitializer } from './BlocksState'
 import { GameStatusInitializer } from '../hudCtrl'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { GameLaunchState, GameScene, GameSceneState } from '../AppInitializer'

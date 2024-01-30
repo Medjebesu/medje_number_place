@@ -1,9 +1,9 @@
 import { DefaultValue, atom, atomFamily, selector, useRecoilValue, useSetRecoilState } from "recoil"
 import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
-import { NumberPlace } from "./BoardControl"
+import { NumberPlace } from "./Board"
 import { Vector3 } from "three";
-import { GameDifficultyState } from "./GameControlState";
-import { NpAnswer, NpQuestion, QAResponseReceived } from "./BoardControlState";
+import { GameDifficultyState } from "./GameState";
+import { NpAnswer, NpQuestion, QAResponseReceived } from "./BoardState";
 import { GenerateQuestion } from "./GenerateQuestion";
 
 //盤面データ初期化コンポーネント

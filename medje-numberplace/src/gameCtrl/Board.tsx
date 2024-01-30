@@ -1,5 +1,5 @@
 import { SetBoardBlockPattern, SetBoardClusterPattern } from "../draw3ds/NumBlockAnimation";
-import { GameDifficulty } from "./GameControlState";
+import { GameDifficulty } from "./GameState";
 
 //
 // ナンバープレース挙動管理クラス

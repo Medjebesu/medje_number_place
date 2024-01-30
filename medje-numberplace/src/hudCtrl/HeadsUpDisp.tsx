@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
-import { BoardBlockSelector, HandPieceLastDest, HandPieceLastNum, MissTakeCountState } from '../gameCtrl/BlocksStateControl';
+import { BoardBlockSelector, HandPieceLastDest, HandPieceLastNum, MissTakeCountState } from '../gameCtrl/BlocksState';
 import { DefaultValue, atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { GameScene, GameSceneState } from '../AppInitializer';
 

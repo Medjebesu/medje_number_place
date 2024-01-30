@@ -1,7 +1,7 @@
 import { DrawBoardNumberBlock, DrawHandpiece } from "../draw3ds";
 import { Vector3 } from "three";
 
-import { BlockStateControlLog, BoardBlocksBasePos, BoardBlocksLocked, BoardBlocksNumber, BoardBlocksOriginal, HandpiecesBasePos } from "./BlocksStateControl";
+import { BlockStateControlLog, BoardBlocksBasePos, BoardBlocksLocked, BoardBlocksNumber, BoardBlocksOriginal, HandpiecesBasePos } from "./BlocksState";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ReactElement } from "react";
 import { SetBoardBlockPattern } from "../draw3ds/NumBlockAnimation";

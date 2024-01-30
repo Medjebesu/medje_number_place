@@ -1,7 +1,7 @@
 import { useSetRecoilState } from "recoil";
 import { GetNPQuestion, NpgqResponse } from "../messagingCtrl/request";
-import { GameDifficulty } from "./GameControlState";
-import { NpAnswer, NpQuestion, QAResponseReceived } from "./BoardControlState";
+import { GameDifficulty } from "./GameState";
+import { NpAnswer, NpQuestion, QAResponseReceived } from "./BoardState";
 
 const selfGenerate = false; // サーバ無しの場合はtrue, 有りの場合はfalse
 

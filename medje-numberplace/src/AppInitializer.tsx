@@ -1,7 +1,7 @@
 import React from "react";
 import { DefaultValue, atom, selector } from "recoil";
 import { TitleSceneStateInitializer } from "./gameCtrl/TitlePageState";
-import { GameDifficultyState, GameControlInitializer, GameDifficulty } from "./gameCtrl/GameControlState";
+import { GameDifficultyState, GameControlInitializer, GameDifficulty } from "./gameCtrl/GameState";
 
 //※ HUD・Canvas間で使用するステートや、Canvas描画前にしておきたい処理を定義・宣言
 

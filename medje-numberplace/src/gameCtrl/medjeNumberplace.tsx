@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { Canvas, useThree, useFrame} from "@react-three/fiber"
 import {ContactShadows, OrbitControls} from "@react-three/drei"
 import CameraControls from 'camera-controls'
-import { GameControl } from './GameControl'
+import { GameControl } from './Game'
 
 //for debug
 //import { Debug_DrawNumberBlocks } from './debug'

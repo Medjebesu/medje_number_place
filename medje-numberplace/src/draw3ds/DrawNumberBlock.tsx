@@ -1,9 +1,9 @@
 import React, { forwardRef, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
-import { Text, RoundedBox, Outlines, useCursor, Box } from "@react-three/drei"
+import { Text, Outlines, useCursor, Box } from "@react-three/drei"
 import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum, 
-         BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksStateControl'
+         BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksState'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { BoardBlockAnimation, SetBoardBlockPattern } from './NumBlockAnimation'
 import { GameLaunchState } from '../AppInitializer'
