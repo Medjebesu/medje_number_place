@@ -1,10 +1,10 @@
 import React from 'react'
-import { atom, useRecoilValue, useSetRecoilState} from 'recoil'
+import { useRecoilValue, useSetRecoilState} from 'recoil'
 import { UITextButton } from '../draw3ds/DrawUITextButton';
 import { UIText } from '../draw3ds/DrawUIText';
 import { Vector3 } from 'three';
 import { TitleScene, TitleSceneState } from './TitlePageState';
-import { GameScene, GameSceneSenderInGame, GameSceneState } from '../AppInitializer';
+import { GameSceneSenderInGame } from '../AppInitializer';
 import { GameDifficulty } from './GameControlState';
 
 export const TitlePage:React.FC = () =>{
@@ -69,11 +69,4 @@ const TitlePageDiffCultySelect:React.FC = () =>{
       onClickMethod = {()=>sceneSetter(GameDifficulty.Middle)}
     />
   </>
-}
-
-function JumpToScene(_scene:TitleScene) {
-  const setter = useSetRecoilState(TitleSceneState);
-  return ()=>{
-    setter(_scene);
-  }
 }

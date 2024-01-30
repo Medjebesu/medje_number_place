@@ -86,7 +86,7 @@ const ElapsedTimer:React.FC = () => {
     setTimeout(() => {
       timeSetter(Math.floor(Date.now() / 1000));
       timeRenderSwitch(!timeRenderState);
-    }, 500);
+    }, 250);
   }
 
   return <Item>
@@ -210,7 +210,7 @@ type GameStartStatus = {
 const GameTimerStarter = selector({
   key: "gameTimerStarter",
   get:({get}):GameStartStatus | null => {
-    return {isStart:false, startTime:get(GameStartTime)};
+    return {isStart:false, startTime:get(GameStartTime)} as GameStartStatus;
   },
   set:({set}, _) => {
     if(!(_ instanceof DefaultValue)) {

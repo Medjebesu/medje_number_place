@@ -11,13 +11,12 @@ import { GameControl } from './GameControl'
 CameraControls.install({ THREE })
 
 export const NumberPlaceGameDisp:React.FC = () => {
-
   return(
     <Canvas>
-      <GameControl />
       <Controls />
       <ambientLight intensity={0.5} />
       <directionalLight color={"#ffffff"} intensity={1} position={[0, -2, 4]} />
+      <GameControl />
     </Canvas>
   );
 }

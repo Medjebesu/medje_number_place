@@ -2,31 +2,41 @@ import { DefaultValue, atom, atomFamily, selector, useRecoilValue, useSetRecoilS
 import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
 import { NumberPlace } from "./BoardControl"
 import { Vector3 } from "three";
-import { GameControlDifficulty, GameDifficulty } from "./GameControlState";
-import React from "react";
+import { GameDifficultyState } from "./GameControlState";
+import { NpAnswer, NpQuestion, QAResponseReceived } from "./BoardControlState";
+import { GenerateQuestion } from "./GenerateQuestion";
 
 //盤面データ初期化コンポーネント
 type BoardInitializerProps = {
   //seed: number; // ナンプレ初期盤面の生成シード値 T.B.D
 }
 
-let np:NumberPlace;
+let np: NumberPlace;
 
-export const BoardInitializer:React.FC<BoardInitializerProps> = (/* props */) =>{
-  const gameDifficulty = useRecoilValue(GameControlDifficulty);
-  np = new NumberPlace(gameDifficulty);
+export const BoardInitializer: React.FC<BoardInitializerProps> = (/* props */) => {
+  const gameDifficulty = useRecoilValue(GameDifficultyState);
 
-  np.getQuestion().forEach((value, idx) => {
-    var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx))
-    var setBlockLocked = useSetRecoilState(BoardBlocksLocked(idx))
-    var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal(idx))
+  const qaReceived = useRecoilValue(QAResponseReceived);
+  var npQuestion = useRecoilValue(NpQuestion);
+  const npAnswer = useRecoilValue(NpAnswer);
 
-    setBlockNum(value);
-    if (value != 0){
-      setBlockLocked(true);
-      setBlockOriginal(true);
-    }
-  });
+  if(!qaReceived){
+    GenerateQuestion(gameDifficulty);
+  }
+  else{
+    np = new NumberPlace(gameDifficulty, npQuestion, npAnswer);
+    np.getQuestion().forEach((value, idx) => {
+      var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx))
+      var setBlockLocked = useSetRecoilState(BoardBlocksLocked(idx))
+      var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal(idx))
+
+      setBlockNum(value);
+      if (value != 0) {
+        setBlockLocked(true);
+        setBlockOriginal(true);
+      }
+    });
+  }
 
   return <>
   </>
@@ -37,7 +47,7 @@ export const BoardInitializer:React.FC<BoardInitializerProps> = (/* props */) =>
 // UI表示用ステート
 //
 export const MissTakeCountState = atom({
-  key:"missTakeCountState",
+  key: "missTakeCountState",
   default: 0
 });
 
@@ -53,33 +63,33 @@ export type BoardSelectState = {
 
 export const BoardBlockSelectState = atom({
   key: 'boardBlockSelectState',
-  default: {selected: false, id:0, blockNum:0} as BoardSelectState,
+  default: { selected: false, id: 0, blockNum: 0 } as BoardSelectState,
 });
 
 export const SelectedBlockNum = atom({
-  key:"selectedBlockNum",
+  key: "selectedBlockNum",
   default: 0
 });
 
 export const BoardBlockSelector = selector({
   key: 'boardBlockSelector',
-  get: ({get}):BoardSelectState => {
+  get: ({ get }): BoardSelectState => {
     return get(BoardBlockSelectState);
   },
-  set: ({get,set}, newVal) => {
-    if(newVal instanceof DefaultValue) {
+  set: ({ get, set }, newVal) => {
+    if (newVal instanceof DefaultValue) {
       set(
-        BoardBlockSelectState, 
+        BoardBlockSelectState,
         newVal
       );
     }
     else {
       var oldVal = get(BoardBlockSelectState);
-      var setVal:BoardSelectState = newVal;
-      if(oldVal.id == newVal.id){
+      var setVal: BoardSelectState = newVal;
+      if (oldVal.id == newVal.id) {
         setVal.selected = !oldVal.selected;
       }
-      else{
+      else {
         setVal.selected = true;
         setVal.id = newVal.id;
       }
@@ -94,7 +104,7 @@ export const BoardBlockSelector = selector({
 //
 export const BoardBlocksBasePos = atomFamily<Vector3, number>({
   key: "boardBlockBasePos",
-  default: new Vector3(0,0,0)
+  default: new Vector3(0, 0, 0)
 });
 export const BoardBlocksLocked = atomFamily<boolean, number>({
   key: 'boardBlocksLocked',
@@ -112,16 +122,16 @@ export const BoardBlocksNumber = atomFamily<number, number>({
 // ブロックナンバー設定処理用セレクター
 export const BlockNumberSetter = selector({
   key: 'blockNumberSelector',
-  get: ({get}):number => {
+  get: ({ get }): number => {
     return get(HandPieceLastNum);
   },
-  set: ({set, get}, setVal) => {
-    if(!(setVal instanceof DefaultValue)){
+  set: ({ set, get }, setVal) => {
+    if (!(setVal instanceof DefaultValue)) {
       const selectState = get(BoardBlockSelectState);
       const isLocked = get(BoardBlocksLocked(selectState.id));
-      if(BlockNumberSetterFilter(selectState, isLocked)){
+      if (BlockNumberSetterFilter(selectState, isLocked)) {
 
-        if(np.checkAnswer(selectState.id, setVal)){
+        if (np.checkAnswer(selectState.id, setVal)) {
           set(HandPieceLastDest, selectState.id);
           set(HandPieceLastNum, setVal);
           set(BoardBlocksNumber(selectState.id), setVal);
@@ -129,26 +139,26 @@ export const BlockNumberSetter = selector({
 
           set(GemePlayScoreSetter, np.setBoardNum(selectState.id, setVal));
           set(SelectedBlockNum, setVal);
-          if(np.checkGameComplete()){
+          if (np.checkGameComplete()) {
             set(GameStartState, false);
             set(GameEndTime, get(ElapsedGameTime) - get(GameStartTime));
           }
         }
-        else{
-          set(MissTakeCountState, get(MissTakeCountState)+1)
+        else {
+          set(MissTakeCountState, get(MissTakeCountState) + 1)
         }
       }
     }
   }
 });
 
-const BlockNumberSetterFilter = (_selectState:BoardSelectState, _isLocked:boolean) =>{
+const BlockNumberSetterFilter = (_selectState: BoardSelectState, _isLocked: boolean) => {
   // 番号設定先の盤面ブロックが選択されていない場合
-  if( !_selectState.selected){
+  if (!_selectState.selected) {
     return false;
   }
   // 選択した盤面に既に番号が入っている場合
-  if(_isLocked) {
+  if (_isLocked) {
     return false;
   }
 
@@ -160,7 +170,7 @@ const BlockNumberSetterFilter = (_selectState:BoardSelectState, _isLocked:boolea
 //
 export const HandpiecesBasePos = atomFamily<Vector3, number>({
   key: "handpiecesBasePos",
-  default: new Vector3(0,0,0)
+  default: new Vector3(0, 0, 0)
 });
 
 // 手駒用動作モード定義
@@ -172,7 +182,7 @@ export const enum ActMode {
 
 // 手駒用ブロック選択状態制御用ステート・セレクタ
 export type SelectHandpiece = {
-  blockNum:  number;
+  blockNum: number;
   actMode: ActMode;
   destId: number;
 }
@@ -200,6 +210,6 @@ export const BlockStateControlLog: React.FC = () => {
   const settedVal = useRecoilValue(BoardBlockSelector);
   console.debug("BlockSelector state Changed:" + " selected=" + settedVal.selected + " id=" + settedVal.id);
 
-  return<>
+  return <>
   </>
 }

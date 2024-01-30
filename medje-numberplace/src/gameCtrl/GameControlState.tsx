@@ -10,8 +10,8 @@ export const enum GameDifficulty {
   Extra
 }
 
-export const GameControlDifficulty = atom({
-  key: "gameControlDifficulty",
+export const GameDifficultyState = atom({
+  key: "gameDifficultyState",
   default: GameDifficulty.None
 });
 

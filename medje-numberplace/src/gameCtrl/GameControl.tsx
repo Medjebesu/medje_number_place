@@ -9,7 +9,7 @@ import { DrawBackGround } from '../draw3ds'
 import { TitlePage } from './TitlePage'
 
 export const GameControl:React.FC = () => {
-    
+  console.debug("Call GameControl.");
   const gameSceneState = useRecoilValue(GameSceneState);
 
   switch(gameSceneState){
@@ -30,20 +30,23 @@ type Props ={
 }
 
 const GameControlLoading:React.FC = () => {
+  console.debug("GameScene change -> Loading");
   return <GameLaunchIndicator/>
 }
 
 const GameControlInGame:React.FC<Props> = (props) => {
+  console.debug("GameScene change -> InGame");
   return <>
+    <GameStatusInitializer />
+    <BoardInitializer />
     <DrawBackGround />
     <DrawStageBase blockSize={props.blockSize} />
     <BlocksControl blockSize={props.blockSize} />
-    <GameStatusInitializer />
-    <BoardInitializer />
   </>
 }
 
 const GameControlTitle:React.FC = () => {
+  console.debug("GameScene change -> Title");
   return <>
     <DrawBackGround />
     <TitlePage />

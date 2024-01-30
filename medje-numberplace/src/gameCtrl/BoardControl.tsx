@@ -1,6 +1,5 @@
 import { SetBoardBlockPattern, SetBoardClusterPattern } from "../draw3ds/NumBlockAnimation";
 import { GameDifficulty } from "./GameControlState";
-import { GenerateQuestion } from "./GenerateQuestion";
 
 //
 // ナンバープレース挙動管理クラス
@@ -11,10 +10,15 @@ export class NumberPlace {
   private _answer: number[];
   private _board: number[];
 
-  constructor(difficulty: GameDifficulty) {
+  constructor(
+    difficulty: GameDifficulty,
+    question: number[],
+    answer: number[]
+  ){
     this._difficulty = difficulty; 
-    [this._question, this._answer] = GenerateQuestion(difficulty);
-    this._board = this._question;
+    this._question = question;
+    this._answer = answer;
+    this._board = [...question];
   }
   
   /*

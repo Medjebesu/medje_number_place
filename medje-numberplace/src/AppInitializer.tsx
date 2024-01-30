@@ -1,7 +1,7 @@
 import React from "react";
 import { DefaultValue, atom, selector } from "recoil";
 import { TitleSceneStateInitializer } from "./gameCtrl/TitlePageState";
-import { GameControlDifficulty, GameControlInitializer, GameDifficulty } from "./gameCtrl/GameControlState";
+import { GameDifficultyState, GameControlInitializer, GameDifficulty } from "./gameCtrl/GameControlState";
 
 //※ HUD・Canvas間で使用するステートや、Canvas描画前にしておきたい処理を定義・宣言
 
@@ -39,13 +39,13 @@ export const InGameStatusSelecter = selector({
   key: "inGameStatusSelecter",
   get: ({get}):InGameStatus => {
     return {
-      difficulty: get(GameControlDifficulty),
+      difficulty: get(GameDifficultyState),
       status: get(InGameStatusState),
     }
   },
   set: ({set}, newVal) =>{
     if (!(newVal instanceof DefaultValue)){
-      set(GameControlDifficulty, newVal.difficulty);
+      set(GameDifficultyState, newVal.difficulty);
       set(InGameStatusState, newVal.status);
     }
   }
