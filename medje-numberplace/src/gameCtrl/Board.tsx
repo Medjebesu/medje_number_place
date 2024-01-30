@@ -79,31 +79,31 @@ export class NumberPlace {
 
     // 行が成立した時
     const colBelong = colClusterMap.get(destIdx);
-    if (colBelong && this._checkCluster(colCluster[colBelong], destIdx)) {
+    if (colBelong != undefined && this._checkCluster(colCluster[colBelong], destIdx)) {
       tempPoint += (10 * this._difficulty);
       establishedColCluster = true;
     }
 
     // 列が成立した時
     const rowBelong = rowClusterMap.get(destIdx);
-    if (rowBelong && this._checkCluster(rowCluster[rowBelong], destIdx)) {
+    if (rowBelong != undefined && this._checkCluster(rowCluster[rowBelong], destIdx)) {
       tempPoint += (10 * this._difficulty);
       establishedRowCluster = true;
     }
 
     // boxが成立した時
     const boxBelong = boxClusterMap.get(destIdx);
-    if (boxBelong && this._checkCluster(boxCluster[boxBelong], destIdx)) {
+    if (boxBelong != undefined && this._checkCluster(boxCluster[boxBelong], destIdx)) {
       tempPoint += (10 * this._difficulty);
       establishedBoxCluster = true;
     }
 
     if(establishedColCluster || establishedRowCluster || establishedBoxCluster){
-      if(establishedColCluster && colBelong)
+      if(establishedColCluster && colBelong != undefined)
         SetBoardClusterPattern(colCluster[colBelong], "swinging_long");
-      if(establishedRowCluster && rowBelong)
+      if(establishedRowCluster && rowBelong != undefined)
         SetBoardClusterPattern(rowCluster[rowBelong], "swinging_long");
-      if(establishedBoxCluster && boxBelong)
+      if(establishedBoxCluster && boxBelong != undefined)
         SetBoardClusterPattern(boxCluster[boxBelong], "swinging_long");
     }
     else {
