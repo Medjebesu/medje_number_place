@@ -23,6 +23,3 @@ dist-ssr
 *.sln
 *.sw?
 .vite
-
-# 定義ファイルの除外
-definition.tsx
