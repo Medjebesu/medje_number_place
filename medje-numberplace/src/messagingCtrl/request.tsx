@@ -1,8 +1,8 @@
 import { GameDifficulty } from "../gameCtrl/GameState";
+import { baseUrl } from "./definition";
 
-const baseURL = "http://localhost:8080"
-
-const API_npqg = "npqg"
+const baseURL = baseUrl;
+const API_npqg = "npgq"
 
 export type NpgqResponse ={
 	question: number[],
