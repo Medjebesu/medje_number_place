@@ -5,13 +5,19 @@ import { Vector3 } from "three";
 import { GameDifficultyState } from "./GameState";
 import { NpAnswer, NpQuestion, QAResponseReceived } from "./BoardState";
 import { GenerateQuestion } from "./GenerateQuestion";
+import { SoundEnableState } from "../AppInitializer";
+
+// 効果音読み込み
+const incorrectSE = new Audio("/sounds/puzzle_num_incorrect.mp3");
+const singleCorrectSE = new Audio("/sounds/puzzle_num_correct_s.mp3");
+const groupCorrectSE = new Audio("/sounds/puzzle_num_correct_g.mp3");
 
 //盤面データ初期化コンポーネント
 type BoardInitializerProps = {
   //seed: number; // ナンプレ初期盤面の生成シード値 T.B.D
 }
 
-let np: NumberPlace;
+let np: NumberPlace | null = null;
 
 export const BoardInitializer: React.FC<BoardInitializerProps> = (/* props */) => {
   const gameDifficulty = useRecoilValue(GameDifficultyState);
@@ -24,18 +30,20 @@ export const BoardInitializer: React.FC<BoardInitializerProps> = (/* props */) =
     GenerateQuestion(gameDifficulty);
   }
   else{
-    np = new NumberPlace(gameDifficulty, npQuestion, npAnswer);
-    np.getQuestion().forEach((value, idx) => {
-      var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx))
-      var setBlockLocked = useSetRecoilState(BoardBlocksLocked(idx))
-      var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal(idx))
+    if(!np) {
+      np = new NumberPlace(gameDifficulty, npQuestion, npAnswer);
+      np.getQuestion().forEach((value, idx) => {
+        var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx))
+        var setBlockLocked = useSetRecoilState(BoardBlocksLocked(idx))
+        var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal(idx))
 
-      setBlockNum(value);
-      if (value != 0) {
-        setBlockLocked(true);
-        setBlockOriginal(true);
-      }
-    });
+        setBlockNum(value);
+        if (value != 0) {
+          setBlockLocked(true);
+          setBlockOriginal(true);
+        }
+      });
+    }
   }
 
   return <>
@@ -129,7 +137,9 @@ export const BlockNumberSetter = selector({
     if (!(setVal instanceof DefaultValue)) {
       const selectState = get(BoardBlockSelectState);
       const isLocked = get(BoardBlocksLocked(selectState.id));
+
       if (BlockNumberSetterFilter(selectState, isLocked)) {
+        if(!np) return;
 
         if (np.checkAnswer(selectState.id, setVal)) {
           set(HandPieceLastDest, selectState.id);
@@ -137,15 +147,30 @@ export const BlockNumberSetter = selector({
           set(BoardBlocksNumber(selectState.id), setVal);
           set(BoardBlocksLocked(selectState.id), true);
 
-          set(GemePlayScoreSetter, np.setBoardNum(selectState.id, setVal));
+          let [resultStatus, tempScore] = np.setBoardNum(selectState.id, setVal);
+          set(GemePlayScoreSetter, tempScore);
           set(SelectedBlockNum, setVal);
+          
+          if(get(SoundEnableState)){
+            switch(resultStatus){
+              case 0: 
+                incorrectSE.play();
+                return;
+              case 1: 
+                singleCorrectSE.play();
+                return;
+              default: 
+                groupCorrectSE.play();
+            }
+          }
           if (np.checkGameComplete()) {
             set(GameStartState, false);
             set(GameEndTime, get(ElapsedGameTime) - get(GameStartTime));
           }
         }
         else {
-          set(MissTakeCountState, get(MissTakeCountState) + 1)
+          if(get(SoundEnableState)) incorrectSE.play();
+          set(MissTakeCountState, get(MissTakeCountState) + 1);
         }
       }
     }

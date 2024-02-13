@@ -83,3 +83,9 @@ export const AppInitializer:React.FC = () =>{
     <GameControlInitializer />
   </>
 }
+
+// ミュート切替トグル
+export const SoundEnableState = atom({
+  key: "soundEnableState",
+  default: true
+});

@@ -6,7 +6,7 @@ import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum,
          BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksState'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { BoardBlockAnimation, SetBoardBlockPattern } from './NumBlockAnimation'
-import { GameLaunchState } from '../AppInitializer'
+import { GameLaunchState, SoundEnableState } from '../AppInitializer'
 
 export type BlockProps = {
   blockId:number;
@@ -61,8 +61,17 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
   const [blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
   const [selectedBlockNum, setSelectBlockNum] = useRecoilState(SelectedBlockNum);
   const gameLaunchState = useRecoilValue(GameLaunchState);
+  const isSEEnable = useRecoilValue(SoundEnableState);
+
+  // 選択時効果音
+  const selectSE = isSEEnable? new Audio("/sounds/puzzle_cursor.mp3") : null;
+  if(selectSE){
+    selectSE.loop = false;
+    selectSE.muted = false;
+  }
 
   const onBlockSelect = () => {
+    if(selectSE) selectSE.play();
     setBlockSelector({selected:!blockSelector.selected, id:props.blockId});
     setSelectBlockNum(props.blockNum);
   }

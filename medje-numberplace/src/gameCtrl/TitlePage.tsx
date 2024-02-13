@@ -42,6 +42,7 @@ const TitlePageTop:React.FC = () =>{
       textScale={1.25}
       textColor={"#ffffff"}
       position={startPosition}
+      onClickSEPath={'sounds/decide.mp3'}
       onClickMethod = {onClickMethod}
     />
   </>
@@ -66,6 +67,8 @@ const TitlePageDiffCultySelect:React.FC = () =>{
       textScale={1.25}
       textColor={"#ffffff"}
       position={startPosition}
+      hoverSEPath={'sounds/cursor.mp3'}
+      onClickSEPath={'sounds/decide.mp3'}
       onClickMethod = {()=>sceneSetter(GameDifficulty.Middle)}
     />
   </>

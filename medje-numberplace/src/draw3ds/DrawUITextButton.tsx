@@ -1,16 +1,20 @@
 import * as THREE from 'three'
 import { Box, Center, Outlines, Text3D, useCursor } from '@react-three/drei'
 import React from 'react'
+import { useRecoilValue } from 'recoil';
+import { SoundEnableState } from '../AppInitializer';
 
 type Props = {
   text: string,
   textScale: number,
   textColor: THREE.Color | string,
   position: THREE.Vector3,
+  hoverSEPath?: string;
+  onClickSEPath?: string;
   onClickMethod?: () => void,
 }
 
-export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, position, onClickMethod }: Props) => {
+export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, position, hoverSEPath, onClickSEPath, onClickMethod }: Props) => {
 
   const letterSpace = 0.125;
   const collisionPosition = 
@@ -24,8 +28,24 @@ export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, posi
   const collisionVolume = 0.5;
 
   const fontProps = { font: '/fonts/Roboto/Roboto Black.json', fontSize: 24, letterSpacing: letterSpace, lineHeight: 24, 'material-toneMapped': false, characters: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" }
+
+  const isSEEnable = useRecoilValue(SoundEnableState);
   const [hovered, setHovered] = React.useState(false);
   useCursor(hovered);
+
+  let hoverSE:HTMLAudioElement | null = null;
+  if(hoverSEPath != undefined && hoverSEPath != ""){
+    hoverSE = new Audio(hoverSEPath);
+    hoverSE.loop = false;
+    hoverSE.muted = false;
+  }
+
+  let onClickSE:HTMLAudioElement | null = null;
+  if(onClickSEPath != undefined && onClickSEPath != ""){
+    onClickSE = new Audio(onClickSEPath);
+    onClickSE.loop = false;
+    onClickSE.muted = false;
+  }
 
   return <>
     <Text3D
@@ -37,10 +57,16 @@ export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, posi
       <meshPhongMaterial color={textColor} />
       <Box
         args={[collisionWidth, collisionHeight, collisionVolume]}
-        onPointerOver={() => setHovered(true)}
+        onPointerOver={() => {
+          if(hoverSE && isSEEnable) hoverSE.play();
+          setHovered(true);
+        }}
         onPointerOut={() => setHovered(false)}
         position={collisionPosition}
-        onClick={onClickMethod}
+        onClick={()=>{
+          if(onClickSE && isSEEnable) onClickSE.play();
+          if(onClickMethod) onClickMethod();
+        }}
       >
         <meshPhongMaterial
           transparent={true}

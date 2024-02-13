@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import Container from '@mui/material/Container'
+import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2';
+import Button from '@mui/material/Button';
+import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined'
+import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined'
 import { BoardBlockSelector, HandPieceLastDest, HandPieceLastNum, MissTakeCountState } from '../gameCtrl/BlocksState';
 import { DefaultValue, atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { GameScene, GameSceneState } from '../AppInitializer';
+import { GameScene, GameSceneState, SoundEnableState } from '../AppInitializer';
 
 // ゲームステータス初期化用コンポーネント
 export const GameStatusInitializer: React.FC = () =>{
@@ -34,38 +37,92 @@ export const HeadsUpDisp:React.FC = () =>{
 }
 
 const HeadsUpDispTitle:React.FC = () =>{
-  return <Container fixed>
-    <Grid container spacing={2}>
-      <Grid xs={2}>
-        <Item>Menu</Item>
+  return <Container>
+    <Grid 
+      container
+      justifyContent="space-between"
+      flexDirection={{ xs: 'column', sm: 'row' }}
+      spacing={2}
+    >
+      <Grid xs={2} sx={{ order: { xs: 2, sm: 1 } }}>
+        <MenuButtonContainer/>
+      </Grid>
+      <Grid xs={2} sx={{ order: { xs: 1, sm: 2 } }}>
+        <SoundCtrlContainer/>
       </Grid>
     </Grid>
   </Container>
 }
 
 const HeadsUpDispInGame:React.FC = () =>{
-  return <Container fixed>
-    <Grid container spacing={2}>
-      <Grid xs={2}>
-        <Item>Menu</Item>
+  return <Container>
+    <Grid 
+      container
+      justifyContent="space-between"
+      flexDirection={{ xs: 'column', sm: 'row' }}
+      spacing={2}
+    >
+      <Grid xs={2} sx={{ order: { xs: 3, sm: 1 } }}>
+        <MenuButtonContainer/>
       </Grid>
-      <Grid xs={3} md={3} xsOffset={2.5} mdOffset={2.5}>
-        <ElapsedTimer/>
+      <Grid xs={8} sx={{ order: { xs: 2, sm: 2 } }}>
+        <GameInfoContainer/>
       </Grid>
-      <Grid xs={4} md={4} xsOffset="auto" mdOffset="auto">
-        <ScoreItem/>
-      </Grid>
-      <Grid xs={3} md={2}>
-        <DbgSelectState/>
-      </Grid>
-      <Grid xs={4} md={3}>
-        <DbgHandpieceDest/>
-      </Grid>
-      <Grid xs={4} md={4} xsOffset={1} mdOffset={3}>
-        <MissTakeCountItem/>
+      <Grid xs={2} sx={{ order: { xs: 1, sm: 3 } }}>
+        <SoundCtrlContainer/>
       </Grid>
     </Grid>
   </Container>
+}
+
+const MenuButtonContainer:React.FC = ()=> {
+  return <Grid container spacing={2}>
+    <Grid xs={12}>
+      <Item>Menu</Item>
+    </Grid>
+  </Grid>
+}
+
+const SoundCtrlContainer:React.FC = ()=> {
+
+  const [isSEEnable, switchSEEnable] = useRecoilState(SoundEnableState);
+  const buttonLabel = isSEEnable ? "ON" : "OFF";
+  const onClickMethod = 
+    ()=>switchSEEnable(!isSEEnable);
+
+  return <Grid container spacing={2}>
+    <Grid xs={8}>
+      <Button 
+        variant="contained" 
+        size='large'
+        
+        startIcon={isSEEnable?<VolumeUpOutlinedIcon />:<VolumeOffOutlinedIcon />}
+        onClick={onClickMethod}
+      >
+        {buttonLabel}
+      </Button>
+    </Grid>
+  </Grid>
+}
+
+const GameInfoContainer:React.FC = () =>{
+  return <Grid container spacing={2}>
+    <Grid xs={5} md={5} xsOffset={2} mdOffset={2}>
+      <ElapsedTimer/>
+    </Grid>
+    <Grid xs={5} md={5} xsOffset="auto" mdOffset="auto">
+      <ScoreItem/>
+    </Grid>
+    <Grid xs={3} md={3}>
+      <DbgSelectState/>
+    </Grid>
+    <Grid xs={4} md={4}>
+      <DbgHandpieceDest/>
+    </Grid>
+    <Grid xs={3} md={4} >
+      <MissTakeCountItem/>
+    </Grid>
+  </Grid>
 }
 
 // 経過時間表示コンポーネント
@@ -143,7 +200,7 @@ const DbgSelectState:React.FC = () =>{
     padding: theme.spacing(1),
     textAlign: 'center',
     color: "white",
-    fontSize:'1.5rem'
+    fontSize:'1.2rem'
   }));
 
   const boardBlockSelectState = useRecoilValue(BoardBlockSelector);

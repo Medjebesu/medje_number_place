@@ -66,11 +66,14 @@ export class NumberPlace {
     return this._difficulty;
   }
 
-  setBoardNum(destIdx:number, setNum:number):number {
+  setBoardNum(destIdx:number, setNum:number) {
+
+    let resultStatus = 1;
     let tempPoint = 1 * this._difficulty;
+    
     if(this._board[destIdx] != 0){
       console.debug("Number is already set. Idx:" + destIdx + " , setNum:" + setNum);
-      return 0;
+      return [0, 0];
     }
 
     let establishedColCluster = false;
@@ -80,6 +83,7 @@ export class NumberPlace {
     // 行が成立した時
     const colBelong = colClusterMap.get(destIdx);
     if (colBelong != undefined && this._checkCluster(colCluster[colBelong], destIdx)) {
+      resultStatus += 2;
       tempPoint += (10 * this._difficulty);
       establishedColCluster = true;
     }
@@ -87,6 +91,7 @@ export class NumberPlace {
     // 列が成立した時
     const rowBelong = rowClusterMap.get(destIdx);
     if (rowBelong != undefined && this._checkCluster(rowCluster[rowBelong], destIdx)) {
+      resultStatus += 4;
       tempPoint += (10 * this._difficulty);
       establishedRowCluster = true;
     }
@@ -94,6 +99,7 @@ export class NumberPlace {
     // boxが成立した時
     const boxBelong = boxClusterMap.get(destIdx);
     if (boxBelong != undefined && this._checkCluster(boxCluster[boxBelong], destIdx)) {
+      resultStatus += 8;
       tempPoint += (10 * this._difficulty);
       establishedBoxCluster = true;
     }
@@ -111,7 +117,7 @@ export class NumberPlace {
     }
 
     this._board[destIdx] = setNum;
-    return tempPoint;
+    return [resultStatus, tempPoint];
   }
 
   _checkCluster(cluster:number[], destIdx:number){
