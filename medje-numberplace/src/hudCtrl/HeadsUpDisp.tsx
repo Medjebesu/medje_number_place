@@ -93,9 +93,8 @@ const SoundCtrlContainer:React.FC = ()=> {
   return <Grid container spacing={2}>
     <Grid xs={8}>
       <Button 
-        variant="contained" 
+        variant={isSEEnable? "contained": "outlined"}
         size='large'
-        
         startIcon={isSEEnable?<VolumeUpOutlinedIcon />:<VolumeOffOutlinedIcon />}
         onClick={onClickMethod}
       >
