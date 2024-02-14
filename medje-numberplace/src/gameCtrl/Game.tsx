@@ -7,6 +7,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { GameLaunchState, GameScene, GameSceneState } from '../AppInitializer'
 import { DrawBackGround } from '../draw3ds'
 import { TitlePage } from './TitlePage'
+import { NPSubControl } from './NPSubControl'
 
 export const GameControl:React.FC = () => {
   console.debug("Call GameControl.");
@@ -42,6 +43,7 @@ const GameControlInGame:React.FC<Props> = (props) => {
     <DrawBackGround />
     <DrawStageBase blockSize={props.blockSize} />
     <BlocksControl blockSize={props.blockSize} />
+    <NPSubControl />
   </>
 }
 

@@ -11,6 +11,7 @@ import { GameLaunchState, SoundEnableState } from '../AppInitializer'
 export type BlockProps = {
   blockId:number;
   blockNum:number;
+  blockMemo?:boolean[];
   color:THREE.ColorRepresentation;
   selectedColor?:THREE.ColorRepresentation | undefined;
   fontColor?:THREE.ColorRepresentation  | undefined;
@@ -27,22 +28,43 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
   const blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString());
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
-  const fontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
 
-  const fontColor = props.original ? "#555" : "#ffffff";
+  const numFontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
+  const numFontColor = props.original ? "#555" : "#ffffff";
 
   const NumText = (
-    <Text color={props.fontColor ? props.fontColor : fontColor} position={[0, -(blockHeight/10),blockVolume]} {...fontProps}>
+    <Text color={props.fontColor ? props.fontColor : numFontColor} position={[0, -(blockHeight/10),blockVolume]} {...numFontProps}>
       {blockNum}
     </Text>
   );
+
+  let MemoText = (<Text> </Text>)
+  if (props.blockMemo) {
+    const memoFontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width / 3, letterSpacing: props.width / 18, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
+    const memoFontColor = "#ffffff";
+    let memoString = "";
+    for(let i = 0; i < 3; i++){
+      for(let j = 0; j < 3; j++){
+        var idx = i * 3 + j;
+        props.blockMemo[idx] ? memoString += (idx + 1) : memoString += "  ";
+        memoString += " ";
+      }
+      memoString += "\n";
+    }
+
+    MemoText = (
+      <Text color={memoFontColor} position={[0, -(props.width / 6), blockVolume]} {...memoFontProps}>
+        {memoString}
+      </Text>
+    );
+  }
 
   return(
     <mesh ref={ref}>
     <Box
       args={[props.width, blockHeight, blockVolume]}
     >
-      {NumText}
+      {props.blockNum != 0 ? NumText : MemoText}
       {children}
     </Box>
     </mesh>
@@ -85,20 +107,10 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
 
   const tileColor = (blockSelector.selected && blockSelector.id==props.blockId)? props.selectedColor : props.color;
   
-  let setProps= {
-    blockId:props.blockId,
-    blockNum:props.blockNum,
-    color:props.color,
-    selectedColor:props.selectedColor,
-    locked:props.locked,
-    original:props.original,
-    width:props.width,
-    height:blockHeight,
-    volume:blockVolume,
-    blockAnim:props.blockAnim,
-
-    fontColor: fontColor,
-  } as BlockProps;
+  let setProps = {...props}
+  setProps.height = blockHeight;
+  setProps.volume = blockVolume;
+  setProps.fontColor = fontColor;
 
   // ブロックアニメーション
   const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);

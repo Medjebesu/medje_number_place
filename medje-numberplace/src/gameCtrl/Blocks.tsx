@@ -1,7 +1,7 @@
 import { DrawBoardNumberBlock, DrawHandpiece } from "../draw3ds";
 import { Vector3 } from "three";
 
-import { BlockStateControlLog, BoardBlocksBasePos, BoardBlocksLocked, BoardBlocksNumber, BoardBlocksOriginal, HandpiecesBasePos } from "./BlocksState";
+import { BlockStateControlLog, BoardBlocksBasePos, BoardBlocksLocked, BoardBlocksMemos, BoardBlocksNumber, BoardBlocksOriginal, HandpiecesBasePos } from "./BlocksState";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { ReactElement } from "react";
 import { SetBoardBlockPattern } from "../draw3ds/NumBlockAnimation";
@@ -127,6 +127,7 @@ type BoardBlockProps = {
 }
 const BoardBlock:React.FC<BoardBlockProps> = (props) =>{
   const blockNum = useRecoilValue(BoardBlocksNumber(props.id));
+  const blockMemo = useRecoilValue(BoardBlocksMemos(props.id));
   const isLocked = useRecoilValue(BoardBlocksLocked(props.id));
   const isOriginal = useRecoilValue(BoardBlocksOriginal(props.id));
 
@@ -134,6 +135,7 @@ const BoardBlock:React.FC<BoardBlockProps> = (props) =>{
     <DrawBoardNumberBlock
       blockId={props.id}
       blockNum={blockNum}
+      blockMemo={blockMemo}
       color="#ff7f50" // color=
       selectedColor="#51d941"
       fontColor={isOriginal ? "#555" : "#0080af"}
