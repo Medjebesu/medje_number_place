@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
-import { Text, Outlines, useCursor, Box } from "@react-three/drei"
+import { Text, useCursor, Box } from "@react-three/drei"
 import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum, 
          BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksState'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
@@ -24,7 +24,7 @@ export type BlockProps = {
 }
 
 // ブロック描画
-const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, {props:BlockProps, children: React.ReactNode}>( ({props, children}, ref) => {
+const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, {props:BlockProps,children: React.ReactNode, onClick?:()=>void}>( ({props, children, onClick}, ref) => {
   const blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString());
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
@@ -63,6 +63,7 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
     <mesh ref={ref}>
     <Box
       args={[props.width, blockHeight, blockVolume]}
+      onClick={onClick}
     >
       {props.blockNum != 0 ? NumText : MemoText}
       {children}
@@ -77,8 +78,8 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
 
-  const [hovered, setHovered] = React.useState(false);
-  useCursor(hovered);
+  //const [hovered, setHovered] = React.useState(false); //※Outlines用
+  //useCursor(hovered);
 
   const [blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
   const [selectedBlockNum, setSelectBlockNum] = useRecoilState(SelectedBlockNum);
@@ -138,34 +139,37 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
     <DrawNumberBlock
       props={setProps}
       ref={boxRef}
+      onClick={onBlockSelect}
     >
       <meshBasicMaterial attach="material" color={tileColor}/>
       
-      <Outlines
-        color={"#088551"}
-        screenspace={false}
-        opacity={Number(hovered)}
-        toneMapped={true}
-        polygonOffset
-        polygonOffsetFactor={10}
-        transparent
-        thickness={setProps.width*0.05}
-        angle={Math.PI}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        onClick={onBlockSelect}
-      />
     </DrawNumberBlock>
   );
 }
+/* Outlinesつけると画面遷移でこけるので除外中
+<Outlines
+color={"#088551"}
+screenspace={false}
+opacity={Number(hovered)}
+toneMapped={true}
+polygonOffset
+polygonOffsetFactor={10}
+transparent
+thickness={setProps.width*0.05}
+angle={Math.PI}
+onPointerOver={() => setHovered(true)}
+onPointerOut={() => setHovered(false)}
+onClick={onBlockSelect}
+/>
+*/
 
 // 手駒用数字ブロック
 export const DrawHandpiece:React.FC<BlockProps> = (props) => {
   const blockBasePos = useRecoilValue(HandpiecesBasePos(props.blockId));
   const blockHeight = (props.height || props.width);
   
-  const [hovered, setHovered] = React.useState(false);
-  useCursor(hovered);
+  //const [hovered, setHovered] = React.useState(false); //※Outlines用
+  //useCursor(hovered);
 
   const setBlockNumber = useSetRecoilState(BlockNumberSetter);
   const gameLaunchState = useRecoilValue(GameLaunchState);
@@ -196,22 +200,26 @@ export const DrawHandpiece:React.FC<BlockProps> = (props) => {
     <DrawNumberBlock
       props={props}
       ref={boxRef}
+      onClick={onBlockSelect}
     >
       <meshBasicMaterial color={tileColor}/>
-      <Outlines
-        color={"#ff0f00"}
-        screenspace={false}
-        opacity={Number(hovered)}
-        toneMapped={false}
-        polygonOffset
-        polygonOffsetFactor={10}
-        transparent
-        thickness={props.width*0.05}
-        angle={Math.PI}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        onClick={onBlockSelect}
-      />
     </DrawNumberBlock>
   );
 }
+
+/* Outlinesつけると画面遷移でこけるので除外中
+<Outlines
+color={"#ff0f00"}
+screenspace={false}
+opacity={Number(hovered)}
+toneMapped={false}
+polygonOffset
+polygonOffsetFactor={10}
+transparent
+thickness={props.width*0.05}
+angle={Math.PI}
+onPointerOver={() => setHovered(true)}
+onPointerOut={() => setHovered(false)}
+onClick={onBlockSelect}
+/>
+*/

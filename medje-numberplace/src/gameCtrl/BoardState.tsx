@@ -17,12 +17,16 @@ export const BoardInitializer: React.FC<BoardInitializerProps> = (/* props */) =
   const qaReceived = useRecoilValue(QAResponseReceived);
 
   if(!qaReceived){
-    GenerateQuestion(gameDifficulty);
-    return <></>
+    console.debug("Call GenerateQuestion.");
+    return <GenerateQuestion difficulty={gameDifficulty} />
   }
   else{
     if(!np) {
       return <BlocksDataInitializer />
+    }
+    else{
+      console.debug("Call np is null?");
+      return <></>
     }
   }
 }
@@ -53,7 +57,7 @@ const BlocksDataInitializer:React.FC = () =>{
   return <></>
 }
 
-export const BoardStateResetter = selector({
+export const BoardStateReset = selector({
   key: "boardStateReset",
   get: () => {return null;},
   set:({ set }, _) => {

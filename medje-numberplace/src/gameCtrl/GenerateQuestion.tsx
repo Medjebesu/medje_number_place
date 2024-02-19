@@ -3,10 +3,13 @@ import { GetNPQuestion, NpgqResponse } from "../messagingCtrl/request";
 import { GameDifficulty } from "./GameState";
 import { NpAnswer, NpQuestion, QAResponseReceived } from "./BoardState";
 import { answers, questions } from "./configure";
+import { GamePlayScore } from "../hudCtrl";
 
 const selfGenerate = false; // サーバ無しの場合はtrue, 有りの場合はfalse
 
-export function GenerateQuestion(difficulty: GameDifficulty) {
+export const GenerateQuestion:React.FC<{difficulty:GameDifficulty}> = ({difficulty}) => {
+
+  const gameScoreSetter = useSetRecoilState(GamePlayScore);
 
   switch (difficulty) {
     case GameDifficulty.Middle:
@@ -25,13 +28,15 @@ export function GenerateQuestion(difficulty: GameDifficulty) {
       console.warn("Invalid parameter. (not registered Difficulty)");
       InquiryQandA(GameDifficulty.Middle);
   }
+  gameScoreSetter(0);
+  return <></>
 }
 
 function InquiryQandA(difficulty: GameDifficulty) {
 
   const setReceived = useSetRecoilState(QAResponseReceived);
   const setQuestion = useSetRecoilState(NpQuestion);
-  const setAnswer = useSetRecoilState(NpAnswer)
+  const setAnswer = useSetRecoilState(NpAnswer);
 
   // サーバ有りの場合
   if (!selfGenerate) {

@@ -1,5 +1,5 @@
 import { DefaultValue, atom, atomFamily, selector, useRecoilValue } from "recoil"
-import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
+import { GemePlayScoreSetter, GameTimerState, GameEndTime, ElapsedGameTime, GameStartTime, GameTimer } from "../hudCtrl";
 import { Vector3 } from "three";
 import { InGameSituation, InGameStatusState, SoundEnableState } from "../AppInitializer";
 import { np } from "./BoardState";
@@ -171,8 +171,8 @@ export const BlockNumberSetter = selector({
       }
     }
     if (np.checkGameComplete()) {
-      set(GameStartState, false);
-      set(GameEndTime, get(ElapsedGameTime) - get(GameStartTime));
+      set(GameTimerState, GameTimer.End);
+      set(GameEndTime, get(ElapsedGameTime));
       set(InGameStatusState, InGameSituation.End);
       set(ShowResultModalState, true);
     }

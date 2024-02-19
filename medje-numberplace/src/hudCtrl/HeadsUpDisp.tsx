@@ -105,9 +105,13 @@ const SoundCtrlContainer:React.FC = ()=> {
 }
 
 const GameInfoContainer:React.FC = () =>{
+
+  const gameTimerState = useRecoilValue(GameTimerState);
+  const DispTime = (gameTimerState == GameTimer.Start) ? <ElapsedTimer/> : <EndTime/>;
+
   return <Grid container spacing={2}>
     <Grid xs={5} md={5} xsOffset={2} mdOffset={2}>
-      <ElapsedTimer/>
+      {DispTime}
     </Grid>
     <Grid xs={5} md={5} xsOffset="auto" mdOffset="auto">
       <ScoreItem/>
@@ -127,27 +131,38 @@ const GameInfoContainer:React.FC = () =>{
 // 経過時間表示コンポーネント
 const ElapsedTimer:React.FC = () => {
 
-  let [elapsedSecond, timeSetter] = useRecoilState(ElapsedGameTimer);
-  
-  const elepsedHour = Math.floor(elapsedSecond / 3600);
-  elapsedSecond = elapsedSecond - (elepsedHour * 3600);
-
-  const elepsedMinutes = Math.floor(elapsedSecond / 60);
-  elapsedSecond = elapsedSecond - (elepsedMinutes * 60);
-
-  const gameStartState = useRecoilValue(GameStartState);
+  const [elapsedtime, timeSetter] = useRecoilState(ElapsedGameTimer);
   const [timeRenderState , timeRenderSwitch] = useRecoilState(TimeRenderSwitch);
 
-  if (gameStartState){
-    setTimeout(() => {
-      timeSetter(Math.floor(Date.now() / 1000));
-      timeRenderSwitch(!timeRenderState);
-    }, 250);
-  }
+  setTimeout(() => {
+    timeSetter(Math.floor(Date.now()));
+    timeRenderSwitch(!timeRenderState);
+  }, 250);
+
+  const dispTime = TimeToStrFormater(elapsedtime);
 
   return <Item>
-    {("00" + elepsedHour).slice(-2) + ":" + ("00" + elepsedMinutes).slice(-2) + ":" + ("00" + elapsedSecond).slice(-2)}
+    {dispTime}
   </Item>
+}
+
+const EndTime:React.FC = () => {
+  const endtime = useRecoilValue(GameEndTime);
+  const dispTime = TimeToStrFormater(endtime);
+  return <Item>
+    {dispTime}
+  </Item>
+}
+
+function TimeToStrFormater(time: number){
+  let second = Math.floor(time / 1000)
+  const hour = Math.floor(second / 3600);
+  second = second - (hour * 3600);
+
+  const minutes = Math.floor(second / 60);
+  second = second - (minutes * 60);
+
+  return ("00" + hour).slice(-2) + ":" + ("00" + minutes).slice(-2) + ":" + ("00" + second).slice(-2);
 }
 
 // ミス回数表示コンポーネント
@@ -234,9 +249,14 @@ const Item = styled(Paper)(({ theme }) => ({
 //
 // 表示ステータス管理用ステート
 //
-export const GameStartState = atom({
-  key:"gameStartState",
-  default: false
+export const enum GameTimer{
+  Ready = 0,
+  Start,
+  End
+}
+export const GameTimerState = atom({
+  key:"gameTimerState",
+  default: GameTimer.Ready
 });
 
 export const GameStartTime = atom({
@@ -270,8 +290,8 @@ const GameTimerStarter = selector({
   },
   set:({set}, _) => {
     if(!(_ instanceof DefaultValue)) {
-      set(GameStartState, true);
-      const now = Math.floor(Date.now() /1000);
+      set(GameTimerState, GameTimer.Start);
+      const now = Math.floor(Date.now());
       set(GameStartTime, (now));
       set(ElapsedGameTime, (now));
       set(GameEndTime, 0);
@@ -303,7 +323,7 @@ export const GemePlayScoreSetter = selector({
   },
   set:({get, set}, basePoint) => {
     if(!(basePoint instanceof DefaultValue)) {
-      let timeBonus = Math.floor(((45 * 60) - get(ElapsedGameTime)) / 50);
+      let timeBonus = Math.floor(((45 * 60) - (get(ElapsedGameTime) / 1000)) / 50);
       if (timeBonus < 1) timeBonus = 1; 
       set(GamePlayScore, get(GamePlayScore) + basePoint * timeBonus);
     }

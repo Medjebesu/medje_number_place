@@ -60,6 +60,8 @@ export const GameSceneSenderInGame = selector({
     var nowStatus = get(InGameStatusState);
 
     // T.B.D 中段したゲームがある場合に再開する判定を入れる
+    //if (nowStatus == InGameSituation.InProgress){
+    //} else
     if (nowStatus != InGameSituation.InProgress){
       set(InGameStatusSelecter, {
           difficulty: newVal,

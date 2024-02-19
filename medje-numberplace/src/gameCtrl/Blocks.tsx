@@ -21,7 +21,7 @@ type Prop ={
   blockSize:number;
 }
 export const BlocksControl: React.FC<Prop>  = (props) =>{
-
+  console.debug("Call BlocksControl.")
   // ブロックサイズとマージンの定義
   const blockSize = props.blockSize * 0.85;
   const blockMargin = props.blockSize * 0.15;

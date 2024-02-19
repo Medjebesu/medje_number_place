@@ -1,7 +1,7 @@
 import React from 'react'
 import * as THREE from 'three'
 import { useCursor } from "@react-three/drei"
-import { Box, Text, Outlines } from "@react-three/drei"
+import { Box, Text } from "@react-three/drei"
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { ActMode, HandPieceActMode } from '../gameCtrl/BlocksState'
 import { SoundEnableState } from '../AppInitializer'
@@ -43,7 +43,8 @@ export const MemoModeSwitch:React.FC<Props> = ({width, position}:Props) =>{
 		<Box
 			args={[switchWidth * 1.5, switchWidth, switchWidth * 0.03]}
 			rotation={new THREE.Euler( adjustAngleX, adjustAngleY, 0.00, 'XYZ' )}
-		>
+			onClick={onClickMethod}
+			>
 			<meshPhongMaterial attach="material" color={switchColor} />
 			<Text
 				position={new THREE.Vector3(0, 0, 0.03)}
@@ -52,20 +53,22 @@ export const MemoModeSwitch:React.FC<Props> = ({width, position}:Props) =>{
 			>
 				{dispText}
 			</Text>
-			<Outlines 
-        color={"#082081"}
-        screenspace={false}
-        opacity={Number(hovered)}
-        toneMapped={true}
-        polygonOffset
-        polygonOffsetFactor={10}
-        transparent
-        thickness={switchWidth*0.025}
-        angle={Math.PI}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-				onClick={onClickMethod}
-			/>
 		</Box>
 	</mesh>
 }
+
+/* Outlinesつけると画面遷移でこけるので除外中
+<Outlines 
+color={"#082081"}
+screenspace={false}
+opacity={Number(hovered)}
+toneMapped={true}
+polygonOffset
+polygonOffsetFactor={10}
+transparent
+thickness={switchWidth*0.025}
+angle={Math.PI}
+onPointerOver={() => setHovered(true)}
+onPointerOut={() => setHovered(false)}
+/>
+*/

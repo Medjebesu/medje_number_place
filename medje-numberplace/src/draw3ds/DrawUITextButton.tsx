@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Box, Center, Outlines, Text3D, useCursor } from '@react-three/drei'
+import { Box, Center, Text3D, useCursor } from '@react-three/drei'
 import React from 'react'
 import { useRecoilValue } from 'recoil';
 import { SoundEnableState } from '../AppInitializer';
