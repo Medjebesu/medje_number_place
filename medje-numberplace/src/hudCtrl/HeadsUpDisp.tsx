@@ -12,7 +12,7 @@ import { GameScene, GameSceneState, SoundEnableState } from '../AppInitializer';
 
 // ゲームステータス初期化用コンポーネント
 export const GameStatusInitializer: React.FC = () =>{
-
+  console.debug("Call GameStatusInitializer.");
   const timerStarter = useSetRecoilState(GameTimerStarter);
   timerStarter(null);
 
@@ -291,7 +291,7 @@ const ElapsedGameTimer = selector({
   }
 });
 
-const GamePlayScore = atom({
+export const GamePlayScore = atom({
   key: "gamePlayScore",
   default: 0
 });

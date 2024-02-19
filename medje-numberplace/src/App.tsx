@@ -1,6 +1,7 @@
 import './App.css'
 import { AppInitializer } from './AppInitializer'
 import { NumberPlaceGameDisp } from './gameCtrl'
+import { ResultModal } from './gameCtrl/ResultModal'
 import { HeadsUpDisp } from './hudCtrl'
 import { RecoilRoot } from 'recoil'
 
@@ -17,6 +18,7 @@ function App() {
           <NumberPlaceGameDisp />
         </section>
       </main>
+      <ResultModal />
     </RecoilRoot>
   )
 }

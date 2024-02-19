@@ -1,11 +1,9 @@
-import { DefaultValue, atom, atomFamily, selector, useRecoilValue, useSetRecoilState } from "recoil"
+import { DefaultValue, atom, atomFamily, selector, useRecoilValue } from "recoil"
 import { GemePlayScoreSetter, GameStartState, GameEndTime, ElapsedGameTime, GameStartTime } from "../hudCtrl";
-import { NumberPlace } from "./Board"
 import { Vector3 } from "three";
-import { GameDifficultyState } from "./GameState";
-import { NpAnswer, NpQuestion, QAResponseReceived } from "./BoardState";
-import { GenerateQuestion } from "./GenerateQuestion";
-import { SoundEnableState } from "../AppInitializer";
+import { InGameSituation, InGameStatusState, SoundEnableState } from "../AppInitializer";
+import { np } from "./BoardState";
+import { ShowResultModalState } from "./ResultModal";
 
 // 効果音読み込み
 //const incorrectSE = new Audio("/sounds/puzzle_num_incorrect.mp3");
@@ -13,48 +11,25 @@ import { SoundEnableState } from "../AppInitializer";
 //const groupCorrectSE = new Audio("/sounds/puzzle_num_correct_g.mp3");
 //const changeMemoSE = new Audio("/sounds/puzzle_memo_in.mp3");
 
-//盤面データ初期化コンポーネント
-type BoardInitializerProps = {
-  //seed: number; // ナンプレ初期盤面の生成シード値 T.B.D
-}
+export const BlocksStateReset = selector({
+  key: "blocksStateReset",
+  get: () => {return null;},
+  set:({ set }, _) => {
+    set(MissTakeCountState, 0);
+    set(BoardBlockSelectState, { selected: false, id: 0, blockNum: 0 } as BoardSelectState);
+    set(SelectedBlockNum, 0);
 
-let np: NumberPlace | null = null;
+    for(let idx = 0; idx < 81; idx++){
+      set(BoardBlocksNumber(idx), 0);
+      set(BoardBlocksLocked(idx), false);
+      set(BoardBlocksOriginal(idx), false);
 
-export const BoardInitializer: React.FC<BoardInitializerProps> = (/* props */) => {
-  const gameDifficulty = useRecoilValue(GameDifficultyState);
-
-  const qaReceived = useRecoilValue(QAResponseReceived);
-  var npQuestion = useRecoilValue(NpQuestion);
-  const npAnswer = useRecoilValue(NpAnswer);
-
-  if(!qaReceived){
-    GenerateQuestion(gameDifficulty);
-  }
-  else{
-    if(!np) {
-      np = new NumberPlace(gameDifficulty, npQuestion, npAnswer);
       const tempArray = new Array<boolean>;
       for(let i = 0; i < 9; i++){tempArray.push(false);}
-      np.getQuestion().forEach((value, idx) => {
-        var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx))
-        var setBlockMemo = useSetRecoilState(BoardBlocksMemos(idx));
-        var setBlockLocked = useSetRecoilState(BoardBlocksLocked(idx))
-        var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal(idx))
-
-        setBlockNum(value);
-        setBlockMemo(tempArray);
-        if (value != 0) {
-          setBlockLocked(true);
-          setBlockOriginal(true);
-        }
-      });
+      set(BoardBlocksMemos(idx), tempArray);
     }
   }
-
-  return <>
-  </>
-}
-
+});
 
 //
 // UI表示用ステート
@@ -198,6 +173,8 @@ export const BlockNumberSetter = selector({
     if (np.checkGameComplete()) {
       set(GameStartState, false);
       set(GameEndTime, get(ElapsedGameTime) - get(GameStartTime));
+      set(InGameStatusState, InGameSituation.End);
+      set(ShowResultModalState, true);
     }
   }
 });

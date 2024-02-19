@@ -1,13 +1,14 @@
 import React from 'react'
 import { DrawStageBase } from './DispDraw'
 import { BlocksControl } from "./Blocks"
-import { BoardInitializer } from './BlocksState'
+import { BoardInitializer } from './BoardState'
 import { GameStatusInitializer } from '../hudCtrl'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { GameLaunchState, GameScene, GameSceneState } from '../AppInitializer'
 import { DrawBackGround } from '../draw3ds'
 import { TitlePage } from './TitlePage'
 import { NPSubControl } from './NPSubControl'
+import { GameRefreshSwitch, GameRefreshSwitchState } from './GameState'
 
 export const GameControl:React.FC = () => {
   console.debug("Call GameControl.");
@@ -36,6 +37,7 @@ const GameControlLoading:React.FC = () => {
 }
 
 const GameControlInGame:React.FC<Props> = (props) => {
+  useRecoilValue(GameRefreshSwitchState);
   console.debug("GameScene change -> InGame");
   return <>
     <GameStatusInitializer />

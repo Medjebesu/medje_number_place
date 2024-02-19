@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 
 export const enum GameDifficulty {
   None = 0,
@@ -7,8 +7,20 @@ export const enum GameDifficulty {
   Middle,
   Hard,
   Expart,
-  Extra
+  Extra,
+  Debug = 99,
 }
+
+export const DifficultyMap = new Map([
+  [GameDifficulty.None, "None"],
+  [GameDifficulty.Light, "Light"],
+  [GameDifficulty.Easy, "Easy"],
+  [GameDifficulty.Middle, "Middle"],
+  [GameDifficulty.Hard, "Hard"],
+  [GameDifficulty.Expart, "Expart"],
+  [GameDifficulty.Extra, "Extra"],
+  [GameDifficulty.Debug, "Debug"]
+]);
 
 export const GameDifficultyState = atom({
   key: "gameDifficultyState",
@@ -18,3 +30,18 @@ export const GameDifficultyState = atom({
 export const GameControlInitializer:React.FC = () => {
   return <></>
 }
+
+export const GameRefreshSwitchState = atom({
+  key:"gameRefreshSwitchState",
+  default: false
+});
+
+export const GameRefreshSwitch = selector({
+  key: "gameRefreshSwitch",
+  get: ()=>{
+    return null;
+  },
+  set: ({get, set}, _)=>{
+    set(GameRefreshSwitchState, !get(GameRefreshSwitchState));
+  }
+})

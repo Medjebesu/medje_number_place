@@ -17,7 +17,10 @@ export function GenerateQuestion(difficulty: GameDifficulty) {
     case GameDifficulty.Extra:
       InquiryQandA(difficulty);
       break;
-
+    case GameDifficulty.Debug:
+      console.debug("REST: Send requesut npgq.(Debug)")
+      InquiryQandA(difficulty);
+      break;
     default:
       console.warn("Invalid parameter. (not registered Difficulty)");
       InquiryQandA(GameDifficulty.Middle);

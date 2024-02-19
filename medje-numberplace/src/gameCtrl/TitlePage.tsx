@@ -52,7 +52,9 @@ const TitlePageDiffCultySelect:React.FC = () =>{
   const sceneSetter = useSetRecoilState(GameSceneSenderInGame);
   
   const titlePosition = new Vector3(-4,2,0);
-  const startPosition = new Vector3(-3,-4,0);
+  const difficultPosition = new Array<Vector3>;
+  difficultPosition.push(new Vector3(-3,-4,0));
+  difficultPosition.push(new Vector3(-2,-6,0));
 
   return <>
     <UIText
@@ -66,10 +68,19 @@ const TitlePageDiffCultySelect:React.FC = () =>{
       text='middle'
       textScale={1.25}
       textColor={"#ffffff"}
-      position={startPosition}
+      position={difficultPosition[0]}
       hoverSEPath={'sounds/cursor.mp3'}
       onClickSEPath={'sounds/decide.mp3'}
       onClickMethod = {()=>sceneSetter(GameDifficulty.Middle)}
+    />
+    <UITextButton
+      text='test'
+      textScale={1.25}
+      textColor={"#ffffff"}
+      position={difficultPosition[1]}
+      hoverSEPath={'sounds/cursor.mp3'}
+      onClickSEPath={'sounds/decide.mp3'}
+      onClickMethod = {()=>sceneSetter(GameDifficulty.Debug)}
     />
   </>
 }
