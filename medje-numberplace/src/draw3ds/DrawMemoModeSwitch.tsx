@@ -10,27 +10,36 @@ const modeChangeSE = new Audio("/sounds/puzzle_actmode_change.mp3")
 
 type Props = {
   width?: number,
+  height?: number,
   position: THREE.Vector3
 }
 
-export const MemoModeSwitch: React.FC<Props> = ({ width, position }: Props) => {
+export const MemoModeSwitch: React.FC<Props> = ({ width, height, position }: Props) => {
 
   const [nowMode, SetActMode] = useRecoilState(HandPieceActMode);
-
-  const switchWidth = width ? width : 1;
-  //const switchColor:THREE.Color | string = color ? color : "#51ff41";
-
-  const fonrBaseSize = switchWidth / 4;
-  const fontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: fonrBaseSize, letterSpacing: fonrBaseSize / 2, lineHeight: switchWidth, 'material-toneMapped': false, characters: "Memo:Onff" }
-
   const [hovered, setHovered] = React.useState(false);
   useCursor(hovered);
+
+  const switchWidth = width ? width : 1.5;
+  const switchHeight = height ? height : 1;
+  const switchVolume = switchWidth * 0.03;
+
+  const fonrBaseSize = switchHeight / 4;
+  const fontProps = {
+    font: '/fonts/Roboto/Roboto-Black.ttf',
+    fontSize: fonrBaseSize,
+    letterSpacing: fonrBaseSize / 2,
+    lineHeight: switchWidth,
+    'material-toneMapped': false,
+    characters: "Memo:Onff"
+  }
 
   const adjustAngleX = -0.01;
   const adjustAngleY = -0.02;
 
   const dispText = (nowMode == ActMode.NumSet) ? "Memo:OFF" : "Memo:On";
   const switchColor = (nowMode == ActMode.NumSet) ? "#555555" : "#51ff41";
+  const outlineColor = (nowMode == ActMode.NumSet) ? "#51ff41" : "#555555";
 
   const isSoundEnable = useRecoilValue(SoundEnableState);
   const onClickMethod = () => {
@@ -38,13 +47,23 @@ export const MemoModeSwitch: React.FC<Props> = ({ width, position }: Props) => {
     (nowMode == ActMode.NumSet) ? SetActMode(ActMode.Memo) : SetActMode(ActMode.NumSet);
   }
 
+  const outline = hovered ?
+    <Box
+      args={[switchWidth * 1.075, switchHeight * 1.1, switchVolume * 0.95]}
+      onClick={onClickMethod}
+    >
+      <meshBasicMaterial attach="material" color={outlineColor} />
+    </Box> :
+    <></>;
+
   return <mesh
     position={position}
   >
     <Box
-      args={[switchWidth * 1.5, switchWidth, switchWidth * 0.03]}
+      args={[switchWidth, switchHeight, switchVolume]}
       rotation={new THREE.Euler(adjustAngleX, adjustAngleY, 0.00, 'XYZ')}
-      onClick={onClickMethod}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
     >
       <meshPhongMaterial attach="material" color={switchColor} />
       <Text
@@ -54,6 +73,7 @@ export const MemoModeSwitch: React.FC<Props> = ({ width, position }: Props) => {
       >
         {dispText}
       </Text>
+      {outline}
     </Box>
   </mesh>
 }

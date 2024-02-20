@@ -91,7 +91,7 @@ const ClearTime: React.FC = () => {
 
   const second = Math.floor(tempTime);
 
-  const hourtStr = hour < 1 ? "" : ("00" + hour).slice(-2) + ":";
+  const hourtStr = hour < 1 ? "" : "" + hour + ":";
   const clearTimeStr = hourtStr + ("00" + minutes).slice(-2) + ":" + ("00" + second).slice(-2) + "." + miliSecond;
 
   return <>

@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
-import { Text, useCursor, Box } from "@react-three/drei"
+import { Box, RoundedBox, Text, useCursor } from "@react-three/drei"
 import {
   BoardBlockSelector, BlockNumberSetter, SelectedBlockNum,
   BoardBlocksBasePos, HandpiecesBasePos
@@ -16,6 +16,7 @@ export type BlockProps = {
   blockMemo?: boolean[];
   color: THREE.ColorRepresentation;
   selectedColor?: THREE.ColorRepresentation | undefined;
+  outlineColor?: THREE.ColorRepresentation | undefined;
   fontColor?: THREE.ColorRepresentation | undefined;
   locked?: boolean;
   original?: boolean;
@@ -27,11 +28,21 @@ export type BlockProps = {
 
 // ブロック描画
 const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, { props: BlockProps, children: React.ReactNode, onClick?: () => void }>(({ props, children, onClick }, ref) => {
+  const [hovered, setHovered] = React.useState(false);
+  useCursor(hovered);
+
   const blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString());
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
 
-  const numFontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
+  const numFontProps = {
+    font: '/fonts/Roboto/Roboto-Black.ttf',
+    fontSize: props.width,
+    letterSpacing: props.width / 2,
+    lineHeight: blockHeight,
+    'material-toneMapped': false,
+    characters: "0123456789"
+  }
   const numFontColor = props.original ? "#555" : "#ffffff";
 
   const NumText = (
@@ -42,7 +53,14 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
 
   let MemoText = (<Text> </Text>)
   if (props.blockMemo) {
-    const memoFontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width / 3, letterSpacing: props.width / 18, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
+    const memoFontProps = {
+      font: '/fonts/Roboto/Roboto-Black.ttf',
+      fontSize: props.width / 3,
+      letterSpacing: props.width / 18,
+      lineHeight: blockHeight,
+      'material-toneMapped': false,
+      characters: "0123456789"
+    }
     const memoFontColor = "#ffffff";
     let memoString = "";
     for (let i = 0; i < 3; i++) {
@@ -61,14 +79,25 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
     );
   }
 
+  const outline = hovered ?
+    <Box
+      args={[props.width * 1.1, blockHeight * 1.1, blockVolume * 0.95]}
+      onClick={onClick}
+    >
+      <meshBasicMaterial color={props.outlineColor ? props.outlineColor : "#00ff00"} />
+    </Box> :
+    <></>;
+
   return (
     <mesh ref={ref}>
       <Box
         args={[props.width, blockHeight, blockVolume]}
-        onClick={onClick}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
       >
         {props.blockNum != 0 ? NumText : MemoText}
         {children}
+        {outline}
       </Box>
     </mesh>
   );
@@ -84,9 +113,6 @@ export const DrawBoardNumberBlock: React.FC<BlockProps> = (props) => {
 
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
-
-  //const [hovered, setHovered] = React.useState(false); //※Outlines用
-  //useCursor(hovered);
 
   // 選択時効果音
   const selectSE = isSEEnable ? new Audio("/sounds/puzzle_cursor.mp3") : null;
@@ -114,6 +140,7 @@ export const DrawBoardNumberBlock: React.FC<BlockProps> = (props) => {
   setProps.height = blockHeight;
   setProps.volume = blockVolume;
   setProps.fontColor = fontColor;
+  setProps.outlineColor = "#088551";
 
   // ブロックアニメーション
   const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);
@@ -148,22 +175,6 @@ export const DrawBoardNumberBlock: React.FC<BlockProps> = (props) => {
     </DrawNumberBlock>
   );
 }
-/* Outlinesつけると画面遷移でこけるので除外中
-<Outlines
-color={"#088551"}
-screenspace={false}
-opacity={Number(hovered)}
-toneMapped={true}
-polygonOffset
-polygonOffsetFactor={10}
-transparent
-thickness={setProps.width*0.05}
-angle={Math.PI}
-onPointerOver={() => setHovered(true)}
-onPointerOut={() => setHovered(false)}
-onClick={onBlockSelect}
-/>
-*/
 
 // 手駒用数字ブロック
 export const DrawHandpiece: React.FC<BlockProps> = (props) => {
@@ -171,10 +182,7 @@ export const DrawHandpiece: React.FC<BlockProps> = (props) => {
   const setBlockNumber = useSetRecoilState(BlockNumberSetter);
   const gameLaunchState = useRecoilValue(GameLaunchState);
 
-  const blockHeight = (props.height || props.width);
-
-  //const [hovered, setHovered] = React.useState(false); //※Outlines用
-  //useCursor(hovered);
+  //const blockHeight = (props.height || props.width);
 
   const onBlockSelect = () => {
     setBlockNumber(props.blockNum);
@@ -208,20 +216,3 @@ export const DrawHandpiece: React.FC<BlockProps> = (props) => {
     </DrawNumberBlock>
   );
 }
-
-/* Outlinesつけると画面遷移でこけるので除外中
-<Outlines
-color={"#ff0f00"}
-screenspace={false}
-opacity={Number(hovered)}
-toneMapped={false}
-polygonOffset
-polygonOffsetFactor={10}
-transparent
-thickness={props.width*0.05}
-angle={Math.PI}
-onPointerOver={() => setHovered(true)}
-onPointerOut={() => setHovered(false)}
-onClick={onBlockSelect}
-/>
-*/
