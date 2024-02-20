@@ -7,7 +7,7 @@ import { GamePlayScore } from "../hudCtrl";
 
 const selfGenerate = false; // サーバ無しの場合はtrue, 有りの場合はfalse
 
-export const GenerateQuestion:React.FC<{difficulty:GameDifficulty}> = ({difficulty}) => {
+export const GenerateQuestion: React.FC<{ difficulty: GameDifficulty }> = ({ difficulty }) => {
 
   const gameScoreSetter = useSetRecoilState(GamePlayScore);
 
@@ -42,7 +42,7 @@ function InquiryQandA(difficulty: GameDifficulty) {
   if (!selfGenerate) {
     const npgq = GetNPQuestion(difficulty); // Promise
     const waitResponse = async () => {
-      const fn = async() => {
+      const fn = async () => {
         const npgqPro = await (npgq.then((response) => {
           return response.json();
         }) as Promise<NpgqResponse>);
@@ -57,9 +57,9 @@ function InquiryQandA(difficulty: GameDifficulty) {
     waitResponse();
   }
   // サーバ無しの場合
-  else{
-    const idx = Math.floor(Math.random() * questions.length -1);
-    
+  else {
+    const idx = Math.floor(Math.random() * questions.length - 1);
+
     setQuestion(questions[idx]);
     setAnswer(answers[idx]);
 

@@ -9,10 +9,10 @@ function App() {
 
   return (
     <RecoilRoot>
-      <AppInitializer/>
-      <main id ="main_contents">
+      <AppInitializer />
+      <main id="main_contents">
         <section id="hud_area">
-          <HeadsUpDisp/>
+          <HeadsUpDisp />
         </section>
         <section id="game_area">
           <NumberPlaceGameDisp />

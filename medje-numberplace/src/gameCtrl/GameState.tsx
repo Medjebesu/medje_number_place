@@ -27,21 +27,21 @@ export const GameDifficultyState = atom({
   default: GameDifficulty.None
 });
 
-export const GameControlInitializer:React.FC = () => {
+export const GameControlInitializer: React.FC = () => {
   return <></>
 }
 
 export const GameRefreshSwitchState = atom({
-  key:"gameRefreshSwitchState",
+  key: "gameRefreshSwitchState",
   default: false
 });
 
 export const GameRefreshSwitch = selector({
   key: "gameRefreshSwitch",
-  get: ()=>{
+  get: () => {
     return null;
   },
-  set: ({get, set}, _)=>{
+  set: ({ get, set }, _) => {
     set(GameRefreshSwitchState, !get(GameRefreshSwitchState));
   }
 })

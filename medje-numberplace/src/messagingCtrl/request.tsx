@@ -4,12 +4,12 @@ import { baseUrl } from "./definition";
 const baseURL = baseUrl;
 const API_npqg = "npgq"
 
-export type NpgqResponse ={
-	question: number[],
-	answer: number[],
+export type NpgqResponse = {
+  question: number[],
+  answer: number[],
 }
 
-export async function GetNPQuestion(difficulty:GameDifficulty){
-	let requestURL = `${baseURL}/${API_npqg}?difficulty=${difficulty}`; // for debug
-	return fetch(requestURL);
+export async function GetNPQuestion(difficulty: GameDifficulty) {
+  let requestURL = `${baseURL}/${API_npqg}?difficulty=${difficulty}`; // for debug
+  return fetch(requestURL);
 }

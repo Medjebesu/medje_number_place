@@ -1,5 +1,5 @@
 import React from 'react'
-import { useRecoilValue, useSetRecoilState} from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { UITextButton } from '../draw3ds/DrawUITextButton';
 import { UIText } from '../draw3ds/DrawUIText';
 import { Vector3 } from 'three';
@@ -7,27 +7,27 @@ import { TitleScene, TitleSceneState } from './TitlePageState';
 import { GameSceneSenderInGame } from '../AppInitializer';
 import { GameDifficulty } from './GameState';
 
-export const TitlePage:React.FC = () =>{
+export const TitlePage: React.FC = () => {
   const scene = useRecoilValue(TitleSceneState);
-  
-  switch(scene){
+
+  switch (scene) {
     case TitleScene.Top:
-      return <TitlePageTop/>
+      return <TitlePageTop />
     case TitleScene.DiffCultySelect:
-      return <TitlePageDiffCultySelect/>
+      return <TitlePageDiffCultySelect />
     //case TitleScene.DiffCultySelect:
     //  return <TitlePageDiffCultySelect/>
   }
 }
 
-const TitlePageTop:React.FC = () =>{
+const TitlePageTop: React.FC = () => {
   const sceneSetter = useSetRecoilState(TitleSceneState);
   const onClickMethod = () => {
     sceneSetter(TitleScene.DiffCultySelect);
   };
-  
-  const titlePosition = new Vector3(-6.5,2,0);
-  const startPosition = new Vector3(-2.5,-4,0);
+
+  const titlePosition = new Vector3(-6.5, 2, 0);
+  const startPosition = new Vector3(-2.5, -4, 0);
 
   return <>
     <UIText
@@ -43,18 +43,18 @@ const TitlePageTop:React.FC = () =>{
       textColor={"#ffffff"}
       position={startPosition}
       onClickSEPath={'sounds/decide.mp3'}
-      onClickMethod = {onClickMethod}
+      onClickMethod={onClickMethod}
     />
   </>
 }
 
-const TitlePageDiffCultySelect:React.FC = () =>{
+const TitlePageDiffCultySelect: React.FC = () => {
   const sceneSetter = useSetRecoilState(GameSceneSenderInGame);
-  
-  const titlePosition = new Vector3(-4,2,0);
+
+  const titlePosition = new Vector3(-4, 2, 0);
   const difficultPosition = new Array<Vector3>;
-  difficultPosition.push(new Vector3(-3,-4,0));
-  difficultPosition.push(new Vector3(-2,-6,0));
+  difficultPosition.push(new Vector3(-3, -4, 0));
+  difficultPosition.push(new Vector3(-2, -6, 0));
 
   return <>
     <UIText
@@ -71,7 +71,7 @@ const TitlePageDiffCultySelect:React.FC = () =>{
       position={difficultPosition[0]}
       hoverSEPath={'sounds/cursor.mp3'}
       onClickSEPath={'sounds/decide.mp3'}
-      onClickMethod = {()=>sceneSetter(GameDifficulty.Middle)}
+      onClickMethod={() => sceneSetter(GameDifficulty.Middle)}
     />
     <UITextButton
       text='test'
@@ -80,7 +80,7 @@ const TitlePageDiffCultySelect:React.FC = () =>{
       position={difficultPosition[1]}
       hoverSEPath={'sounds/cursor.mp3'}
       onClickSEPath={'sounds/decide.mp3'}
-      onClickMethod = {()=>sceneSetter(GameDifficulty.Debug)}
+      onClickMethod={() => sceneSetter(GameDifficulty.Debug)}
     />
   </>
 }

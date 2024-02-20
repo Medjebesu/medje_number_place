@@ -13,19 +13,19 @@ import { ShowResultModalState } from "./ResultModal";
 
 export const BlocksStateReset = selector({
   key: "blocksStateReset",
-  get: () => {return null;},
-  set:({ set }, _) => {
+  get: () => { return null; },
+  set: ({ set }, _) => {
     set(MissTakeCountState, 0);
     set(BoardBlockSelectState, { selected: false, id: 0, blockNum: 0 } as BoardSelectState);
     set(SelectedBlockNum, 0);
 
-    for(let idx = 0; idx < 81; idx++){
+    for (let idx = 0; idx < 81; idx++) {
       set(BoardBlocksNumber(idx), 0);
       set(BoardBlocksLocked(idx), false);
       set(BoardBlocksOriginal(idx), false);
 
       const tempArray = new Array<boolean>;
-      for(let i = 0; i < 9; i++){tempArray.push(false);}
+      for (let i = 0; i < 9; i++) { tempArray.push(false); }
       set(BoardBlocksMemos(idx), tempArray);
     }
   }
@@ -119,33 +119,33 @@ export const BlockNumberSetter = selector({
   },
   set: ({ set, get }, setVal) => {
     if (setVal instanceof DefaultValue) return;
-    
+
     const selectState = get(BoardBlockSelectState);
     const isLocked = get(BoardBlocksLocked(selectState.id));
 
     if (!BlockNumberSetterFilter(selectState, isLocked)) return;
-    if(!np) return;
+    if (!np) return;
 
     // メモモード時
-    if(get(HandPieceActMode) == ActMode.Memo){
+    if (get(HandPieceActMode) == ActMode.Memo) {
       const changeMemoSE = new Audio("/sounds/puzzle_memo_in.mp3");
-      if(get(SoundEnableState)) changeMemoSE.play();
+      if (get(SoundEnableState)) changeMemoSE.play();
       const setArray = [...get(BoardBlocksMemos(selectState.id))];
-      setArray[setVal-1] = !setArray[setVal-1];
+      setArray[setVal - 1] = !setArray[setVal - 1];
       set(BoardBlocksMemos(selectState.id), setArray);
       return;
     }
 
     // 入力モード時
-    if (!np.checkAnswer(selectState.id, setVal)){
-      if(get(SoundEnableState)) {
+    if (!np.checkAnswer(selectState.id, setVal)) {
+      if (get(SoundEnableState)) {
         const incorrectSE = new Audio("/sounds/puzzle_num_incorrect.mp3");
         incorrectSE.play();
       }
       set(MissTakeCountState, get(MissTakeCountState) + 1);
       return;
     }
-    
+
     set(HandPieceLastDest, selectState.id);
     set(HandPieceLastNum, setVal);
     set(BoardBlocksNumber(selectState.id), setVal);
@@ -154,18 +154,18 @@ export const BlockNumberSetter = selector({
     let [resultStatus, tempScore] = np.setBoardNum(selectState.id, setVal);
     set(GemePlayScoreSetter, tempScore);
     set(SelectedBlockNum, setVal);
-          
-    if(get(SoundEnableState)){
-      switch(resultStatus){
-        case 0: 
+
+    if (get(SoundEnableState)) {
+      switch (resultStatus) {
+        case 0:
           const incorrectSE = new Audio("/sounds/puzzle_num_incorrect.mp3");
           incorrectSE.play();
           return;
-        case 1: 
+        case 1:
           const singleCorrectSE = new Audio("/sounds/puzzle_num_correct_s.mp3");
           singleCorrectSE.play();
           return;
-        default: 
+        default:
           const groupCorrectSE = new Audio("/sounds/puzzle_num_correct_g.mp3");
           groupCorrectSE.play();
       }

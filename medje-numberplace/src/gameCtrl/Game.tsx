@@ -10,14 +10,14 @@ import { TitlePage } from './TitlePage'
 import { NPSubControl } from './NPSubControl'
 import { GameRefreshSwitch, GameRefreshSwitchState } from './GameState'
 
-export const GameControl:React.FC = () => {
+export const GameControl: React.FC = () => {
   console.debug("Call GameControl.");
   const gameSceneState = useRecoilValue(GameSceneState);
 
-  switch(gameSceneState){
+  switch (gameSceneState) {
     case GameScene.Loading:
       return <GameControlLoading />;
-      
+
     case GameScene.InGame:
       return <GameControlInGame blockSize={1.0} />;
 
@@ -27,16 +27,16 @@ export const GameControl:React.FC = () => {
   }
 }
 
-type Props ={
-  blockSize:number
+type Props = {
+  blockSize: number
 }
 
-const GameControlLoading:React.FC = () => {
+const GameControlLoading: React.FC = () => {
   console.debug("GameScene change -> Loading");
-  return <GameLaunchIndicator/>
+  return <GameLaunchIndicator />
 }
 
-const GameControlInGame:React.FC<Props> = (props) => {
+const GameControlInGame: React.FC<Props> = (props) => {
   useRecoilValue(GameRefreshSwitchState);
   console.debug("GameScene change -> InGame");
   return <>
@@ -49,7 +49,7 @@ const GameControlInGame:React.FC<Props> = (props) => {
   </>
 }
 
-const GameControlTitle:React.FC = () => {
+const GameControlTitle: React.FC = () => {
   console.debug("GameScene change -> Title");
   return <>
     <DrawBackGround />
@@ -57,7 +57,7 @@ const GameControlTitle:React.FC = () => {
   </>
 }
 
-const GameLaunchIndicator:React.FC = () =>{
+const GameLaunchIndicator: React.FC = () => {
 
   // ロード完了ステートの監視 T.B.D
   //const hudLaunchState  = useRecoilValue(HudLaunchState);
@@ -66,8 +66,8 @@ const GameLaunchIndicator:React.FC = () =>{
   const gameSceneState = useSetRecoilState(GameSceneState);
 
   //if(hudLaunchState && canvasLoadState){
-    gameLaunchStateSetter(true);
-    gameSceneState(GameScene.Title);
+  gameLaunchStateSetter(true);
+  gameSceneState(GameScene.Title);
   //}
 
   // ロード中画面のモーダルの表示管理？ T.B.D

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import * as THREE from 'three'
-import { Canvas, useThree, useFrame} from "@react-three/fiber"
-import {ContactShadows, OrbitControls} from "@react-three/drei"
+import { Canvas, useThree, useFrame } from "@react-three/fiber"
+import { ContactShadows, OrbitControls } from "@react-three/drei"
 import CameraControls from 'camera-controls'
 import { GameControl } from './Game'
 
@@ -10,8 +10,8 @@ import { GameControl } from './Game'
 
 CameraControls.install({ THREE })
 
-export const NumberPlaceGameDisp:React.FC = () => {
-  return(
+export const NumberPlaceGameDisp: React.FC = () => {
+  return (
     <Canvas>
       <Controls />
       <ambientLight intensity={0.5} />
@@ -21,7 +21,7 @@ export const NumberPlaceGameDisp:React.FC = () => {
   );
 }
 
-function Controls(){
+function Controls() {
   const camera = useThree((state) => state.camera)
   const gl = useThree((state) => state.gl)
   const controls = useMemo(() => new CameraControls(camera, gl.domElement), [])

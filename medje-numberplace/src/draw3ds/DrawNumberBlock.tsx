@@ -2,29 +2,31 @@ import React, { forwardRef, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
 import { Text, useCursor, Box } from "@react-three/drei"
-import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum, 
-         BoardBlocksBasePos, HandpiecesBasePos } from '../gameCtrl/BlocksState'
+import {
+  BoardBlockSelector, BlockNumberSetter, SelectedBlockNum,
+  BoardBlocksBasePos, HandpiecesBasePos
+} from '../gameCtrl/BlocksState'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { BoardBlockAnimation, SetBoardBlockPattern } from './NumBlockAnimation'
 import { GameLaunchState, SoundEnableState } from '../AppInitializer'
 
 export type BlockProps = {
-  blockId:number;
-  blockNum:number;
-  blockMemo?:boolean[];
-  color:THREE.ColorRepresentation;
-  selectedColor?:THREE.ColorRepresentation | undefined;
-  fontColor?:THREE.ColorRepresentation  | undefined;
+  blockId: number;
+  blockNum: number;
+  blockMemo?: boolean[];
+  color: THREE.ColorRepresentation;
+  selectedColor?: THREE.ColorRepresentation | undefined;
+  fontColor?: THREE.ColorRepresentation | undefined;
   locked?: boolean;
   original?: boolean;
-  width:number;
-  height?:number;
-  volume?:number;
-  blockAnim?:boolean;
+  width: number;
+  height?: number;
+  volume?: number;
+  blockAnim?: boolean;
 }
 
 // ブロック描画
-const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, {props:BlockProps,children: React.ReactNode, onClick?:()=>void}>( ({props, children, onClick}, ref) => {
+const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, { props: BlockProps, children: React.ReactNode, onClick?: () => void }>(({ props, children, onClick }, ref) => {
   const blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString());
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
@@ -33,7 +35,7 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
   const numFontColor = props.original ? "#555" : "#ffffff";
 
   const NumText = (
-    <Text color={props.fontColor ? props.fontColor : numFontColor} position={[0, -(blockHeight/10),blockVolume]} {...numFontProps}>
+    <Text color={props.fontColor ? props.fontColor : numFontColor} position={[0, -(blockHeight / 10), blockVolume]} {...numFontProps}>
       {blockNum}
     </Text>
   );
@@ -43,8 +45,8 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
     const memoFontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width / 3, letterSpacing: props.width / 18, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
     const memoFontColor = "#ffffff";
     let memoString = "";
-    for(let i = 0; i < 3; i++){
-      for(let j = 0; j < 3; j++){
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
         var idx = i * 3 + j;
         props.blockMemo[idx] ? memoString += (idx + 1) : memoString += "  ";
         memoString += " ";
@@ -59,21 +61,21 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
     );
   }
 
-  return(
+  return (
     <mesh ref={ref}>
-    <Box
-      args={[props.width, blockHeight, blockVolume]}
-      onClick={onClick}
-    >
-      {props.blockNum != 0 ? NumText : MemoText}
-      {children}
-    </Box>
+      <Box
+        args={[props.width, blockHeight, blockVolume]}
+        onClick={onClick}
+      >
+        {props.blockNum != 0 ? NumText : MemoText}
+        {children}
+      </Box>
     </mesh>
   );
 });
 
 // 盤面用数字ブロック
-export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
+export const DrawBoardNumberBlock: React.FC<BlockProps> = (props) => {
   const blockBasePos = useRecoilValue(BoardBlocksBasePos(props.blockId));
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
@@ -87,45 +89,45 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
   const isSEEnable = useRecoilValue(SoundEnableState);
 
   // 選択時効果音
-  const selectSE = isSEEnable? new Audio("/sounds/puzzle_cursor.mp3") : null;
-  if(selectSE){
+  const selectSE = isSEEnable ? new Audio("/sounds/puzzle_cursor.mp3") : null;
+  if (selectSE) {
     selectSE.loop = false;
     selectSE.muted = false;
   }
 
   const onBlockSelect = () => {
-    if(selectSE) selectSE.play();
-    setBlockSelector({selected:!blockSelector.selected, id:props.blockId});
+    if (selectSE) selectSE.play();
+    setBlockSelector({ selected: !blockSelector.selected, id: props.blockId });
     setSelectBlockNum(props.blockNum);
   }
 
   let fontColor = props.fontColor;
-  if(blockSelector.selected && (blockSelector.id != props.blockId)){
-    if(selectedBlockNum == props.blockNum) {
+  if (blockSelector.selected && (blockSelector.id != props.blockId)) {
+    if (selectedBlockNum == props.blockNum) {
       fontColor = "#51ff41";
     }
   }
 
-  const tileColor = (blockSelector.selected && blockSelector.id==props.blockId)? props.selectedColor : props.color;
-  
-  let setProps = {...props}
+  const tileColor = (blockSelector.selected && blockSelector.id == props.blockId) ? props.selectedColor : props.color;
+
+  let setProps = { ...props }
   setProps.height = blockHeight;
   setProps.volume = blockVolume;
   setProps.fontColor = fontColor;
 
   // ブロックアニメーション
   const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);
-  
+
   let AnimEnable = true;
-  if ((!props.blockAnim || false) && gameLaunchState){
+  if ((!props.blockAnim || false) && gameLaunchState) {
     AnimEnable = false;
   }
-  else if(props.blockNum == 0){
+  else if (props.blockNum == 0) {
     SetBoardBlockPattern(props.blockId, "floating");
   }
 
   useFrame(() => {
-    if(boxRef.current != null){
+    if (boxRef.current != null) {
       BoardBlockAnimation(boxRef.current, props.blockId, blockBasePos, props.width, blockHeight, blockHeight);
     }
     /*
@@ -135,14 +137,14 @@ export const DrawBoardNumberBlock:React.FC<BlockProps> = (props) => {
     */
   });
 
-  return(
+  return (
     <DrawNumberBlock
       props={setProps}
       ref={boxRef}
       onClick={onBlockSelect}
     >
-      <meshBasicMaterial attach="material" color={tileColor}/>
-      
+      <meshBasicMaterial attach="material" color={tileColor} />
+
     </DrawNumberBlock>
   );
 }
@@ -164,10 +166,10 @@ onClick={onBlockSelect}
 */
 
 // 手駒用数字ブロック
-export const DrawHandpiece:React.FC<BlockProps> = (props) => {
+export const DrawHandpiece: React.FC<BlockProps> = (props) => {
   const blockBasePos = useRecoilValue(HandpiecesBasePos(props.blockId));
   const blockHeight = (props.height || props.width);
-  
+
   //const [hovered, setHovered] = React.useState(false); //※Outlines用
   //useCursor(hovered);
 
@@ -175,7 +177,7 @@ export const DrawHandpiece:React.FC<BlockProps> = (props) => {
   const gameLaunchState = useRecoilValue(GameLaunchState);
 
   const onBlockSelect = () => {
-      setBlockNumber(props.blockNum);
+    setBlockNumber(props.blockNum);
   }
 
   const tileColor = props.color;
@@ -185,24 +187,24 @@ export const DrawHandpiece:React.FC<BlockProps> = (props) => {
   const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);
 
   let AnimEnable = true;
-  if (!props.blockAnim && gameLaunchState){
+  if (!props.blockAnim && gameLaunchState) {
     AnimEnable = false;
   }
 
   useFrame(() => {
-    if(AnimEnable && boxRef.current != null){
+    if (AnimEnable && boxRef.current != null) {
       //HandpieceAnimation(boxRef.current, blockAnimState, blockAnimStateSetter, props.width, blockHeight, blockHeight);
     }
     boxRef.current?.position.set(blockBasePos.x, blockBasePos.y, blockBasePos.z);
   });
-  
-  return(
+
+  return (
     <DrawNumberBlock
       props={props}
       ref={boxRef}
       onClick={onBlockSelect}
     >
-      <meshBasicMaterial color={tileColor}/>
+      <meshBasicMaterial color={tileColor} />
     </DrawNumberBlock>
   );
 }

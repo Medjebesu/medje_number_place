@@ -16,22 +16,22 @@ export const BoardInitializer: React.FC<BoardInitializerProps> = (/* props */) =
   const gameDifficulty = useRecoilValue(GameDifficultyState);
   const qaReceived = useRecoilValue(QAResponseReceived);
 
-  if(!qaReceived){
+  if (!qaReceived) {
     console.debug("Call GenerateQuestion.");
     return <GenerateQuestion difficulty={gameDifficulty} />
   }
-  else{
-    if(!np) {
+  else {
+    if (!np) {
       return <BlocksDataInitializer />
     }
-    else{
+    else {
       console.debug("Call np is null?");
       return <></>
     }
   }
 }
 
-const BlocksDataInitializer:React.FC = () =>{
+const BlocksDataInitializer: React.FC = () => {
   console.debug("Call BlocksDataInitializer.");
   const gameDifficulty = useRecoilValue(GameDifficultyState);
   const npQuestion = useRecoilValue(NpQuestion);
@@ -39,7 +39,7 @@ const BlocksDataInitializer:React.FC = () =>{
 
   np = new NumberPlace(gameDifficulty, npQuestion, npAnswer);
   const tempArray = new Array<boolean>;
-  for(let i = 0; i < 9; i++){tempArray.push(false);}
+  for (let i = 0; i < 9; i++) { tempArray.push(false); }
   np.getQuestion().forEach((value, idx) => {
     var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx))
     var setBlockMemo = useSetRecoilState(BoardBlocksMemos(idx));
@@ -59,8 +59,8 @@ const BlocksDataInitializer:React.FC = () =>{
 
 export const BoardStateReset = selector({
   key: "boardStateReset",
-  get: () => {return null;},
-  set:({ set }, _) => {
+  get: () => { return null; },
+  set: ({ set }, _) => {
     set(QAResponseReceived, false);
     set(NpQuestion, new Array<number>);
     set(NpAnswer, new Array<number>);

@@ -17,7 +17,7 @@ type Props = {
 export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, position, hoverSEPath, onClickSEPath, onClickMethod }: Props) => {
 
   const letterSpace = 0.125;
-  const collisionPosition = 
+  const collisionPosition =
     new THREE.Vector3(
       letterSpace * (text.length * 3),
       0.5,
@@ -33,15 +33,15 @@ export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, posi
   const [hovered, setHovered] = React.useState(false);
   useCursor(hovered);
 
-  let hoverSE:HTMLAudioElement | null = null;
-  if(hoverSEPath != undefined && hoverSEPath != ""){
+  let hoverSE: HTMLAudioElement | null = null;
+  if (hoverSEPath != undefined && hoverSEPath != "") {
     hoverSE = new Audio(hoverSEPath);
     hoverSE.loop = false;
     hoverSE.muted = false;
   }
 
-  let onClickSE:HTMLAudioElement | null = null;
-  if(onClickSEPath != undefined && onClickSEPath != ""){
+  let onClickSE: HTMLAudioElement | null = null;
+  if (onClickSEPath != undefined && onClickSEPath != "") {
     onClickSE = new Audio(onClickSEPath);
     onClickSE.loop = false;
     onClickSE.muted = false;
@@ -58,14 +58,14 @@ export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, posi
       <Box
         args={[collisionWidth, collisionHeight, collisionVolume]}
         onPointerOver={() => {
-          if(hoverSE && isSEEnable) hoverSE.play();
+          if (hoverSE && isSEEnable) hoverSE.play();
           setHovered(true);
         }}
         onPointerOut={() => setHovered(false)}
         position={collisionPosition}
-        onClick={()=>{
-          if(onClickSE && isSEEnable) onClickSE.play();
-          if(onClickMethod) onClickMethod();
+        onClick={() => {
+          if (onClickSE && isSEEnable) onClickSE.play();
+          if (onClickMethod) onClickMethod();
         }}
       >
         <meshPhongMaterial

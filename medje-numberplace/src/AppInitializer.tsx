@@ -37,14 +37,14 @@ export const InGameStatusState = atom({
 
 export const InGameStatusSelecter = selector({
   key: "inGameStatusSelecter",
-  get: ({get}):InGameStatus => {
+  get: ({ get }): InGameStatus => {
     return {
       difficulty: get(GameDifficultyState),
       status: get(InGameStatusState),
     }
   },
-  set: ({set}, newVal) =>{
-    if (!(newVal instanceof DefaultValue)){
+  set: ({ set }, newVal) => {
+    if (!(newVal instanceof DefaultValue)) {
       set(GameDifficultyState, newVal.difficulty);
       set(InGameStatusState, newVal.status);
     }
@@ -53,20 +53,20 @@ export const InGameStatusSelecter = selector({
 
 export const GameSceneSenderInGame = selector({
   key: "gameSceneSelecter",
-  get: ({get}):GameDifficulty => {
+  get: ({ get }): GameDifficulty => {
     return get(InGameStatusSelecter).difficulty;
   },
-  set: ({get, set}, newVal) => {
+  set: ({ get, set }, newVal) => {
     var nowStatus = get(InGameStatusState);
 
     // T.B.D 中段したゲームがある場合に再開する判定を入れる
     //if (nowStatus == InGameSituation.InProgress){
     //} else
-    if (nowStatus != InGameSituation.InProgress){
+    if (nowStatus != InGameSituation.InProgress) {
       set(InGameStatusSelecter, {
-          difficulty: newVal,
-          status: InGameSituation.InProgress
-        } as InGameStatus
+        difficulty: newVal,
+        status: InGameSituation.InProgress
+      } as InGameStatus
       );
       set(GameSceneState, GameScene.InGame)
     }
@@ -75,11 +75,11 @@ export const GameSceneSenderInGame = selector({
 
 // 初期起動完了フラグ管理
 export const GameLaunchState = atom({
-  key:"gameLaunchState",
+  key: "gameLaunchState",
   default: false,
 });
 
-export const AppInitializer:React.FC = () =>{
+export const AppInitializer: React.FC = () => {
   return <>
     <TitleSceneStateInitializer />
     <GameControlInitializer />
