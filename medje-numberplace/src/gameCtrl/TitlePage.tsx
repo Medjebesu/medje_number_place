@@ -15,8 +15,6 @@ export const TitlePage: React.FC = () => {
       return <TitlePageTop />
     case TitleScene.DiffCultySelect:
       return <TitlePageDiffCultySelect />
-    //case TitleScene.DiffCultySelect:
-    //  return <TitlePageDiffCultySelect/>
   }
 }
 

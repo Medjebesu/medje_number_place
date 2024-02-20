@@ -77,16 +77,16 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
 // 盤面用数字ブロック
 export const DrawBoardNumberBlock: React.FC<BlockProps> = (props) => {
   const blockBasePos = useRecoilValue(BoardBlocksBasePos(props.blockId));
+  const [blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
+  const [selectedBlockNum, setSelectBlockNum] = useRecoilState(SelectedBlockNum);
+  const gameLaunchState = useRecoilValue(GameLaunchState);
+  const isSEEnable = useRecoilValue(SoundEnableState);
+
   const blockHeight = (props.height || props.width);
   const blockVolume = (props.volume || props.width);
 
   //const [hovered, setHovered] = React.useState(false); //※Outlines用
   //useCursor(hovered);
-
-  const [blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
-  const [selectedBlockNum, setSelectBlockNum] = useRecoilState(SelectedBlockNum);
-  const gameLaunchState = useRecoilValue(GameLaunchState);
-  const isSEEnable = useRecoilValue(SoundEnableState);
 
   // 選択時効果音
   const selectSE = isSEEnable ? new Audio("/sounds/puzzle_cursor.mp3") : null;
@@ -168,13 +168,13 @@ onClick={onBlockSelect}
 // 手駒用数字ブロック
 export const DrawHandpiece: React.FC<BlockProps> = (props) => {
   const blockBasePos = useRecoilValue(HandpiecesBasePos(props.blockId));
+  const setBlockNumber = useSetRecoilState(BlockNumberSetter);
+  const gameLaunchState = useRecoilValue(GameLaunchState);
+
   const blockHeight = (props.height || props.width);
 
   //const [hovered, setHovered] = React.useState(false); //※Outlines用
   //useCursor(hovered);
-
-  const setBlockNumber = useSetRecoilState(BlockNumberSetter);
-  const gameLaunchState = useRecoilValue(GameLaunchState);
 
   const onBlockSelect = () => {
     setBlockNumber(props.blockNum);

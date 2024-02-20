@@ -3,7 +3,7 @@ import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } fro
 import Paper from "@mui/material/Paper";
 import { Button, Stack } from "@mui/material";
 import { DifficultyMap, GameDifficulty, GameDifficultyState, GameRefreshSwitch } from "./GameState";
-import { ElapsedGameTime, GameEndTime, GamePlayScore } from "../hudCtrl";
+import { GameEndTime, GamePlayScore } from "../hudCtrl";
 import { BoardStateReset } from "./BoardState";
 import { BlocksStateReset } from "./BlocksState";
 import { GameScene, GameSceneState } from "../AppInitializer";

@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
+import { Button, Container, Paper } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import Button from '@mui/material/Button';
 import VolumeUpOutlinedIcon from '@mui/icons-material/VolumeUpOutlined'
 import VolumeOffOutlinedIcon from '@mui/icons-material/VolumeOffOutlined'
 import { BoardBlockSelector, HandPieceLastDest, HandPieceLastNum, MissTakeCountState } from '../gameCtrl/BlocksState';
-import { DefaultValue, atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { GameScene, GameSceneState, SoundEnableState } from '../AppInitializer';
+import { ElapsedGameTimer, GameEndTime, GamePlayScore, GameTimer, GameTimerStarter, GameTimerState, TimeRenderSwitch } from './HeadsUpDispState';
 
 // ゲームステータス初期化用コンポーネント
 export const GameStatusInitializer: React.FC = () => {
@@ -84,7 +83,6 @@ const MenuButtonContainer: React.FC = () => {
 }
 
 const SoundCtrlContainer: React.FC = () => {
-
   const [isSEEnable, switchSEEnable] = useRecoilState(SoundEnableState);
   const buttonLabel = isSEEnable ? "ON" : "OFF";
   const onClickMethod =
@@ -105,7 +103,6 @@ const SoundCtrlContainer: React.FC = () => {
 }
 
 const GameInfoContainer: React.FC = () => {
-
   const gameTimerState = useRecoilValue(GameTimerState);
   const DispTime = (gameTimerState == GameTimer.Start) ? <ElapsedTimer /> : <EndTime />;
 
@@ -130,7 +127,6 @@ const GameInfoContainer: React.FC = () => {
 
 // 経過時間表示コンポーネント
 const ElapsedTimer: React.FC = () => {
-
   const [elapsedtime, timeSetter] = useRecoilState(ElapsedGameTimer);
   const [timeRenderState, timeRenderSwitch] = useRecoilState(TimeRenderSwitch);
 
@@ -167,7 +163,6 @@ function TimeToStrFormater(time: number) {
 
 // ミス回数表示コンポーネント
 const MissTakeCountItem: React.FC = () => {
-
   const missProgressBackGroudColor = (defaultColor: string): string => {
     const missTakeCountState = useRecoilValue(MissTakeCountState);
     if (missTakeCountState >= 5) return "red";
@@ -245,87 +240,3 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
   fontSize: '1.2rem'
 }));
-
-//
-// 表示ステータス管理用ステート
-//
-export const enum GameTimer {
-  Ready = 0,
-  Start,
-  End
-}
-export const GameTimerState = atom({
-  key: "gameTimerState",
-  default: GameTimer.Ready
-});
-
-export const GameStartTime = atom({
-  key: "gameStartTime",
-  default: 0
-});
-
-export const GameEndTime = atom({
-  key: "gameEndTime",
-  default: 0
-});
-
-export const ElapsedGameTime = atom({
-  key: "elapsedGameTime",
-  default: 0
-});
-
-const TimeRenderSwitch = atom({
-  key: "timeRenderSwitch",
-  default: false
-});
-
-type GameStartStatus = {
-  isStart: boolean;
-  startTime: number;
-}
-const GameTimerStarter = selector({
-  key: "gameTimerStarter",
-  get: ({ get }): GameStartStatus | null => {
-    return { isStart: false, startTime: get(GameStartTime) } as GameStartStatus;
-  },
-  set: ({ set }, _) => {
-    if (!(_ instanceof DefaultValue)) {
-      set(GameTimerState, GameTimer.Start);
-      const now = Math.floor(Date.now());
-      set(GameStartTime, (now));
-      set(ElapsedGameTime, (now));
-      set(GameEndTime, 0);
-    }
-  }
-});
-
-const ElapsedGameTimer = selector({
-  key: "elapsedGameTimer",
-  get: ({ get }): number => {
-    return get(ElapsedGameTime);
-  },
-  set: ({ get, set }, nowTime) => {
-    if (!(nowTime instanceof DefaultValue)) {
-      set(ElapsedGameTime, nowTime - get(GameStartTime));
-    }
-  }
-});
-
-export const GamePlayScore = atom({
-  key: "gamePlayScore",
-  default: 0
-});
-
-export const GemePlayScoreSetter = selector({
-  key: "gemePlayScoreSetter",
-  get: ({ get }): number => {
-    return get(GamePlayScore);
-  },
-  set: ({ get, set }, basePoint) => {
-    if (!(basePoint instanceof DefaultValue)) {
-      let timeBonus = Math.floor(((45 * 60) - (get(ElapsedGameTime) / 1000)) / 50);
-      if (timeBonus < 1) timeBonus = 1;
-      set(GamePlayScore, get(GamePlayScore) + basePoint * timeBonus);
-    }
-  }
-});

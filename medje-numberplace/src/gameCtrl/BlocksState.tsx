@@ -1,5 +1,5 @@
 import { DefaultValue, atom, atomFamily, selector, useRecoilValue } from "recoil"
-import { GemePlayScoreSetter, GameTimerState, GameEndTime, ElapsedGameTime, GameStartTime, GameTimer } from "../hudCtrl";
+import { GemePlayScoreSetter, GameTimerState, GameEndTime, ElapsedGameTime, GameTimer } from "../hudCtrl";
 import { Vector3 } from "three";
 import { InGameSituation, InGameStatusState, SoundEnableState } from "../AppInitializer";
 import { np } from "./BoardState";

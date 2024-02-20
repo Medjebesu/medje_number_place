@@ -10,6 +10,7 @@ const selfGenerate = false; // サーバ無しの場合はtrue, 有りの場合�
 export const GenerateQuestion: React.FC<{ difficulty: GameDifficulty }> = ({ difficulty }) => {
 
   const gameScoreSetter = useSetRecoilState(GamePlayScore);
+  gameScoreSetter(0);
 
   switch (difficulty) {
     case GameDifficulty.Middle:
@@ -18,22 +19,17 @@ export const GenerateQuestion: React.FC<{ difficulty: GameDifficulty }> = ({ dif
     case GameDifficulty.Hard:
     case GameDifficulty.Expart:
     case GameDifficulty.Extra:
-      InquiryQandA(difficulty);
-      break;
+      return <InquiryQandA difficulty={difficulty} />
     case GameDifficulty.Debug:
       console.debug("REST: Send requesut npgq.(Debug)")
-      InquiryQandA(difficulty);
-      break;
+      return <InquiryQandA difficulty={difficulty} />
     default:
       console.warn("Invalid parameter. (not registered Difficulty)");
-      InquiryQandA(GameDifficulty.Middle);
+      return <InquiryQandA difficulty={GameDifficulty.Middle} />
   }
-  gameScoreSetter(0);
-  return <></>
 }
 
-function InquiryQandA(difficulty: GameDifficulty) {
-
+const InquiryQandA: React.FC<{ difficulty: GameDifficulty }> = ({ difficulty }) => {
   const setReceived = useSetRecoilState(QAResponseReceived);
   const setQuestion = useSetRecoilState(NpQuestion);
   const setAnswer = useSetRecoilState(NpAnswer);
@@ -65,4 +61,6 @@ function InquiryQandA(difficulty: GameDifficulty) {
 
     setReceived(true);
   }
+
+  return <></>
 }

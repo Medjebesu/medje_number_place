@@ -41,10 +41,10 @@ const BlocksDataInitializer: React.FC = () => {
   const tempArray = new Array<boolean>;
   for (let i = 0; i < 9; i++) { tempArray.push(false); }
   np.getQuestion().forEach((value, idx) => {
-    var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx))
+    var setBlockNum = useSetRecoilState(BoardBlocksNumber(idx));
     var setBlockMemo = useSetRecoilState(BoardBlocksMemos(idx));
-    var setBlockLocked = useSetRecoilState(BoardBlocksLocked(idx))
-    var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal(idx))
+    var setBlockLocked = useSetRecoilState(BoardBlocksLocked(idx));
+    var setBlockOriginal = useSetRecoilState(BoardBlocksOriginal(idx));
 
     setBlockNum(value);
     setBlockMemo(tempArray);

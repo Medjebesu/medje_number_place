@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { Box, Center, Text3D, useCursor } from '@react-three/drei'
+import { Box, Text3D, useCursor } from '@react-three/drei'
 import React from 'react'
 import { useRecoilValue } from 'recoil';
 import { SoundEnableState } from '../AppInitializer';
@@ -15,6 +15,7 @@ type Props = {
 }
 
 export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, position, hoverSEPath, onClickSEPath, onClickMethod }: Props) => {
+  const isSEEnable = useRecoilValue(SoundEnableState);
 
   const letterSpace = 0.125;
   const collisionPosition =
@@ -27,9 +28,15 @@ export const UITextButton: React.FC<Props> = ({ text, textScale, textColor, posi
   const collisionHeight = 1.25;
   const collisionVolume = 0.5;
 
-  const fontProps = { font: '/fonts/Roboto/Roboto Black.json', fontSize: 24, letterSpacing: letterSpace, lineHeight: 24, 'material-toneMapped': false, characters: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" }
+  const fontProps = {
+    font: '/fonts/Roboto/Roboto Black.json',
+    fontSize: 24,
+    letterSpacing: letterSpace,
+    lineHeight: 24,
+    'material-toneMapped': false,
+    characters: "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  }
 
-  const isSEEnable = useRecoilValue(SoundEnableState);
   const [hovered, setHovered] = React.useState(false);
   useCursor(hovered);
 

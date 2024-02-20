@@ -15,6 +15,8 @@ type Props = {
 
 export const MemoModeSwitch: React.FC<Props> = ({ width, position }: Props) => {
 
+  const [nowMode, SetActMode] = useRecoilState(HandPieceActMode);
+
   const switchWidth = width ? width : 1;
   //const switchColor:THREE.Color | string = color ? color : "#51ff41";
 
@@ -27,7 +29,6 @@ export const MemoModeSwitch: React.FC<Props> = ({ width, position }: Props) => {
   const adjustAngleX = -0.01;
   const adjustAngleY = -0.02;
 
-  const [nowMode, SetActMode] = useRecoilState(HandPieceActMode);
   const dispText = (nowMode == ActMode.NumSet) ? "Memo:OFF" : "Memo:On";
   const switchColor = (nowMode == ActMode.NumSet) ? "#555555" : "#51ff41";
 
