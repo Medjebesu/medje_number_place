@@ -161,8 +161,7 @@ const Handpiece: React.FC<HandpiecekProps> = (props) => {
     <DrawHandpiece
       blockId={props.id}
       blockNum={props.num}
-      color="blue"
-      outlineColor={"#ff0f00"}
+      color="#0088FF"
       fontColor="white"
       width={props.size * 1.1}
       volume={0.01}
