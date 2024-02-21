@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { UITextButton } from '../draw3ds/DrawUITextButton';
 import { UIText } from '../draw3ds/DrawUIText';
-import { Vector3 } from 'three';
+import { Color, Euler, Vector3 } from 'three';
 import { TitleScene, TitleSceneState } from './TitlePageState';
 import { GameSceneSenderInGame } from '../AppInitializer';
-import { GameDifficulty } from './GameState';
+import { DifficultyMap, GameDifficulty } from './GameState';
+import { Center } from '@react-three/drei';
 
 export const TitlePage: React.FC = () => {
   const scene = useRecoilValue(TitleSceneState);
@@ -38,7 +39,7 @@ const TitlePageTop: React.FC = () => {
     <UITextButton
       text={"Start"}
       textScale={1.25}
-      textColor={"#ffffff"}
+      textColor={"#00ffff"}
       position={startPosition}
       onClickSEPath={'sounds/decide.mp3'}
       onClickMethod={onClickMethod}
@@ -47,12 +48,8 @@ const TitlePageTop: React.FC = () => {
 }
 
 const TitlePageDiffCultySelect: React.FC = () => {
-  const sceneSetter = useSetRecoilState(GameSceneSenderInGame);
 
   const titlePosition = new Vector3(-4, 2, 0);
-  const difficultPosition = new Array<Vector3>;
-  difficultPosition.push(new Vector3(-3, -4, 0));
-  difficultPosition.push(new Vector3(-2, -6, 0));
 
   return <>
     <UIText
@@ -62,23 +59,37 @@ const TitlePageDiffCultySelect: React.FC = () => {
     >
       Difficult
     </UIText>
-    <UITextButton
-      text='middle'
-      textScale={1.25}
-      textColor={"#ffffff"}
-      position={difficultPosition[0]}
-      hoverSEPath={'sounds/cursor.mp3'}
-      onClickSEPath={'sounds/decide.mp3'}
-      onClickMethod={() => sceneSetter(GameDifficulty.Middle)}
-    />
-    <UITextButton
-      text='test'
-      textScale={1.25}
-      textColor={"#ffffff"}
-      position={difficultPosition[1]}
-      hoverSEPath={'sounds/cursor.mp3'}
-      onClickSEPath={'sounds/decide.mp3'}
-      onClickMethod={() => sceneSetter(GameDifficulty.Debug)}
-    />
+    <DifficultyButtons />
   </>
+}
+
+const DifficultyButtons: React.FC = () => {
+  const sceneSetter = useSetRecoilState(GameSceneSenderInGame);
+
+  const buttons = new Array<ReactElement>
+  let buttonCnt = 0;
+  for (let idx = 1; idx < DifficultyMap.size - 1; idx++) {
+    var buttonStr = DifficultyMap.get(idx);
+    var buttonPos = new Vector3(0, buttonCnt * -1.25, 0);
+    if (buttonStr !== undefined) {
+      buttons.push(
+        <UITextButton
+          key={`difficultytButton_${idx}`}
+          text={buttonStr}
+          textScale={0.75}
+          textColor={new Color((0x00ffff + (0x330000 - 0x003300 -0x000022) * buttonCnt))}
+          position={buttonPos}
+          rotation={new Euler(-Math.PI / 135 * buttonCnt, 0, 0, "XYZ")}
+          hoverSEPath={'sounds/cursor.mp3'}
+          onClickSEPath={'sounds/decide.mp3'}
+          onClickMethod={() => sceneSetter(idx)}
+        />
+      );
+      buttonCnt++;
+    }
+  }
+
+  return <Center position={new Vector3(0, -6, 0)} top={true} bottom={true} left={false} >
+    {buttons}
+  </Center>
 }
