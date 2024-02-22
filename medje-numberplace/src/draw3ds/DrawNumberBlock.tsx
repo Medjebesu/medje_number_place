@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
-import { Box, RoundedBox, Text, useCursor } from "@react-three/drei"
+import { Box, Text, useCursor } from "@react-three/drei"
 import {
   BoardBlockSelector, BlockNumberSetter, SelectedBlockNum,
   BoardBlocksBasePos, HandpiecesBasePos
@@ -78,7 +78,7 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
     );
   }
 
-  const textMaterial = hovered ? <meshPhongMaterial color={props.color} /> : <meshBasicMaterial attach="material" color={props.color} />;
+  const material = hovered ? <meshPhongMaterial color={props.color} /> : <meshBasicMaterial attach="material" color={props.color} />;
 
   return (
     <mesh ref={ref}>
@@ -88,7 +88,7 @@ const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalB
         onPointerOut={() => setHovered(false)}
         onClick={onClick}
       >
-        {textMaterial}
+        {material}
       </Box>
       {props.blockNum != 0 ? NumText : MemoText}
     </mesh>

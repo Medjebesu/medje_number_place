@@ -39,42 +39,34 @@ export const MemoModeSwitch: React.FC<Props> = ({ width, height, position }: Pro
 
   const dispText = (nowMode == ActMode.NumSet) ? "Memo:OFF" : "Memo:On";
   const switchColor = (nowMode == ActMode.NumSet) ? "#555555" : "#51ff41";
-  const outlineColor = (nowMode == ActMode.NumSet) ? "#51ff41" : "#555555";
-
+  
   const isSoundEnable = useRecoilValue(SoundEnableState);
   const onClickMethod = () => {
     if (isSoundEnable) modeChangeSE.play();
     (nowMode == ActMode.NumSet) ? SetActMode(ActMode.Memo) : SetActMode(ActMode.NumSet);
   }
 
-  const outline = hovered ?
-    <Box
-      args={[switchWidth * 1.075, switchHeight * 1.1, switchVolume * 0.95]}
-      onClick={onClickMethod}
-    >
-      <meshBasicMaterial attach="material" color={outlineColor} />
-    </Box> :
-    <></>;
+  const material = hovered ? <meshPhongMaterial color={switchColor} /> : <meshBasicMaterial attach="material" color={switchColor} />;
 
   return <mesh
     position={position}
+    rotation={new THREE.Euler(adjustAngleX, adjustAngleY, 0.00, 'XYZ')}
   >
     <Box
       args={[switchWidth, switchHeight, switchVolume]}
-      rotation={new THREE.Euler(adjustAngleX, adjustAngleY, 0.00, 'XYZ')}
       onPointerOver={() => setHovered(true)}
       onPointerOut={() => setHovered(false)}
+      onClick={onClickMethod}
     >
-      <meshPhongMaterial attach="material" color={switchColor} />
-      <Text
-        position={new THREE.Vector3(0, 0, 0.03)}
-        color={nowMode == ActMode.NumSet ? "#ffffff" : "#555"}
-        {...fontProps}
-      >
-        {dispText}
-      </Text>
-      {outline}
+      {material}
     </Box>
+    <Text
+      position={new THREE.Vector3(0, 0, 0.03)}
+      color={nowMode == ActMode.NumSet ? "#ffffff" : "#555"}
+      {...fontProps}
+    >
+      {dispText}
+    </Text>
   </mesh>
 }
 
