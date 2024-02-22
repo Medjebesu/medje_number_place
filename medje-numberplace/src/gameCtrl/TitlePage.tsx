@@ -25,8 +25,8 @@ const TitlePageTop: React.FC = () => {
     sceneSetter(TitleScene.DiffCultySelect);
   };
 
-  const titlePosition = new Vector3(-6.5, 2, 0);
-  const startPosition = new Vector3(-2.5, -4, 0);
+  const titlePosition = new Vector3(-5.5, 2.25, 0);
+  const startPosition = new Vector3(-1.5, -4, 0);
 
   return <>
     <UIText
@@ -49,7 +49,7 @@ const TitlePageTop: React.FC = () => {
 
 const TitlePageDiffCultySelect: React.FC = () => {
 
-  const titlePosition = new Vector3(-4, 2, 0);
+  const titlePosition = new Vector3(-3.25, 2.25, 0);
 
   return <>
     <UIText
@@ -70,8 +70,10 @@ const DifficultyButtons: React.FC = () => {
   let buttonCnt = 0;
   for (let idx = 1; idx < DifficultyMap.size - 1; idx++) {
     var buttonStr = DifficultyMap.get(idx);
-    var buttonPos = new Vector3(0, buttonCnt * -1.25, 0);
     if (buttonStr !== undefined) {
+      var adjustWidth = buttonStr.length * 0.25;
+      var buttonPos = new Vector3(-adjustWidth, buttonCnt * -1.25, 0);
+    
       buttons.push(
         <UITextButton
           key={`difficultytButton_${idx}`}
@@ -89,7 +91,7 @@ const DifficultyButtons: React.FC = () => {
     }
   }
 
-  return <Center position={new Vector3(0, -6, 0)} top={true} bottom={true} left={false} >
+  return <Center position={new Vector3(0.8, -6, 0)} top={true} bottom={true} left={false} >
     {buttons}
   </Center>
 }

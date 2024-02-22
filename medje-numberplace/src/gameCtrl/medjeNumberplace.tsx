@@ -27,7 +27,7 @@ function Controls() {
   const controls = useMemo(() => new CameraControls(camera, gl.domElement), [])
 
   return useFrame((_, delta) => {
-    controls.setLookAt(1.25, -0.75, 8, 1.25, -0.75, 0, true)
+    controls.setLookAt(1.0, -0.75, 8, 1.0, -0.75, 0, true)
     return controls.update(delta)
   })
 }
