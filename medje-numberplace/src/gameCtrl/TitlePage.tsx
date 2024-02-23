@@ -27,7 +27,6 @@ const TitlePageTop: React.FC = () => {
 
   const titlePosition = new Vector3(-5.5, 2.25, 0);
   const startPosition = new Vector3(-1.25, -4, 0);
-  const startPosition = new Vector3(-1.25, -4, 0);
 
   return <>
     <UIText
