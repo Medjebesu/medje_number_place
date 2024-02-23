@@ -6,7 +6,6 @@ import { Color, Euler, Vector3 } from 'three';
 import { TitleScene, TitleSceneState } from './TitlePageState';
 import { GameSceneSenderInGame } from '../AppInitializer';
 import { DifficultyMap } from './GameState';
-import { DifficultyMap } from './GameState';
 import { Center } from '@react-three/drei';
 
 export const TitlePage: React.FC = () => {
