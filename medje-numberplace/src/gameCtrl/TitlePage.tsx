@@ -5,7 +5,7 @@ import { UIText } from '../draw3ds/DrawUIText';
 import { Color, Euler, Vector3 } from 'three';
 import { TitleScene, TitleSceneState } from './TitlePageState';
 import { GameSceneSenderInGame } from '../AppInitializer';
-import { DifficultyMap, GameDifficulty } from './GameState';
+import { DifficultyMap } from './GameState';
 import { Center } from '@react-three/drei';
 
 export const TitlePage: React.FC = () => {
@@ -26,7 +26,7 @@ const TitlePageTop: React.FC = () => {
   };
 
   const titlePosition = new Vector3(-5.5, 2.25, 0);
-  const startPosition = new Vector3(-1.5, -4, 0);
+  const startPosition = new Vector3(-1.25, -4, 0);
 
   return <>
     <UIText
@@ -49,7 +49,7 @@ const TitlePageTop: React.FC = () => {
 
 const TitlePageDiffCultySelect: React.FC = () => {
 
-  const titlePosition = new Vector3(-3.25, 2.25, 0);
+  const titlePosition = new Vector3(-2.75, 2.25, 0);
 
   return <>
     <UIText
@@ -71,7 +71,7 @@ const DifficultyButtons: React.FC = () => {
   for (let idx = 1; idx < DifficultyMap.size - 1; idx++) {
     var buttonStr = DifficultyMap.get(idx);
     if (buttonStr !== undefined) {
-      var adjustWidth = buttonStr.length * 0.25;
+      var adjustWidth = buttonStr.length * 0.23;
       var buttonPos = new Vector3(-adjustWidth, buttonCnt * -1.25, 0);
     
       buttons.push(
@@ -91,7 +91,7 @@ const DifficultyButtons: React.FC = () => {
     }
   }
 
-  return <Center position={new Vector3(0.8, -6, 0)} top={true} bottom={true} left={false} >
+  return <Center position={new Vector3(1.25, -6, 0)} top={true} bottom={true} left={false} >
     {buttons}
   </Center>
 }

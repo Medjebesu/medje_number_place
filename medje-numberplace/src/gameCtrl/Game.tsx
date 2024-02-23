@@ -8,7 +8,7 @@ import { GameLaunchState, GameScene, GameSceneState } from '../AppInitializer'
 import { DrawBackGround } from '../draw3ds'
 import { TitlePage } from './TitlePage'
 import { NPSubControl } from './NPSubControl'
-import { GameRefreshSwitch, GameRefreshSwitchState } from './GameState'
+import { GameRefreshSwitchState } from './GameState'
 
 export const GameControl: React.FC = () => {
   console.debug("Call GameControl.");
