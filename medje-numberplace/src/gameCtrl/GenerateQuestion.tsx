@@ -1,66 +1,61 @@
-import { useSetRecoilState } from "recoil";
-import { GetNPQuestion, NpgqResponse } from "../messagingCtrl/request";
-import { GameDifficulty } from "./GameState";
-import { NpAnswer, NpQuestion, QAResponseReceived } from "./BoardState";
-import { answers, questions } from "./configure";
-import { GamePlayScore } from "../hudCtrl";
+export const enum Difficulty {
+  Light = 1,
+  Easy,
+  Middle,
+  Hard,
+  Evil
+}
 
-const selfGenerate = false; // サーバ無しの場合はtrue, 有りの場合はfalse
-
-export const GenerateQuestion: React.FC<{ difficulty: GameDifficulty }> = ({ difficulty }) => {
-
-  const gameScoreSetter = useSetRecoilState(GamePlayScore);
-  gameScoreSetter(0);
-
+export function GenerateQuestion(difficulty: Difficulty): [number[], number[]] {
+  // T.B.D
   switch (difficulty) {
-    case GameDifficulty.Middle:
-    case GameDifficulty.Light:
-    case GameDifficulty.Easy:
-    case GameDifficulty.Hard:
-    case GameDifficulty.Expart:
-    case GameDifficulty.Extra:
-      return <InquiryQandA difficulty={difficulty} />
-    case GameDifficulty.Debug:
-      console.debug("REST: Send requesut npgq.(Debug)")
-      return <InquiryQandA difficulty={difficulty} />
+    case Difficulty.Light:
+    case Difficulty.Easy:
+    case Difficulty.Middle:
+      return MiddleDifficultyQuestion();
+    case Difficulty.Hard:
+    case Difficulty.Evil:
     default:
-      console.warn("Invalid parameter. (not registered Difficulty)");
-      return <InquiryQandA difficulty={GameDifficulty.Middle} />
+      console.debug("Invalid parameter. (not registered Difficulty)");
+      return MiddleDifficultyQuestion();
   }
 }
 
-const InquiryQandA: React.FC<{ difficulty: GameDifficulty }> = ({ difficulty }) => {
-  const setReceived = useSetRecoilState(QAResponseReceived);
-  const setQuestion = useSetRecoilState(NpQuestion);
-  const setAnswer = useSetRecoilState(NpAnswer);
+function MiddleDifficultyQuestion():[number[], number[]] {
+  // T.B.D
+  const question = [
+    7, 0, 2, 8, 0, 4, 0, 9, 0,
+    0, 3, 0, 2, 0, 0, 1, 7, 0,
+    0, 5, 0, 0, 0, 9, 0, 4, 0,
 
-  // サーバ有りの場合
-  if (!selfGenerate) {
-    const npgq = GetNPQuestion(difficulty); // Promise
-    const waitResponse = async () => {
-      const fn = async () => {
-        const npgqPro = await (npgq.then((response) => {
-          return response.json();
-        }) as Promise<NpgqResponse>);
-        setQuestion(npgqPro.question);
-        setAnswer(npgqPro.answer);
+    0, 0, 0, 0, 8, 0, 0, 3, 0,
+    3, 0, 5, 0, 6, 0, 0, 0, 0,
+    0, 0, 0, 4, 2, 0, 0, 0, 0,
 
-        setReceived(true);
-      }
-      fn();
-    }
+    0, 1, 0, 6, 9, 0, 7, 0, 0,
+    0, 0, 0, 3, 0, 0, 9, 2, 1,
+    8, 0, 0, 5, 0, 0, 0, 6, 0
+  ]
 
-    waitResponse();
-  }
-  // サーバ無しの場合
-  else {
-    const idx = Math.floor(Math.random() * questions.length - 1);
+  const answer = [
+    7, 6, 2, 8, 1, 4, 5, 9, 3,
+    9, 3, 4, 2, 5, 6, 1, 7, 8,
+    1, 5, 8, 7, 3, 9, 2, 4, 6,
 
-    setQuestion(questions[idx]);
-    setAnswer(answers[idx]);
+    2, 4, 7, 1, 8, 5, 6, 3, 9,
+    3, 8, 5, 9, 6, 7, 4, 1, 2,
+    6, 9, 1, 4, 2, 3, 8, 5, 7,
 
-    setReceived(true);
-  }
+    4, 1, 3, 6, 9, 2, 7, 8, 5,
+    5, 7, 6, 3, 4, 8, 9, 2, 1,
+    8, 2, 9, 5, 7, 1, 3, 6, 4
+  ]
 
-  return <></>
+  return [question, answer];
+}
+
+export function CulculateAnswer(npQuestion: number[]): number[] {
+  let npAnswer: number[] = [];
+
+  return npAnswer;
 }
