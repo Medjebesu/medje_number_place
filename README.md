@@ -3,7 +3,7 @@
 Reactベースのナンプレアプリです。
 
 <div style="text-align: center">
-  <img src="screenshots/MainVisual.png" width=512 height=620> <img src="screenshots/DifficultSelect.png" width=512 height=620>
+  <img src="screenshots/MainVisual.png" width=384 height=462> <img src="screenshots/DifficultSelect.png" width=384 height=462>
 </div>
 <div style="text-align: center">
   <img src="screenshots/inGame.png" width=512 height=620>
