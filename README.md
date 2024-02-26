@@ -27,15 +27,15 @@ $ pnpm install recoil
 $ pnpm install three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls
 ```
 
-### (Ⅲ)MaterialUI・Robotoフォントのインストール
+### (Ⅲ)MaterialUI・MaterialIcon・Robotoフォントのインストール
 ```
-$ pnpm add @mui/material @emotion/react @emotion/styled
+$ pnpm add @mui/material @mui/icons-material @emotion/react @emotion/styled
 $ pnpm add @fontsource/roboto
 ```
 
 ※コピペ用：(Ⅰ)～(Ⅲ)までまとめてインストールするコマンド
 ```
-$ pnpm add recoil three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls @mui/material @emotion/react @emotion/styled @fontsource/roboto
+$ pnpm add recoil three @types/three @react-three/fiber @react-three/drei three-stdlib camera-controls @mui/material @mui/icons-material @emotion/react @emotion/styled @fontsource/roboto
 ```
 
 ### フォントファイルの配置
@@ -48,3 +48,7 @@ $ pnpm run dev
 
 ## デプロイ
 T.B.D
+
+
+## スペシャルサンクス
+[効果音ラボ https://soundeffect-lab.info/](https://soundeffect-lab.info/)
