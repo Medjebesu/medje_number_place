@@ -2,7 +2,12 @@
 
 Reactベースのナンプレアプリです。
 
-![Screenshot of a medje-numberplace.](screenshots/MainVisual.png)
+<div style="text-align: center">
+  <img src="screenshots/MainVisual.png" width=512 height=620> <img src="screenshots/DifficultSelect.png" width=512 height=620>
+</div>
+<div style="text-align: center">
+  <img src="screenshots/inGame.png" width=512 height=620>
+</div>
 
 ## 導入
 
