@@ -3,9 +3,9 @@ import * as THREE from 'three'
 import { Line } from "@react-three/drei";
 
 type Props = {
-  lines: Array<THREE.Vector3[]>;
-  color: THREE.ColorRepresentation | undefined;
-  lineWidth: number;
+  lines:Array<THREE.Vector3[]>;
+  color:THREE.ColorRepresentation  | undefined;
+  lineWidth:number;
   //segments:any
   //dashed:boolean;
   //vertexColors:Array<number[]>;
@@ -14,17 +14,17 @@ type Props = {
 }
 
 // 線リスト描画
-export const DrawLines: React.FC<Props> = (props) => {
-
+export const DrawLines:React.FC<Props>= (props) => {
+  
   const lineList = [];
-
+  
   for (const [i, points] of props.lines.entries()) {
-    lineList.push(<Line points={points} color={props.color} lineWidth={props.lineWidth} key={i} />)
+    lineList.push(<Line points={points} color={props.color} lineWidth={props.lineWidth} key={i}/>)
   }
 
-  return (
+  return(
     <>
-      {lineList}
+      { lineList }
     </>
   );
 }

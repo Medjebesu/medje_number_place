@@ -1,204 +1,156 @@
-import React, { forwardRef, useRef } from 'react'
+import React from 'react'
 import * as THREE from 'three'
 import { useFrame } from "@react-three/fiber"
-import { Box, Text, useCursor } from "@react-three/drei"
-import {
-  BoardBlockSelector, BlockNumberSetter, SelectedBlockNum,
-  BoardBlocksBasePos, HandpiecesBasePos
-} from '../gameCtrl/BlocksState'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import { BoardBlockAnimation, SetBoardBlockPattern } from './NumBlockAnimation'
-import { GameLaunchState, SoundEnableState } from '../AppInitializer'
+import { Text, RoundedBox, Outlines, useCursor } from "@react-three/drei"
+import { BoardBlockSelector, BlockNumberSetter, SelectedBlockNum } from '../gameCtrl/BlocksStateControl'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
-export type BlockProps = {
-  blockId: number;
-  blockNum: number;
-  blockMemo?: boolean[];
-  color: THREE.ColorRepresentation;
-  selectedColor?: THREE.ColorRepresentation | undefined;
-  fontColor?: THREE.ColorRepresentation | undefined;
+type Props = {
+  blockId:number;
+  blockNum:number;
+  position:THREE.Vector3;
+  color:THREE.ColorRepresentation;
+  selectedColor?:THREE.ColorRepresentation  | undefined;
+  fontColor?:THREE.ColorRepresentation  | undefined;
   locked?: boolean;
   original?: boolean;
-  width: number;
-  height?: number;
-  volume?: number;
-  blockAnim?: boolean;
+  width:number;
+  height?:number;
+  volume?:number;
+  blockAnim?:boolean;
 }
 
 // ブロック描画
-const DrawNumberBlock = forwardRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>, { props: BlockProps, onClick?: () => void }>(({ props, onClick }, ref) => {
+const DrawNumberBlock:React.FC<{props:Props, children: React.ReactNode}> = ({props, children}) => {
+  const blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString())
+  const blockHeight = (props.height || props.width)
+  const blockVolume = (props.volume || props.width)
+  const fontProps = { font: '/fonts/Roboto/Roboto-Black.ttf', fontSize: props.width, letterSpacing: props.width / 2, lineHeight: blockHeight, 'material-toneMapped': false, characters: "0123456789" }
+
+  const fontColor = props.original ? "#555" : "#ffffff";
+
+  const boxRef = React.useRef()
+  const NumText = (
+    <Text color={props.fontColor ? props.fontColor : fontColor} position={[0, -(blockHeight/10),blockVolume]} {...fontProps}>
+      {blockNum}
+    </Text>
+  )
+
+  // ブロックモーション
+  useFrame((state) => {
+    if (props.blockAnim || false){
+      if(boxRef.current != null){
+        boxRef.current.position.y = Math.sin(state.clock.elapsedTime) * (blockHeight * 0.03)
+      }
+    }
+  })
+
+  return(
+    <mesh position={props.position}>
+      <RoundedBox
+        ref={boxRef}
+        args={[props.width, blockHeight, blockVolume]}
+        radius={0.025}
+        smoothness={10}
+        bevelSegments={4}
+        creaseAngle={0.4}
+      >
+        {NumText}
+        {children}
+      </RoundedBox>
+    </mesh>
+  );
+}
+
+// 盤面用数字ブロック
+export const DrawBoardNumberBlock:React.FC<Props> = (props) => {
   const [hovered, setHovered] = React.useState(false);
   useCursor(hovered);
 
-  const blockNum = (props.blockNum == 0 ? "" : props.blockNum.toString());
-  const blockHeight = (props.height || props.width);
-  const blockVolume = (props.volume || props.width);
-
-  const numFontProps = {
-    font: '/fonts/Roboto/Roboto-Black.ttf',
-    fontSize: props.width,
-    letterSpacing: props.width / 2,
-    lineHeight: blockHeight,
-    'material-toneMapped': false,
-    characters: "0123456789"
-  }
-  const numFontColor = props.original ? "#555" : "#ffffff";
-
-  const NumText = (
-    <Text color={props.fontColor ? props.fontColor : numFontColor} position={[0, -(blockHeight / 10), blockVolume]} {...numFontProps}>
-      {blockNum}
-    </Text>
-  );
-
-  let MemoText = (<Text> </Text>)
-  if (props.blockMemo) {
-    const memoFontProps = {
-      font: '/fonts/Roboto/Roboto-Black.ttf',
-      fontSize: props.width / 3,
-      letterSpacing: props.width / 18,
-      lineHeight: blockHeight,
-      'material-toneMapped': false,
-      characters: "0123456789"
-    }
-    const memoFontColor = "#ffffff";
-    let memoString = "";
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        var idx = i * 3 + j;
-        props.blockMemo[idx] ? memoString += (idx + 1) : memoString += "  ";
-        memoString += " ";
-      }
-      memoString += "\n";
-    }
-
-    MemoText = (
-      <Text color={memoFontColor} position={[0, -(props.width / 6), blockVolume]} {...memoFontProps}>
-        {memoString}
-      </Text>
-    );
-  }
-
-  const material = hovered ? <meshPhongMaterial color={props.color} /> : <meshBasicMaterial attach="material" color={props.color} />;
-
-  return (
-    <mesh ref={ref}>
-      <Box
-        args={[props.width, blockHeight, blockVolume]}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        onClick={onClick}
-      >
-        {material}
-      </Box>
-      {props.blockNum != 0 ? NumText : MemoText}
-    </mesh>
-  );
-});
-
-// 盤面用数字ブロック
-export const DrawBoardNumberBlock: React.FC<BlockProps> = (props) => {
-  const blockBasePos = useRecoilValue(BoardBlocksBasePos(props.blockId));
   const [blockSelector, setBlockSelector] = useRecoilState(BoardBlockSelector);
   const [selectedBlockNum, setSelectBlockNum] = useRecoilState(SelectedBlockNum);
-  const gameLaunchState = useRecoilValue(GameLaunchState);
-  const isSEEnable = useRecoilValue(SoundEnableState);
-
-  const blockHeight = (props.height || props.width);
-  const blockVolume = (props.volume || props.width);
-
-  // 選択時効果音
-  const selectSE = isSEEnable ? new Audio("/sounds/puzzle_cursor.mp3") : null;
-  if (selectSE) {
-    selectSE.loop = false;
-    selectSE.muted = false;
-  }
-
   const onBlockSelect = () => {
-    if (selectSE) selectSE.play();
-    setBlockSelector({ selected: !blockSelector.selected, id: props.blockId });
+    setBlockSelector({selected:!blockSelector.selected, id:props.blockId});
     setSelectBlockNum(props.blockNum);
   }
 
-  let fontColor = props.fontColor;
-  if (blockSelector.selected && (blockSelector.id != props.blockId)) {
-    if (selectedBlockNum == props.blockNum) {
-      fontColor = "#51ff41";
+  let setProps:Props;
+  if(blockSelector.selected && (blockSelector.id != props.blockId)){
+    let fontColor = props.fontColor;
+    if(selectedBlockNum == props.blockNum) {
+      fontColor = "#0AA662";
+    }
+    setProps = {
+      blockId:props.blockId,
+      blockNum:props.blockNum,
+      position:props.position,
+      color:props.color,
+      selectedColor:props.selectedColor,
+      fontColor: fontColor,
+      locked:props.locked,
+      original:props.original,
+      width:props.width,
+      height:props.height,
+      volume:props.volume,
+      blockAnim:props.blockAnim,
     }
   }
-
-  const selectedColor = props.selectedColor ? props.selectedColor : props.color;
-  const tileColor = (blockSelector.selected && blockSelector.id == props.blockId) ? selectedColor : props.color;
-
-  let setProps = { ...props }
-  setProps.height = blockHeight;
-  setProps.volume = blockVolume;
-  setProps.color = tileColor;
-  setProps.fontColor = fontColor;
-
-  // ブロックアニメーション
-  const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);
-
-  let AnimEnable = true;
-  if ((!props.blockAnim || false) && gameLaunchState) {
-    AnimEnable = false;
-  }
-  else if (props.blockNum == 0) {
-    SetBoardBlockPattern(props.blockId, "floating");
+  else{
+    setProps = props;
   }
 
-  useFrame(() => {
-    if (boxRef.current != null) {
-      BoardBlockAnimation(boxRef.current, props.blockId, blockBasePos, props.width, blockHeight, blockHeight);
-    }
-    /*
-    else if(!props.blockAnim){
-      boxRef.current?.position.set(blockBasePos.x, blockBasePos.y, blockBasePos.z);
-    }
-    */
-  });
-
-  return (
-    <DrawNumberBlock
-      props={setProps}
-      ref={boxRef}
-      onClick={onBlockSelect}
-    />
+  const tileColor = (blockSelector.selected && blockSelector.id==props.blockId)? props.selectedColor : props.color;
+  
+  return(
+    <DrawNumberBlock props={setProps}>
+      <meshBasicMaterial color={tileColor}/>
+      <Outlines
+        color={"#000fff"}
+        screenspace={false}
+        opacity={Number(hovered)}
+        toneMapped={false}
+        polygonOffset
+        polygonOffsetFactor={10}
+        transparent
+        thickness={setProps.width*0.05}
+        angle={Math.PI}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        onClick={onBlockSelect}
+      />
+    </DrawNumberBlock>
   );
 }
 
 // 手駒用数字ブロック
-export const DrawHandpiece: React.FC<BlockProps> = (props) => {
-  const blockBasePos = useRecoilValue(HandpiecesBasePos(props.blockId));
+export const DrawHandpiece:React.FC<Props> = (props) => {
+  const [hovered, setHovered] = React.useState(false);
+  useCursor(hovered);
+
   const setBlockNumber = useSetRecoilState(BlockNumberSetter);
-  const gameLaunchState = useRecoilValue(GameLaunchState);
-
-  //const blockHeight = (props.height || props.width);
-
   const onBlockSelect = () => {
-    setBlockNumber(props.blockNum);
+      setBlockNumber(props.blockNum);
   }
 
-  // ブロックアニメーション
-  //const [blockAnimState, blockAnimStateSetter] = useRecoilState(HandpiecesAnimState(props.blockId));
-  const boxRef = useRef<THREE.Mesh<THREE.BufferGeometry<THREE.NormalBufferAttributes>, THREE.Material | THREE.Material[], THREE.Object3DEventMap>>(null);
+  const tileColor = props.color;
 
-  let AnimEnable = true;
-  if (!props.blockAnim && gameLaunchState) {
-    AnimEnable = false;
-  }
-
-  useFrame(() => {
-    if (AnimEnable && boxRef.current != null) {
-      //HandpieceAnimation(boxRef.current, blockAnimState, blockAnimStateSetter, props.width, blockHeight, blockHeight);
-    }
-    boxRef.current?.position.set(blockBasePos.x, blockBasePos.y, blockBasePos.z);
-  });
-
-  return (
-    <DrawNumberBlock
-      props={props}
-      ref={boxRef}
-      onClick={onBlockSelect}
-    />
+  return(
+    <DrawNumberBlock props={props}>
+      <meshBasicMaterial color={tileColor}/>
+      <Outlines
+        color={"#ff0f00"}
+        screenspace={false}
+        opacity={Number(hovered)}
+        toneMapped={false}
+        polygonOffset
+        polygonOffsetFactor={10}
+        transparent
+        thickness={props.width*0.05}
+        angle={Math.PI}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        onClick={onBlockSelect}
+      />
+    </DrawNumberBlock>
   );
 }

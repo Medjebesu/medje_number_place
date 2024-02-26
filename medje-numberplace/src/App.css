@@ -1,29 +1,21 @@
 #root {
-  min-width: 720px;
-  min-height: 540px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  background-color: #ffedb7;
 }
 
 /* メイン画面セクション定義 */
-#main_contents {
+#main_contents{
   height: 100%;
 }
-
-#hud_area {
-  width: max(720px, 100%);
-  height: 12%;
-  min-width: 720px;
-  padding-top: clamp(1rem, 2%, 5rem);
+#game_area{
+  width:  max(720px,100%);
+  height: clamp(480px,80%,80vw);
   justify-content: center;
 }
-
-#game_area {
-  width: max(720px, 100%);
-  height: 88%;
-  min-width: 720px;
-  max-height: 100vw;
+#hud_area{
+  width: max(720px,100%);
+  height: 10%;
+  min-height:120px;
   justify-content: center;
 }

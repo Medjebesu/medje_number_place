@@ -1,10 +1,12 @@
 import React from 'react'
 import * as THREE from 'three'
 
-export const DrawBackGround: React.FC = () => {
-  return (
-    <>
+type Props = {
+}
 
+export const DrawBackGround: React.FC<Props>  = (props) =>{
+  return(
+    <>
     </>
   );
 }
