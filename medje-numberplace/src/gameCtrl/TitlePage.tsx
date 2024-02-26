@@ -25,12 +25,12 @@ const TitlePageTop: React.FC = () => {
     sceneSetter(TitleScene.DiffCultySelect);
   };
 
-  const titlePosition = new Vector3(-5.5, 2.25, 0);
+  const titlePosition = new Vector3(-4.5, 2.25, 0);
   const startPosition = new Vector3(-1.25, -4, 0);
 
   return <>
     <UIText
-      textScale={1.5}
+      textScale={1.25}
       textColor={"#51ff41"}
       position={titlePosition}
     >
