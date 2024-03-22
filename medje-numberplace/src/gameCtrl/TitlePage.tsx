@@ -5,8 +5,10 @@ import { UIText } from '../draw3ds/DrawUIText';
 import { Color, Euler, Vector3 } from 'three';
 import { TitleScene, TitleSceneState } from './TitlePageState';
 import { GameSceneSenderInGame } from '../AppInitializer';
-import { DifficultyMap } from './GameState';
+import { DifficultyMap, GameDifficulty } from './GameState';
 import { Center } from '@react-three/drei';
+
+const devMode = true
 
 export const TitlePage: React.FC = () => {
   const scene = useRecoilValue(TitleSceneState);
@@ -89,6 +91,38 @@ const DifficultyButtons: React.FC = () => {
       );
       buttonCnt++;
     }
+  }
+
+  if (devMode){
+      // 難易度検証中の問題を出す"None"モード追加
+      buttons.push(
+      <UITextButton
+        key={`difficultytButton_None}`}
+        text={"None"}
+        textScale={0.75}
+        textColor={"#FFFFFF"}
+        position={new Vector3(-7.5, -2, 0)}
+        //rotation={new Euler(0, Math.PI * 0.25, 0, "XYZ")}
+        hoverSEPath={'sounds/cursor.mp3'}
+        onClickSEPath={'sounds/decide.mp3'}
+        onClickMethod={() => sceneSetter(GameDifficulty.None)}
+      />
+    );
+    // ゲームクリア時の挙動確認用の問題をだす"Debug"モード追加
+    buttons.push(
+      // 難易度検証中の問題を出す"None"モード追加
+      <UITextButton
+        key={`difficultytButton_Debug}`}
+        text={"Debug"}
+        textScale={0.75}
+        textColor={"#000000"}
+        position={new Vector3(-7.5, -4, 0)}
+        //rotation={new Euler(0, Math.PI * 0.25, 0, "XYZ")}
+        hoverSEPath={'sounds/cursor.mp3'}
+        onClickSEPath={'sounds/decide.mp3'}
+        onClickMethod={() => sceneSetter(GameDifficulty.Debug)}
+      />
+    );
   }
 
   return <Center position={new Vector3(1.25, -6, 0)} top={true} bottom={true} left={false} >

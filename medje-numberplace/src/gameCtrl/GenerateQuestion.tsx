@@ -20,6 +20,7 @@ export const GenerateQuestion: React.FC<{ difficulty: GameDifficulty }> = ({ dif
     case GameDifficulty.Expart:
     case GameDifficulty.Extra:
       return <InquiryQandA difficulty={difficulty} />
+    case GameDifficulty.None:
     case GameDifficulty.Debug:
       console.debug("REST: Send requesut npgq.(Debug)")
       return <InquiryQandA difficulty={difficulty} />
